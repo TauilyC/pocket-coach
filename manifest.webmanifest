@@ -1,0 +1,19 @@
+{
+  "name": "Pocket Coach",
+  "short_name": "Pocket Coach",
+  "description": "Autoavaliação, metas e plano de ação para o seu desenvolvimento pessoal. Seus dados ficam só no aparelho.",
+  "lang": "pt-BR",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#13172B",
+  "theme_color": "#13172B",
+  "categories": ["lifestyle", "productivity", "health"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
