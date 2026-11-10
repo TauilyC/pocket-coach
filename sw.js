@@ -1,6 +1,6 @@
 /* Service worker do Pocket Coach: guarda o app para funcionar offline.
    Ao publicar uma nova versão, troque o número em CACHE. */
-const CACHE = 'pocket-coach-v4';
+const CACHE = 'pocket-coach-v5';
 const ASSETS = [
   './', './index.html', './mapa.html', './coach.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
@@ -18,10 +18,21 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  /* Páginas: rede primeiro, para uma nova versão chegar logo; sem internet, usa a cópia guardada. */
+  if (req.mode === 'navigate' || req.destination === 'document' || req.destination === 'iframe') {
+    e.respondWith(
+      fetch(req).then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+        return res;
+      }).catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+  /* Ícones, fontes e demais arquivos: cópia guardada primeiro. */
   e.respondWith(
     caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
       return res;
-    }).catch(() => req.mode === 'navigate' ? caches.match('./index.html') : Response.error()))
+    }).catch(() => Response.error()))
   );
 });
