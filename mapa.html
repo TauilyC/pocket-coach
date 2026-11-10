@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Sistema Integrativo de Autoconhecimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Direção: caderno de laboratório sereno. Verde-azulado profundo como acento, âmbar só para evidência e hipótese.
+   Layout: coluna única de 720px, cartões por etapa, abas fixas nos resultados. */
+:root{
+  --bg:#f2f5f3; --surface:#ffffff; --surface2:#e8eeeb; --ink:#12201c; --muted:#53655f; --line:#d5dfda;
+  --accent:#1c6b60; --accent-ink:#ffffff; --accent-soft:#d8ebe6;
+  --amber:#9a6416; --amber-soft:#f6e9d0; --crit:#a8322b; --crit-soft:#f7dedb; --good:#2b7a4e;
+  --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-body:'Public Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --shadow:0 1px 2px rgba(18,32,28,.06),0 6px 24px rgba(18,32,28,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0e1614; --surface:#16211e; --surface2:#1e2c28; --ink:#e9f1ee; --muted:#9db1aa; --line:#2a3b36;
+    --accent:#5dbfae; --accent-ink:#06201b; --accent-soft:#1b3a35;
+    --amber:#e2ab5c; --amber-soft:#3a2f1a; --crit:#f08a82; --crit-soft:#3d1f1c; --good:#6fcf9a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0e1614; --surface:#16211e; --surface2:#1e2c28; --ink:#e9f1ee; --muted:#9db1aa; --line:#2a3b36;
+  --accent:#5dbfae; --accent-ink:#06201b; --accent-soft:#1b3a35;
+  --amber:#e2ab5c; --amber-soft:#3a2f1a; --crit:#f08a82; --crit-soft:#3d1f1c; --good:#6fcf9a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0 0 .7em;max-width:64ch}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.small{font-size:.85rem;color:var(--muted)}
+.muted{color:var(--muted)}
+
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .in{max-width:720px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:600;font-size:1.02rem}
+.brand svg{flex:none}
+.spacer{flex:1}
+.prog{height:3px;background:var(--line)}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+
+main{max-width:720px;margin:0 auto;padding:20px 16px 56px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font-weight:600;transition:transform .12s ease,filter .12s ease}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.btn.sm{padding:8px 14px;font-size:.9rem;border-radius:10px}
+.link{background:none;border:0;color:var(--accent);text-decoration:underline;padding:4px 0;font-size:.9rem}
+
+/* boas-vindas */
+.hero{display:grid;gap:20px}
+.hero h1{font-size:clamp(1.8rem,6vw,2.5rem)}
+.rings{width:100%;max-width:300px;margin:0 auto;display:block}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 0;padding:0;list-style:none}
+.steps li{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.steps b{display:block;font-family:var(--font-display);font-size:1rem}
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);cursor:pointer;font-size:.92rem}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
+
+/* perguntas */
+.qmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-bottom:14px}
+.qtext{font-size:clamp(1.3rem,4.6vw,1.7rem);margin-bottom:22px;min-height:3.4em}
+.qlead{color:var(--muted);font-size:.95rem;margin-bottom:6px}
+.likert{display:grid;gap:8px}
+.lk{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .12s,background .12s,transform .12s}
+.lk:hover{border-color:var(--accent)}
+.lk .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);font-weight:600;font-size:.85rem;flex:none}
+.lk[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.lk[aria-pressed="true"] .n{background:var(--accent);color:var(--accent-ink)}
+@media (min-width:640px){
+  .likert.five{grid-template-columns:repeat(5,1fr)}
+  .likert.five .lk{flex-direction:column;text-align:center;padding:14px 6px;font-size:.84rem}
+}
+.chip{min-height:44px}.ans button{min-height:44px}.seg button{min-height:42px}.btn.sm{min-height:42px}[tabindex="-1"]:focus{outline:none}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+
+.sec h2{font-size:1.7rem;margin-bottom:10px}
+.note{background:var(--amber-soft);border-left:4px solid var(--amber);border-radius:0 10px 10px 0;padding:10px 14px;font-size:.9rem;margin:12px 0}
+.note.crit{background:var(--crit-soft);border-left-color:var(--crit)}
+.note p{margin:0}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-size:.92rem;transition:all .12s}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.field{margin:18px 0}
+.field > label,.field > .lab{display:block;font-weight:600;margin-bottom:2px}
+.field .hint{font-size:.85rem;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:8px 0 0}
+.ends{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:var(--surface);color:var(--ink);resize:vertical;min-height:70px}
+
+/* resultados */
+.tabs{position:sticky;top:50px;z-index:20;display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:16px;box-shadow:var(--shadow)}
+.tabs button{flex:1;border:0;background:none;border-radius:10px;padding:10px 6px;font-weight:600;color:var(--muted);transition:all .15s}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.tabs .cnt{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--amber-soft);color:var(--amber);font-size:.75rem;margin-left:4px;padding:0 5px}
+.tabs [aria-selected="true"] .cnt{background:rgba(255,255,255,.25);color:var(--accent-ink)}
+.summary h2{font-size:1.5rem;margin-bottom:8px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{border-radius:999px;padding:4px 11px;font-size:.82rem;background:var(--accent-soft);color:var(--ink)}
+.pill.am{background:var(--amber-soft);color:var(--amber);font-weight:600}
+.pill.ln{background:transparent;border:1px solid var(--line)}
+.sect{font-family:var(--font-display);font-size:1.15rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+svg.radar{width:100%;height:auto;display:block;max-width:440px;margin:0 auto}
+.radar .rg{fill:none;stroke:var(--line);stroke-width:1}
+.radar .ax{stroke:var(--line);stroke-width:1}
+.radar .pg{fill:var(--accent);fill-opacity:.18;stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round;animation:pop .7s ease both;transform-origin:220px 150px}
+.radar .dt{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.radar text{fill:var(--ink);font-size:12.5px;font-family:var(--font-body)}
+.radar .tk{fill:var(--muted);font-size:10px}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.trait{border-top:1px solid var(--line)}
+.trait > button{width:100%;text-align:left;background:none;border:0;padding:12px 2px;display:block}
+.trait .hd{display:flex;justify-content:space-between;gap:10px;font-size:.95rem}
+.trait .hd b{font-weight:600}
+.trait .pos{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.track{position:relative;height:8px;border-radius:4px;background:var(--surface2);margin:10px 4px 6px}
+.track .fl{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--accent);opacity:.25;transform-origin:left;animation:grow .7s ease both}
+.track .dot{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--accent);transition:left .5s ease}
+.track .mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ends2{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);padding:0 2px}
+.trait .more{display:none;padding:6px 2px 12px;font-size:.9rem;color:var(--muted)}
+.trait.open .more{display:block}
+.trait .chev{display:inline-block;transition:transform .15s;margin-left:6px;color:var(--muted)}
+.trait.open .chev{transform:rotate(90deg)}
+
+.locked{border:1.5px dashed var(--line);border-radius:14px;padding:14px;background:transparent}
+.locked b{font-family:var(--font-display)}
+
+/* hipóteses */
+.hyp{border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.hyp .hh{padding:16px 18px 6px}
+.hyp .tt{font-family:var(--font-display);font-size:1.2rem;margin:6px 0 6px}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px 3px 8px;font-size:.78rem;font-weight:600;background:var(--surface2)}
+.badge .ev{display:inline-flex;gap:2px}
+.badge .ev i{width:6px;height:12px;border-radius:2px;background:var(--line)}
+.badge .ev i.on{background:var(--amber)}
+.badge.c{background:var(--amber-soft);color:var(--amber)}
+.why{font-size:.82rem;color:var(--muted);margin:6px 0 0;padding-left:18px}
+.why li{margin:0}
+.q{padding:12px 18px 18px;background:var(--surface2);margin-top:10px}
+.q .qq{font-weight:600;margin-bottom:8px}
+.ans{display:flex;gap:8px;flex-wrap:wrap}
+.ans button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:.9rem}
+.ans button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:600}
+.ans button.no[aria-pressed="true"]{background:var(--surface);color:var(--ink);border-color:var(--ink)}
+.legend{display:grid;gap:8px;font-size:.88rem}
+.legend div{display:flex;gap:10px;align-items:flex-start}
+
+/* plano */
+.goal{border:1.5px solid var(--line);border-radius:14px;padding:14px;background:var(--surface);display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;transition:border-color .12s,background .12s}
+.goal[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.goal .bx{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;flex:none;margin-top:2px;font-size:.8rem;font-weight:700}
+.goal[aria-pressed="true"] .bx{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:8px 14px;font-weight:600;font-size:.9rem}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg .rec::after{content:' ★';font-size:.75rem}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px 0 4px}
+.day{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 0;text-align:center;font-size:.78rem;line-height:1.2;transition:all .12s}
+.day b{display:block;font-size:1rem}
+.day.today{border-color:var(--accent)}
+.day[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.meter{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+.plan .pr{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:.95rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.9rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+.help{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);text-align:center;font-size:.8rem;padding:6px 10px;color:var(--muted)}
+.help b{color:var(--ink)}
+main{padding-bottom:84px}
+.toast{bottom:48px!important}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.9rem;opacity:0;pointer-events:none;transition:all .25s;z-index:60;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;z-index:70}
+.modal .box{background:var(--surface);border-radius:16px;padding:22px;max-width:420px;width:100%}
+.fade{animation:fade .3s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="var(--accent)" stroke-width="1.5"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".6"/><circle cx="13" cy="13" r="3.5" fill="var(--accent)"/></svg>
+      <span>Autoconhecimento</span>
+    </div>
+    <span class="spacer"></span>
+    <button class="link" data-a="howto">Como usar</button><button class="link" id="menuBtn" data-a="menu" hidden>Opções</button>
+  </div>
+  <div class="prog"><i id="progBar" style="width:0"></i></div>
+</header>
+<main id="app"></main>
+<div class="help" role="note">Precisa de ajuda agora? <b>CVV 188</b> (24 h, gratuito) · <b>SAMU 192</b> em risco imediato</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+/* ================= DADOS: itens ilustrativos (não validados) ================= */
+const TRI=[
+ ['tg1','Pouco interesse ou prazer em fazer as coisas'],
+ ['tg2','Sentir-se para baixo, deprimido ou sem esperança'],
+ ['tg3','Sentir-se nervoso, ansioso ou muito tenso'],
+ ['tg4','Não conseguir parar ou controlar as preocupações'],
+ ['tg6','Sentir que não vai conseguir aguentar a situação em que vive'],
+ ['tg5','Pensamentos de que seria melhor não estar aqui ou de se machucar']
+];
+const PER={
+ N:[['n1','Fico tenso com facilidade.',0],['n2','Meu humor muda rápido ao longo do dia.',0],['n3','Mantenho a calma mesmo sob pressão.',1]],
+ E:[['e1','Sinto-me cheio de energia quando estou entre pessoas.',0],['e2','Gosto de puxar conversa com quem acabei de conhecer.',0],['e3','Prefiro passar o tempo sozinho a estar em grupo.',1]],
+ O:[['o1','Gosto de experimentar ideias e atividades novas.',0],['o2','Arte, música ou literatura prendem minha atenção.',0],['o3','Prefiro rotinas conhecidas a mudanças.',1]],
+ A:[['a1','Procuro entender o lado de quem pensa diferente de mim.',0],['a2','Confio nas boas intenções das pessoas.',0],['a3','Costumo discutir para provar que tenho razão.',1]],
+ C:[['c1','Termino o que começo.',0],['c2','Organizo meu tempo e minhas tarefas com antecedência.',0],['c3','Deixo para depois o que deveria fazer agora.',1]],
+ H:[['h1','Não manipularia alguém para conseguir uma vantagem.',0],['h2','Prefiro uma vida simples a ostentar status.',0],['h3','Acho que mereço mais privilégios do que a maioria das pessoas.',1]],
+ P:[['p1','Só considero uma tarefa pronta quando está perfeita.',0],['p2','Tenho dificuldade em aceitar que algo fique bom o suficiente.',0]]
+};
+const FUN={
+ ID:[['i1','Tenho uma ideia clara de quem eu sou.',0],['i2','Minha autoestima oscila muito conforme a opinião dos outros.',1]],
+ SD:[['s1','Consigo transformar objetivos em passos concretos.',0],['s2','Minhas escolhas refletem o que realmente valorizo.',0]],
+ EM:[['m1','Percebo como os outros se sentem, mesmo quando não dizem.',0],['m2','Considero o efeito do que faço nas pessoas à minha volta.',0]],
+ IN:[['t1','Tenho relações próximas em que posso ser eu mesmo.',0],['t2','Mantenho vínculos próximos por muito tempo.',0]],
+ ANX:[['x1','Preocupo-me que as pessoas próximas me deixem de lado.',0],['x2','Preciso de muita confirmação de que sou importante para alguém.',0]],
+ AVO:[['v1','Sinto desconforto quando alguém quer ficar muito próximo.',0],['v2','Prefiro resolver tudo sozinho a pedir ajuda.',0]],
+ CPP:[['q1','Diante de um problema, listo o que posso fazer e começo.',0],['q2','Busco informação ou conselho para decidir melhor.',0]],
+ CPE:[['r1','Quando algo me estressa, tento não pensar no assunto.',0],['r2','Adio conversas ou decisões difíceis.',0]],
+ CPS:[['u1','Procuro alguém para conversar quando estou sobrecarregado.',0],['u2','Peço ajuda concreta quando preciso.',0]]
+};
+const ALLI={}; // id -> {tx, sc, rev}
+Object.keys(PER).forEach(k=>PER[k].forEach(x=>ALLI[x[0]]={tx:x[1],sc:k,rev:x[2]}));
+Object.keys(FUN).forEach(k=>FUN[k].forEach(x=>ALLI[x[0]]={tx:x[1],sc:k,rev:x[2]}));
+function rounds(map,keys,n){const out=[];for(let r=0;r<n;r++)keys.forEach(k=>{const it=map[k][r];if(it)out.push(it[0]);});return out;}
+const PER_ORDER=rounds(PER,['N','E','O','A','C','H'],3).concat(rounds(PER,['P'],2));
+const FUN_ORDER=rounds(FUN,['ID','SD','EM','IN','ANX','AVO','CPP','CPE','CPS'],2);
+
+const META={
+ N:{n:'Neuroticismo',lo:'Estabilidade emocional',hi:'Reatividade emocional',d:'Com que facilidade tensão, preocupação e irritação surgem e quanto tempo duram. Não indica certo ou errado: descreve o ritmo emocional que você relata.'},
+ E:{n:'Extraversão',lo:'Reservado',hi:'Expansivo',d:'Quanta energia você relata tirar do contato com pessoas e de ambientes estimulantes.'},
+ O:{n:'Abertura',lo:'Prefere o conhecido',hi:'Busca o novo',d:'Interesse por ideias, arte e experiências novas. Não é o mesmo que pensamento incomum: são construtos distintos.'},
+ A:{n:'Amabilidade',lo:'Competitivo',hi:'Cooperativo',d:'Tendência a confiar, cooperar e considerar o ponto de vista alheio.'},
+ C:{n:'Conscienciosidade',lo:'Flexível e espontâneo',hi:'Organizado e persistente',d:'Organização, persistência e planejamento no dia a dia.'},
+ H:{n:'Honestidade-Humildade',lo:'Foco em vantagem própria',hi:'Sincero e modesto',d:'Sinceridade nas relações e modéstia em relação a status e privilégios.'},
+ P:{n:'Exigência consigo',lo:'Padrões flexíveis',hi:'Padrões rígidos',d:'Quão rígidos são os padrões que você aplica às suas tarefas. Rigidez muito alta pode atrasar entregas e reduzir o lazer.'},
+ ID:{n:'Identidade',lo:'Oscilante',hi:'Clara e estável',d:'Clareza sobre quem você é e estabilidade da autoestima.'},
+ SD:{n:'Autodirecionamento',lo:'Pouco definido',hi:'Direcionado',d:'Capacidade de definir metas, dar passos concretos e agir de acordo com seus valores.'},
+ EM:{n:'Empatia',lo:'Menos atento aos outros',hi:'Muito atento aos outros',d:'Perceber como os outros se sentem e considerar o efeito das suas ações.'},
+ IN:{n:'Intimidade',lo:'Vínculos distantes',hi:'Vínculos próximos',d:'Profundidade e duração das relações próximas.'},
+ ANX:{n:'Ansiedade nas relações',lo:'Tranquilo',hi:'Muita preocupação',d:'Preocupação de ser deixado de lado e necessidade de confirmação nas relações próximas.'},
+ AVO:{n:'Distância nas relações',lo:'Confortável com proximidade',hi:'Prefere distância',d:'Desconforto com muita proximidade e preferência por resolver tudo sozinho.'},
+ CPP:{n:'Foco na solução',lo:'Pouco usado',hi:'Muito usado',d:'Estratégia de enfrentamento: listar opções e agir sobre o problema.'},
+ CPE:{n:'Evitação',lo:'Pouco usado',hi:'Muito usado',d:'Estratégia de enfrentamento: afastar o assunto ou adiar. Alivia no curto prazo, mas pode acumular pendências.'},
+ CPS:{n:'Busca de apoio',lo:'Pouco usado',hi:'Muito usado',d:'Estratégia de enfrentamento: conversar e pedir ajuda concreta.'}
+};
+const VALS=['Liberdade','Segurança','Conquista','Cuidar dos outros','Tradição e família','Justiça e natureza','Novidade','Prazer e descanso','Influência','Responsabilidade'];
+const STRS=['Curiosidade','Perseverança','Gratidão','Humor','Bondade','Coragem','Criatividade','Liderança','Prudência','Esperança'];
+const PRIO=[['emo','Emoções'],['org','Organização e hábitos'],['rel','Relacionamentos'],['car','Carreira'],['pro','Propósito'],['est','Estresse e energia'],['com','Comunicação']];
+
+/* ================= MOTOR DE REGRAS ================= */
+const HI=3.6, LO=2.4;
+const RULES=[
+ {id:'R1',ev:'B',tags:['emo','est'],skill:'Regulação emocional',cat:'Cognitivo e regulatório',use:['N'],
+  trig:(s)=>s.N>=HI,
+  hyp:'No seu autorrelato, tensão e oscilações emocionais ocupam a faixa superior da escala. Em períodos de pressão, isso pode aparecer como reação emocional mais intensa e mais demorada.',
+  q:'Isso aparece em momentos de pressão no seu dia a dia?',
+  pr:{5:'Respiração 4-6: inspire por 4 segundos e expire por 6, por 5 ciclos, ao notar tensão.',15:'Registro em 3 colunas: situação, emoção (0 a 10) e uma ação possível.',30:'Revisão semanal: escolha uma situação tensa, escreva o que sentiu, o que fez e uma alternativa para testar.'},
+  ind:'Intensidade da emoção (0 a 10) logo após a prática, anotada 3 vezes por semana.'},
+ {id:'R2',ev:'C',tags:['rel','com','emo'],skill:'Comunicação assertiva e permanência na conversa',cat:'Socioemocional',use:['N','ANX','CPE'],
+  trig:(s)=>s.N>=HI&&s.ANX>=HI&&s.CPE>=HI,
+  hyp:'Em situações de insegurança nas relações, pode haver uma reação emocional intensa seguida de afastamento como forma de lidar com ela.',
+  q:'Você reconhece esse ciclo de reagir e depois se afastar?',
+  pr:{5:'Antes de se afastar, diga uma frase: “Preciso de 10 minutos e volto para conversar.”',15:'Escreva o que quer dizer em 3 frases: fato, sentimento e pedido.',30:'Ensaie a conversa difícil em voz alta ou com alguém de confiança e combine um horário para retomá-la.'},
+  ind:'Vezes em que você voltou a uma conversa depois de uma pausa, por semana.'},
+ {id:'R3',ev:'B',tags:['org'],skill:'Hábitos mínimos e planejamento',cat:'Comportamental',use:['C'],
+  trig:(s)=>s.C<=LO,
+  hyp:'Planejar e concluir tarefas parece exigir mais esforço de você. Com pouco tempo livre, rotinas muito ambiciosas costumam falhar; passos pequenos e fixos funcionam melhor.',
+  q:'Planejar e concluir tarefas é, de fato, um esforço grande para você?',
+  pr:{5:'Escolha uma única tarefa do dia e decida quando e onde vai fazê-la.',15:'Planeje o dia: 3 prioridades e o horário de cada uma.',30:'Revisão semanal: o que concluí, o que adiar e as 3 prioridades da próxima semana.'},
+  ind:'Dias da semana em que a tarefa escolhida foi concluída.'},
+ {id:'R4',ev:'B',tags:['pro','org'],skill:'Metas e coerência entre valores e ações',cat:'Existencial e pessoal',use:['SD'],
+  trig:(s)=>s.SD<=LO,
+  hyp:'Transformar objetivos em passos e alinhar as escolhas ao que você valoriza parece uma área a desenvolver.',
+  q:'Você sente que suas escolhas nem sempre refletem o que é importante para você?',
+  pr:{5:'Escreva um valor importante e uma ação de 5 minutos que o expresse hoje.',15:'Defina uma meta em 3 passos: o quê, quando e o primeiro passo.',30:'Mapa de metas: 3 metas, o valor ligado a cada uma e o obstáculo mais provável, com um plano “se… então…”.'},
+  ind:'Passos concluídos por semana.'},
+ {id:'R5',ev:'B',tags:['rel','com'],skill:'Tomada de perspectiva',cat:'Socioemocional',use:['EM'],
+  trig:(s)=>s.EM<=LO,
+  hyp:'Perceber o que os outros sentem e considerar o efeito das próprias ações parece uma área a desenvolver.',
+  q:'Isso combina com situações recentes em que você se sentiu desconectado dos outros?',
+  pr:{5:'Numa conversa de hoje, pergunte “como você se sente com isso?” e escute sem responder.',15:'Escreva uma conversa recente do ponto de vista da outra pessoa.',30:'Peça a alguém de confiança que descreva como percebe seu jeito de se comunicar e anote 2 aprendizados.'},
+  ind:'Perguntas de escuta feitas por semana.'},
+ {id:'R6',ev:'B',tags:['rel'],skill:'Segurança e abertura nos relacionamentos',cat:'Socioemocional',use:['AVO','IN'],
+  trig:(s)=>s.AVO>=HI||s.IN<=LO,
+  hyp:'Abrir-se e pedir ajuda pode ser desconfortável. Relações próximas costumam pedir pequenos passos de abertura, dados aos poucos.',
+  q:'Você se reconhece nisso: preferir resolver sozinho ou manter distância?',
+  pr:{5:'Conte a alguém próximo uma coisa pequena que sente ou precisa.',15:'Liste 3 pessoas de confiança e uma forma de pedir ajuda a cada uma.',30:'Escolha um pedido de ajuda concreto, faça-o e anote como foi.'},
+  ind:'Vezes em que você se abriu ou pediu ajuda na semana.'},
+ {id:'R7',ev:'B',tags:['org','est'],skill:'Flexibilidade e padrão “bom o suficiente”',cat:'Cognitivo e regulatório',use:['P'],
+  trig:(s)=>s.P>=HI,
+  hyp:'Padrões muito rígidos consigo podem atrasar a conclusão de tarefas e reduzir o tempo de descanso e lazer.',
+  q:'Padrões muito altos já atrasaram suas entregas ou seu descanso?',
+  pr:{5:'Entregue algo agora com 80% do capricho habitual.',15:'Antes da tarefa, defina o que é “suficiente” e um tempo-limite.',30:'Experimento: relaxe um padrão numa tarefa de baixo risco e registre o resultado real.'},
+  ind:'Tarefas concluídas dentro do tempo-limite.'},
+ {id:'R8',ev:'C',tags:['est','emo'],skill:'Recuperação de energia',cat:'Comportamental',use:['E'],
+  trig:(s,c)=>s.E<=LO&&c.social,
+  hyp:'Quando o dia tem muito contato com pessoas e você tende a recarregar a energia sozinho, a energia pode acabar mais cedo.',
+  q:'Você termina o dia esgotado por causa do volume de interações?',
+  pr:{5:'Pausa de 5 minutos sozinho entre reuniões ou atendimentos.',15:'Bloco de 15 minutos de silêncio ao fim do expediente, antes de outras demandas.',30:'Desenhe a semana: marque 2 blocos de recuperação na agenda e proteja-os.'},
+  ind:'Energia ao fim do dia (0 a 10).'},
+ {id:'R9',ev:'C',tags:['rel','est'],skill:'Fortalecimento da rede de apoio',cat:'Socioemocional',use:['CPS'],ctxWhy:c=>'Apoio percebido: '+c.support+' de 5',
+  trig:(s,c)=>c.support<=2&&s.CPS<=LO,
+  hyp:'Com pouco apoio percebido e pouca busca de ajuda, a sobrecarga tende a ficar toda com você.',
+  q:'Você sente que carrega a maior parte das demandas sozinho?',
+  pr:{5:'Envie uma mensagem de contato a alguém que lhe faz bem.',15:'Marque um encontro ou uma ligação curta com alguém de confiança.',30:'Mapa de apoio: quem ajuda em quê hoje e que pedido você pode fazer esta semana.'},
+  ind:'Contatos de apoio por semana.'},
+ {id:'R10',ev:'B',tags:['est','org'],skill:'Enfrentamento focado em solução',cat:'Comportamental',use:['CPE','CPP'],
+  trig:(s)=>s.CPE>=HI&&s.CPP<=3.0,
+  hyp:'Diante do estresse, você tende a afastar o assunto. Isso alivia no curto prazo, mas pode adiar decisões e acumular pendências.',
+  q:'Você costuma adiar problemas que depois voltam maiores?',
+  pr:{5:'Escolha um problema adiado e escreva o primeiro passo de 2 minutos.',15:'Divida o problema em 3 ações e agende a primeira.',30:'Plano de solução: opções, prós e contras, decisão e data.'},
+  ind:'Pendências retomadas por semana.'},
+ {id:'R12',ev:'C',tags:['car','pro'],skill:'Exploração de possibilidades de carreira',cat:'Existencial e pessoal',use:['O'],
+  trig:(s,c)=>s.O>=HI&&c.prio.includes('car'),
+  hyp:'Curiosidade e interesse por novidades podem ser aproveitados para explorar caminhos profissionais.',
+  q:'Você sente vontade de explorar outros caminhos de trabalho?',
+  pr:{5:'Leia sobre uma área ou função que lhe interessa.',15:'Liste 3 atividades que lhe dão energia e funções que as usam.',30:'Converse com alguém que atua numa área de interesse.'},
+  ind:'Conversas ou leituras exploratórias por semana.'},
+ {id:'R13',ev:'B',tags:['emo','pro'],skill:'Clareza de identidade e autoaceitação',cat:'Existencial e pessoal',use:['ID'],
+  trig:(s)=>s.ID<=LO,
+  hyp:'Seu sentido de identidade e sua autoestima parecem sensíveis à opinião dos outros.',
+  q:'Sua autoestima varia muito conforme a aprovação alheia?',
+  pr:{5:'Anote uma qualidade sua que não depende de aprovação.',15:'Liste 5 momentos em que você agiu de acordo com seus valores.',30:'Escreva uma carta a si mesmo, no tom que usaria com um amigo.'},
+  ind:'Autoestima (0 a 10), anotada 3 vezes por semana.'},
+ {id:'R11',ev:'B',tags:['pro'],skill:'Coerência entre valores, forças e ações',cat:'Existencial e pessoal',use:[],always:true,
+  trig:(s,c,st)=>st.res.val.length>0&&st.res.str.length>0,
+  hyp:'Os valores e as forças que você escolheu podem servir de base para qualquer meta do seu plano.',
+  q:'Esses valores e forças representam você?',
+  pr:{5:'Nomeie uma força que você usou hoje.',15:'Escolha uma meta da semana e ligue-a a um dos seus valores.',30:'Escreva como uma de suas forças pode ajudar no seu maior desafio atual.'},
+  ind:'Dias em que você usou uma força de propósito.'}
+];
+
+/* ---- regras de recursos e forças (partem do que já funciona) ---- */
+RULES.push(
+ {id:'R14',ev:'B',strength:true,tags:['rel','est'],skill:'Usar a energia social como recurso',cat:'Socioemocional',use:['E'],
+  trig:(s)=>s.E>=HI,
+  hyp:'Contato com pessoas parece dar energia a você. Isso é um recurso: encontros regulares podem sustentar humor, rede de apoio e motivação.',
+  q:'Estar com pessoas costuma recarregar você?',
+  pr:{5:'Mande uma mensagem a alguém com quem você gosta de conversar.',15:'Ligue ou marque um café curto com alguém hoje.',30:'Planeje um encontro fixo da semana (caminhada, almoço, grupo) e convide alguém.'},
+  ind:'Encontros ou conversas que lhe fizeram bem, por semana.'},
+ {id:'R15',ev:'B',strength:true,tags:['org','car'],skill:'Aproveitar a constância para consolidar hábitos',cat:'Comportamental',use:['C'],
+  trig:(s)=>s.C>=HI&&s.P<HI,
+  hyp:'Organização e persistência parecem ser pontos fortes seus. Você pode usá-las para transformar uma prática pequena em rotina estável, sem exigir perfeição.',
+  q:'Você costuma manter rotinas quando decide algo?',
+  pr:{5:'Ligue um hábito novo a algo que você já faz todo dia.',15:'Escolha um hábito e um gatilho fixo (“depois do café, faço…”).',30:'Monte uma rotina semanal com um hábito novo e um dia de folga planejado.'},
+  ind:'Dias em que o hábito aconteceu.'},
+ {id:'R16',ev:'B',strength:true,tags:['rel','emo'],skill:'Cultivar a rede de apoio que você já tem',cat:'Socioemocional',use:['IN','CPS'],
+  trig:(s)=>s.IN>=HI||s.CPS>=HI,
+  hyp:'Você relata vínculos próximos ou o hábito de buscar apoio. Isso protege nos períodos difíceis e merece cuidado ativo.',
+  q:'Você conta com pessoas próximas nos momentos difíceis?',
+  pr:{5:'Agradeça a alguém que já ajudou você.',15:'Pergunte a uma pessoa próxima como ela está de verdade.',30:'Combine um ritual regular com alguém importante (ligação semanal, refeição).'},
+  ind:'Gestos de cuidado com a rede, por semana.'},
+ {id:'R17',ev:'B',strength:true,tags:['pro','car'],skill:'Orientar o plano por propósito',cat:'Existencial e pessoal',use:['ID','SD'],
+  trig:(s)=>s.ID>=HI&&s.SD>=HI,
+  hyp:'Clareza de identidade e boa capacidade de agir por objetivos favorecem metas de maior alcance.',
+  q:'Você sente que sabe o que quer e age nessa direção?',
+  pr:{5:'Escreva uma frase sobre o que deseja daqui a 1 ano.',15:'Defina uma meta de 3 meses e seus 3 primeiros passos.',30:'Escreva um plano de 12 meses com marcos trimestrais e um critério de sucesso.'},
+  ind:'Marcos do plano cumpridos no prazo.'},
+ {id:'R18',ev:'B',strength:true,tags:['rel','com'],skill:'Colaboração como recurso',cat:'Socioemocional',use:['A','EM'],
+  trig:(s)=>s.A>=HI&&s.EM>=HI,
+  hyp:'Cooperação e atenção aos outros são recursos. O cuidado é não esquecer das próprias necessidades ao ajudar.',
+  q:'Você costuma ajudar e cooperar com facilidade?',
+  pr:{5:'Diga um “não” gentil a um pedido que sobrecarregaria você.',15:'Liste o que você precisa esta semana e peça uma coisa a alguém.',30:'Ensaie como combinar limites e ajuda de forma equilibrada.'},
+  ind:'Pedidos feitos ou limites combinados, por semana.'}
+);
+RULES.find(r=>r.id==='R11').strength=true;
+/* Nível de evidência e fontes (provisórias: conferir antes de qualquer uso real) */
+const SRC={
+ R1:'Gross (2015), regulação emocional; Roberts et al. (2017), mudança de traços por intervenção.',
+ R2:'Hipótese de especialista; nenhum estudo direto da combinação. Base teórica em apego e regulação emocional.',
+ R3:'Gollwitzer & Sheeran (2006), meta-análise de intenções de implementação (“se… então”).',
+ R4:'Gollwitzer & Sheeran (2006), meta-análise de intenções de implementação (“se… então”).',
+ R5:'Revisões sobre tomada de perspectiva e empatia; Sharp et al. (2025), funcionamento de personalidade.',
+ R6:'Sharp et al. (2025); literatura de apego adulto e busca de ajuda.',
+ R7:'Literatura de perfeccionismo e sofrimento; Sharp et al. (2025) sobre compulsividade.',
+ R8:'Hipótese de especialista (energia e extraversão); nenhum estudo direto.',
+ R9:'Hipótese de especialista; literatura geral de apoio social e saúde.',
+ R10:'Literatura de enfrentamento por evitação versus resolução de problemas.',
+ R11:'Bolier et al. (2013), meta-análise de intervenções de psicologia positiva.',
+ R12:'Hipótese de especialista; interesses vocacionais e abertura.',
+ R13:'Sharp et al. (2025): identidade como núcleo do funcionamento de personalidade.',
+ R14:'Literatura de extraversão, apoio social e bem-estar.',
+ R15:'Gollwitzer & Sheeran (2006); Roberts et al. (2017).',
+ R16:'Literatura de apoio social e saúde mental.',
+ R17:'Bolier et al. (2013); literatura de metas e propósito.',
+ R18:'Literatura de amabilidade, empatia e relações; limites pessoais por prática clínica.'
+};
+['R4','R11'].forEach(id=>{RULES.find(r=>r.id===id).ev='A';});
+
+/* ================= ESTADO ================= */
+const KEY='sia-proto-v1'; let mem=null;
+const fresh=()=>({view:'welcome',consent:false,i:0,ans:{},res:{val:[],str:[]},
+  ctx:{hours:null,care:[],phase:[],social:null,shift:null,support:3,fin:3,energy:3,sleep:3,prio:[]},conf:{},notes:{},goals:[],dose:{},log:{},tab:'perfil',light:false,history:[],remind:{day:null,time:'20:00'},wk:0});
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return mem;}}
+let S=Object.assign(fresh(),load()||{});
+S.ctx=Object.assign(fresh().ctx,S.ctx||{});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){try{mem=JSON.parse(JSON.stringify(S));}catch(_){}}try{syncHandoff();}catch(_){}}
+/* Ponte com o Coach: publica (só neste aparelho) as metas que a pessoa escolheu no plano, para o Coach oferecê-las como meta.
+   Pilar do Coach correspondente a cada prática. Sem metas escolhidas, não há nada publicado. */
+const HANDOFF_KEY='rumo.handoff.v1';
+const PILLAR={R1:'emo',R2:'soc',R3:'int',R4:'sat',R5:'soc',R6:'amo',R7:'emo',R8:'sau',R9:'soc',R10:'emo',R11:'esp',R12:'car',R13:'esp'};
+function syncHandoff(){
+  try{
+    const items=(S.goals||[]).map(id=>RULES.find(r=>r.id===id)).filter(r=>r&&PILLAR[r.id]).map(r=>{const d=doseOf(r.id);
+      return {rid:r.id,skill:r.skill,pillar:PILLAR[r.id],dose:d,practice:r.pr[d],ind:r.ind};});
+    if(items.length)localStorage.setItem(HANDOFF_KEY,JSON.stringify({at:Date.now(),items}));
+    else localStorage.removeItem(HANDOFF_KEY);
+  }catch(e){}
+}
+
+/* ================= FLUXO ================= */
+const FLOW=[{t:'sec',id:'tri'}];
+TRI.forEach(x=>FLOW.push({t:'tri',id:x[0],tx:x[1]}));
+FLOW.push({t:'sec',id:'per'});
+PER_ORDER.forEach(id=>FLOW.push({t:'lik',id}));
+FLOW.push({t:'sec',id:'fun'});
+FUN_ORDER.forEach(id=>FLOW.push({t:'lik',id}));
+FLOW.push({t:'res'});FLOW.push({t:'ctx'});
+const NQ=TRI.length+PER_ORDER.length+FUN_ORDER.length;
+const SEC={
+ tri:{t:'Como você está agora',p:'Cinco perguntas sobre as últimas duas semanas. Elas medem seu estado atual e não entram no perfil de traços.',n:'Itens de rastreio ilustrativos, baseados nas perguntas curtas PHQ-2 e GAD-2. A versão final usará as escalas validadas e um protocolo definido com a equipe clínica.'},
+ per:{t:'Como você costuma ser',p:'Frases sobre o seu jeito de pensar, sentir e agir. Responda pelo que é mais comum em você, não pelo que gostaria de ser.',n:'Itens ilustrativos criados para este protótipo; ainda não foram validados.'},
+ fun:{t:'Como você funciona e se relaciona',p:'Frases sobre identidade, relações próximas e enfrentamento do estresse.',n:'Itens ilustrativos criados para este protótipo; ainda não foram validados.'}
+};
+
+/* ================= CÁLCULO ================= */
+function score(code){
+  const ids=Object.keys(ALLI).filter(id=>ALLI[id].sc===code);
+  const v=ids.filter(id=>S.ans[id]!=null).map(id=>ALLI[id].rev?6-S.ans[id]:S.ans[id]);
+  return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;
+}
+function scores(){const o={};Object.keys(META).forEach(k=>o[k]=score(k));return o;}
+function funMean(sc){const v=['ID','SD','EM','IN'].map(k=>sc[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;}
+function triage(){
+  const a=S.ans, g=k=>a[k]!=null?a[k]:0;
+  const crisis=g('tg5')>0;
+  const distress=(g('tg1')+g('tg2'))>=3||(g('tg3')+g('tg4'))>=3||g('tg6')>=2;
+  const fm=funMean(scores());
+  const func=fm!=null&&fm<=2.2;
+  return {crisis,distress,func,simple:distress||func||crisis};
+}
+const posLbl=v=>v<=LO?'faixa inferior':v>=HI?'faixa superior':'faixa intermediária';
+function evalRules(){
+  const sc=scores(), c=S.ctx, tr=triage();
+  let out=RULES.filter(r=>{try{return r.trig(sc,c,S);}catch(e){return false;}}).map(r=>{
+    const why=r.use.map(k=>META[k].n+': '+posLbl(sc[k])+' ('+fmt(sc[k])+' de 5)');
+    if(r.ctxWhy)why.push(r.ctxWhy(c));
+    if(r.id==='R8')why.push('Seu trabalho tem muito contato com pessoas');
+    if(r.id==='R12')why.push('Carreira está entre suas prioridades');
+    if(r.id==='R11')why.push('Valores: '+S.res.val.join(', ')+'. Forças: '+S.res.str.join(', '));
+    const pm=r.tags.some(t=>c.prio.includes(t));
+    return {r,why,rank:(pm?10:0)+(r.ev==='B'?2:1)+(r.always?-5:0)};
+  });
+  out.sort((a,b)=>b.rank-a.rank);
+  return out;
+}
+function doseInfo(){
+  const c=S.ctx; const base={'<3':0,'3-7':1,'8-15':2,'>15':2}[c.hours];
+  let idx=base==null?1:base, why=[];
+  if(c.hours==='<3')why.push('menos de 3 horas livres por semana');
+  if(c.care.includes('filhos')&&idx>0){idx--;why.push('cuidado de filhos pequenos');}
+  if(c.shift==='>8'&&idx>0){idx--;why.push('jornada longa');}
+  if(c.care.includes('idosos')&&idx>0){idx--;why.push('cuidado de pais ou familiares idosos');}
+  if((c.energy<=2||c.sleep<=2)&&idx>0){idx--;why.push('energia ou sono baixos nesta fase');}
+  const d=[5,15,30][idx];
+  return {d,why};
+}
+const doseOf=id=>S.dose[id]||doseInfo().d;
+
+/* ================= RENDER ================= */
+const app=$('#app');
+let openTrait=null, lockNext=false;
+function setProg(f){$('#progBar').style.width=Math.round(f*100)+'%';}
+function render(keepScroll){
+  const y=window.scrollY;
+  const ae=document.activeElement,K=['a','id','v','k','d'],sig=(keepScroll&&ae&&ae.dataset&&ae.dataset.a)?K.map(k=>ae.dataset[k]):null;
+  $('#menuBtn').hidden=(S.view==='welcome');
+  if(S.view==='welcome'){setProg(0);app.innerHTML=vWelcome();}
+  else if(S.view==='crisis'){setProg(1);app.innerHTML=vCrisis();}
+  else if(S.view==='results'){setProg(1);app.innerHTML=vResults();}
+  else {app.innerHTML=vFlow();}
+  if(keepScroll)window.scrollTo(0,y);else window.scrollTo(0,0);
+  if(sig){const t=[...app.querySelectorAll('[data-a]')].find(e=>K.every((k,i)=>e.dataset[k]===sig[i]));if(t)t.focus({preventScroll:true});}
+  else{const h=app.querySelector('h1,h2');if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true});}}
+}
+function rings(){return `<svg class="rings" viewBox="0 0 300 220" aria-hidden="true">
+ <circle cx="150" cy="110" r="100" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+ <circle cx="150" cy="110" r="74" fill="none" stroke="var(--accent)" stroke-opacity=".35" stroke-width="1.5"/>
+ <circle cx="150" cy="110" r="48" fill="none" stroke="var(--accent)" stroke-opacity=".6" stroke-width="1.5"/>
+ <circle cx="150" cy="110" r="22" fill="var(--accent)" fill-opacity=".9"/>
+ <circle cx="150" cy="10" r="5" fill="var(--amber)"/><circle cx="224" cy="110" r="5" fill="var(--amber)"/><circle cx="150" cy="158" r="5" fill="var(--amber)"/><circle cx="76" cy="110" r="5" fill="var(--amber)"/>
+ <text x="150" y="114" text-anchor="middle" font-size="11" fill="var(--accent-ink)" font-family="var(--font-body)" font-weight="600">você</text></svg>`;}
+function vWelcome(){
+  const started=Object.keys(S.ans).length>0||S.view!=='welcome';
+  const has=Object.keys(S.ans).length>0;
+  return `<div class="stack fade"><section class="card hero">
+   <div><h1>Conheça seu jeito de ser e planeje o próximo passo</h1>
+   <p class="muted" style="margin-top:10px">Um mapa em quatro camadas: como você está, quem você é, onde você vive e para onde quer ir. O resultado é um plano pequeno e viável, não um rótulo.</p></div>
+   ${rings()}
+   <ol class="steps"><li><b>1. Como você está</b>5 perguntas rápidas</li><li><b>2. Quem você é</b>personalidade e funcionamento</li><li><b>3. Seu contexto</b>tempo, apoio e prioridades</li><li><b>4. Seu plano</b>até 3 metas com práticas curtas</li></ol>
+   <label class="check"><input type="checkbox" id="consent" ${S.consent?'checked':''}><span>Entendo que este protótipo não faz diagnóstico, usa itens ilustrativos e que minhas respostas, inclusive as de saúde mental, ficam apenas neste navegador.</span></label>
+   <div class="row"><button class="btn" data-a="start" id="startBtn" ${S.consent?'':'disabled'}>${has?'Continuar de onde parei':'Começar, cerca de 10 minutos'}</button><button class="btn ghost" data-a="sample">Ver exemplo preenchido</button></div>
+   <p class="small" style="margin:0">Protótipo de especificação. Em caso de sofrimento intenso, procure um profissional de saúde ou ligue para o CVV, 188.</p>
+  </section></div>`;
+}
+function vFlow(){
+  const st=FLOW[S.i]; let body='';
+  const done=FLOW.slice(0,S.i).filter(x=>x.t==='tri'||x.t==='lik').length;
+  setProg(Math.min(1,(S.i)/(FLOW.length)));
+  const back=`<button class="btn ghost sm" data-a="back">Voltar</button>`;
+  if(st.t==='sec'){
+    const s=SEC[st.id];
+    body=`<section class="card sec fade"><div class="qmeta"><span>Parte ${st.id==='tri'?1:st.id==='per'?2:3} de 4</span></div><h2>${s.t}</h2><p>${s.p}</p><div class="note"><p>${s.n}</p></div><div class="nav">${S.i>0?back:'<span></span>'}<button class="btn" data-a="next">Continuar</button></div></section>`;
+  } else if(st.t==='tri'||st.t==='lik'){
+    const tri=st.t==='tri';
+    const tx=tri?st.tx:ALLI[st.id].tx;
+    const labs=tri?['Nunca','Alguns dias','Mais da metade dos dias','Quase todos os dias']:['Discordo totalmente','Discordo','Neutro','Concordo','Concordo totalmente'];
+    const base=tri?0:1;
+    const cur=S.ans[st.id];
+    const btns=labs.map((l,k)=>`<button class="lk" data-a="ans" data-v="${k+base}" aria-pressed="${cur===k+base}"><span class="n">${tri?k:k+1}</span><span>${l}</span></button>`).join('');
+    body=`<section class="card fade" data-q="${st.id}"><div class="qmeta"><span>Pergunta ${done+1} de ${NQ}</span><span>${tri?'Estado atual':'Seu jeito habitual'}</span></div>
+      ${tri?'<div class="qlead">Nas últimas 2 semanas, com que frequência você teve:</div>':''}
+      <h2 class="qtext">${esc(tx)}</h2><div class="likert ${tri?'':'five'}" role="group" aria-label="Opções de resposta">${btns}</div>
+      <div class="nav">${back}<span class="small">${tri?'':'Teclas 1 a 5'}</span></div></section>`;
+  } else if(st.t==='res'){
+    const chip=(arr,list,key)=>list.map(x=>`<button class="chip" data-a="tg" data-k="${key}" data-v="${esc(x)}" aria-pressed="${arr.includes(x)}">${esc(x)}</button>`).join('');
+    const ok=S.res.val.length>0&&S.res.str.length>0;
+    body=`<section class="card fade"><div class="qmeta"><span>Parte 4 de 4</span></div><h2 class="sect" style="font-size:1.6rem">O que importa para você</h2>
+      <p class="sub">Escolha até 3 em cada grupo. Eles viram a base do seu plano.</p>
+      <div class="field"><span class="lab">Seus valores</span><span class="hint">O que orienta suas decisões</span><div class="chips">${chip(S.res.val,VALS,'val')}</div></div>
+      <div class="field"><span class="lab">Suas forças</span><span class="hint">O que você faz bem e gosta de usar</span><div class="chips">${chip(S.res.str,STRS,'str')}</div></div>
+      ${ok?'':'<p class="small">Escolha ao menos 1 valor e 1 força para continuar.</p>'}<div class="nav">${back}<button class="btn" data-a="next" ${ok?'':'disabled'}>Continuar</button></div></section>`;
+  } else if(st.t==='ctx'){
+    const c=S.ctx;
+    const one=(k,opts)=>opts.map(([v,l])=>`<button class="chip" data-a="cx1" data-k="${k}" data-v="${v}" aria-pressed="${c[k]===v}">${l}</button>`).join('');
+    const multi=(k,opts)=>opts.map(([v,l])=>`<button class="chip" data-a="cxm" data-k="${k}" data-v="${v}" aria-pressed="${c[k].includes(v)}">${l}</button>`).join('');
+    const miss=[!c.hours&&'tempo livre',!c.care.length&&'cuidado',!c.shift&&'jornada',c.social==null&&'contato com pessoas',!c.prio.length&&'o que desenvolver'].filter(Boolean);const ok=!miss.length;
+    body=`<section class="card fade"><div class="qmeta"><span>Último passo</span></div><h2 class="sect" style="font-size:1.6rem">Sua vida hoje</h2>
+      <p class="sub">O contexto não interpreta sua personalidade. Ele só ajusta o tamanho e o ritmo das práticas ao seu tempo real.</p>
+      <div class="field"><span class="lab">Quanto tempo livre você tem por semana?</span><div class="chips">${one('hours',[['<3','Menos de 3 h'],['3-7','3 a 7 h'],['8-15','8 a 15 h'],['>15','Mais de 15 h']])}</div></div>
+      <div class="field"><span class="lab">Você cuida de alguém?</span><span class="hint">Marque tudo o que se aplica</span><div class="chips">${multi('care',[['filhos','Filhos pequenos'],['adolesc','Adolescentes'],['idosos','Pais ou familiares idosos'],['outro','Outro familiar'],['nenhum','Ninguém no momento']])}</div></div>
+      <div class="field"><span class="lab">Em que fase da vida você está?</span><span class="hint">Opcional. Marque o que se aplica</span><div class="chips">${multi('phase',[['trans','Transição de carreira'],['adultos','Filhos adultos'],['ninho','Ninho vazio'],['luto','Mudança ou perda recente'],['inicio','Início de carreira'],['aposent','Perto da aposentadoria']])}</div></div>
+      <div class="field"><span class="lab">Sua jornada de trabalho</span><div class="chips">${one('shift',[['<=6','Até 6 h'],['8','Cerca de 8 h'],['>8','Mais de 8 h ou mais de um trabalho']])}</div></div>
+      <div class="field"><span class="lab">Seu trabalho tem muito contato com pessoas?</span><div class="chips">${one('social',[[true,'Sim'],[false,'Não']]).replace(/data-v="true"/,'data-v="1"').replace(/data-v="false"/,'data-v="0"')}</div></div>
+      <div class="field"><label for="sup" class="lab">Apoio que você sente ter: <b id="supportV">${c.support}</b> de 5</label><input type="range" id="sup" min="1" max="5" step="1" value="${c.support}" data-r="support"><div class="ends"><span>Pouco</span><span>Muito</span></div></div>
+      <div class="field"><label for="en" class="lab">Sua energia nesta fase: <b id="energyV">${c.energy}</b> de 5</label><input type="range" id="en" min="1" max="5" step="1" value="${c.energy}" data-r="energy"><div class="ends"><span>Esgotado</span><span>Disposto</span></div></div>
+      <div class="field"><label for="sl" class="lab">Qualidade do seu sono: <b id="sleepV">${c.sleep}</b> de 5</label><input type="range" id="sl" min="1" max="5" step="1" value="${c.sleep}" data-r="sleep"><div class="ends"><span>Ruim</span><span>Ótima</span></div></div>
+      <div class="field"><label for="fin" class="lab">Segurança financeira que você sente: <b id="finV">${c.fin}</b> de 5</label><input type="range" id="fin" min="1" max="5" step="1" value="${c.fin}" data-r="fin"><div class="ends"><span>Pouca</span><span>Muita</span></div></div>
+      <div class="field"><span class="lab">O que você mais quer desenvolver?</span><span class="hint">Escolha até 3</span><div class="chips">${PRIO.map(([v,l])=>`<button class="chip" data-a="cxm" data-k="prio" data-v="${v}" aria-pressed="${c.prio.includes(v)}">${l}</button>`).join('')}</div></div>
+      ${ok?'':'<p class="small">Falta responder: '+miss.join(', ')+'.</p>'}<div class="nav">${back}<button class="btn" data-a="finish" ${ok?'':'disabled'}>Ver meu mapa</button></div></section>`;
+  }
+  return `<div class="stack">${body}</div>`;
+}
+function vCrisis(){
+  return `<div class="stack fade"><section class="card"><h2 style="font-size:1.7rem;margin-bottom:10px">Queremos que você esteja bem</h2>
+   <p>Você indicou pensamentos difíceis. Isso merece atenção agora, mais do que qualquer questionário. Por isso o mapa completo não será gerado.</p>
+   <div class="note crit"><p><b>Fale com alguém hoje.</b> CVV: ligue 188, 24 horas, gratuito (ou cvv.org.br). Em risco imediato, ligue 192 (SAMU) ou vá ao pronto-atendimento mais próximo.</p></div>
+   <p>Se houver alguém de confiança por perto, avise essa pessoa agora. Você não precisa passar por isso sozinho.</p>
+   <p class="small">Se quiser, você pode seguir com uma versão leve: só valores, forças e práticas suaves, sem hipóteses sobre você. Isso não substitui buscar ajuda.</p>
+   <div class="row" style="margin-top:12px"><button class="btn" data-a="light">Continuar com a versão leve</button><button class="btn ghost" data-a="redo">Revisar minha resposta</button><button class="btn ghost" data-a="wipe">Apagar e sair</button></div>
+   </section></div>`;
+}
+
+/* ---------- resultados ---------- */
+function radar(sc){
+  const cx=220,cy=150,R=92,keys=['N','E','O','A','C'];
+  const ang=i=>-Math.PI/2+i*2*Math.PI/5;
+  const P=(i,f)=>[cx+Math.cos(ang(i))*R*f,cy+Math.sin(ang(i))*R*f];
+  const rg=[.25,.5,.75,1].map(f=>`<polygon class="rg" points="${keys.map((_,i)=>P(i,f).map(n=>n.toFixed(1)).join(',')).join(' ')}"/>`).join('');
+  const ax=keys.map((_,i)=>{const p=P(i,1);return `<line class="ax" x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}"/>`;}).join('');
+  const f=k=>Math.max(0,Math.min(1,(sc[k]-1)/4));
+  const pts=keys.map((k,i)=>P(i,f(k)).map(n=>n.toFixed(1)).join(',')).join(' ');
+  const dots=keys.map((k,i)=>{const p=P(i,f(k));return `<circle class="dt" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="5"><title>${META[k].n}: ${fmt(sc[k])} de 5</title></circle>`;}).join('');
+  const labs=keys.map((k,i)=>{const p=P(i,1.2);const c=Math.cos(ang(i));const anc=Math.abs(c)<.2?'middle':c>0?'start':'end';const dy=Math.sin(ang(i))>.5?12:(Math.sin(ang(i))<-.5?-4:4);
+    return `<text x="${p[0].toFixed(1)}" y="${(p[1]+dy).toFixed(1)}" text-anchor="${anc}">${META[k].n}</text>`;}).join('');
+  return `<svg class="radar" viewBox="0 0 440 310" role="img" aria-label="Gráfico radar com a posição em cada um dos cinco grandes fatores">${rg}${ax}<polygon class="pg" points="${pts}"/>${dots}${labs}<text class="tk" x="${cx+4}" y="${cy-R*.5-2}">3</text><text class="tk" x="${cx+4}" y="${cy-R-2}">5</text></svg>`;
+}
+function traitRow(k,sc){
+  const v=sc[k],m=META[k];if(v==null)return '';
+  const pct=((v-1)/4*100).toFixed(0);const op=openTrait===k;
+  return `<div class="trait ${op?'open':''}"><button data-a="trait" data-k="${k}" aria-expanded="${op}"><div class="hd"><b>${m.n}<span class="chev">›</span></b><span class="pos">${posLbl(v)} · ${fmt(v)}</span></div>
+   <div class="track"><span class="mid"></span><span class="fl" style="width:${pct}%"></span><span class="dot" style="left:${pct}%"></span></div>
+   <div class="ends2"><span>${m.lo}</span><span>${m.hi}</span></div></button><div class="more">${m.d}</div></div>`;
+}
+function vResults(){
+  const tr=triage(), sc=scores(), ev=evalRules(), c=S.ctx;
+  if(tr.crisis&&!S.light){S.view='crisis';return vCrisis();}
+  const shown=ev.filter(x=>!x.r.strength).slice(0,4).concat(ev.filter(x=>x.r.strength).slice(0,3));
+  const confN=shown.filter(x=>{const q=S.conf[x.r.id];return q==='sim'||q==='parte';}).length;
+  const tabs=[['perfil','Perfil'],['hip','Hipóteses'],['plano','Plano'],['hist','Evolução']].filter(t=>!(tr.simple&&t[0]==='hip'));
+  const tabBar=`<div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-a="tab" data-k="${k}" aria-selected="${S.tab===k}">${l}${k==='hip'&&shown.length-confN>0?`<span class="cnt">${shown.length-confN}</span>`:''}${k==='plano'&&S.goals.length?`<span class="cnt">${S.goals.length}</span>`:''}</button>`).join('')}</div>`;
+  if(tr.simple&&S.tab==='hip')S.tab='perfil';
+  const up=['N','E','O','A','C','H','P'].filter(k=>sc[k]!=null&&sc[k]>=HI).map(k=>META[k].n),dn=['N','E','O','A','C','H','P'].filter(k=>sc[k]!=null&&sc[k]<=LO).map(k=>META[k].n);
+  const head=`<section class="card summary fade"><div class="small">${new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'})}</div><h2>Seu mapa de hoje</h2>
+   <p class="muted">Cada resultado mostra a posição na escala, não uma comparação com a população, e vale para o período em que você respondeu.</p>
+   ${(up.length||dn.length)?`<p style="margin:10px 0 0"><b>Em destaque:</b> ${up.length?'faixa superior em '+up.join(', '):''}${up.length&&dn.length?'; ':''}${dn.length?'faixa inferior em '+dn.join(', '):''}.</p>`:''}
+   <div class="pills">${S.res.val.map(v=>`<span class="pill">${esc(v)}</span>`).join('')}${S.res.str.map(v=>`<span class="pill ln">${esc(v)}</span>`).join('')}</div>
+   ${tr.simple?`<div class="note crit"><p><b>Um cuidado antes de seguir.</b> Suas respostas indicam que este pode ser um momento de mais sofrimento. Este mapa é uma ferramenta de autoconhecimento e não substitui conversar com um psicólogo ou médico. Mostramos uma versão simplificada, com práticas leves.</p></div>`:''}
+   </section>`;
+  let body='';
+  if(S.tab==='perfil')body=tPerfil(sc,tr);
+  else if(S.tab==='hip')body=tHip(shown);
+  else if(S.tab==='hist')body=tHist();
+  else body=tPlano(shown,tr);
+  const foot=`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn ghost sm" data-a="copy">Copiar resumo</button><button class="link" data-a="wipeAsk">Apagar meus dados</button></div>
+   <p class="small" style="text-align:center">Protótipo com itens ilustrativos não validados. Não é diagnóstico.</p>`;
+  return `<div class="stack">${head}${tabBar}<div class="stack fade" key="${S.tab}">${body}</div>${foot}</div>`;
+}
+function tPerfil(sc,tr){
+  const row=(title,sub,keys)=>`<section class="card"><h3 class="sect">${title}</h3><p class="sub">${sub}</p>${keys.map(k=>traitRow(k,sc)).join('')}</section>`;
+  return `<section class="card"><h3 class="sect">Personalidade em cinco fatores</h3><p class="sub">Toque em um fator abaixo do gráfico para ler o que ele descreve.</p>${radar(sc)}<div style="margin-top:8px">${['N','E','O','A','C'].map(k=>traitRow(k,sc)).join('')}</div></section>
+   ${row('Outros traços','Honestidade-Humildade e exigência consigo, que complementam o Big Five.',['H','P'])}
+   ${row('Funcionamento','Recursos de identidade e relações. Quanto mais à direita, mais desenvolvido o recurso hoje, e funcionamento é o que mais responde a prática.',['ID','SD','EM','IN'])}
+   ${row('Apego e enfrentamento','Como você vive as relações próximas e lida com o estresse. Nenhum estilo é certo ou errado.',['ANX','AVO','CPP','CPE','CPS'])}
+   <section class="card"><h3 class="sect">Seu contexto</h3><dl class="kv"><dt>Tempo livre</dt><dd>${{'<3':'menos de 3 h','3-7':'3 a 7 h','8-15':'8 a 15 h','>15':'mais de 15 h'}[S.ctx.hours]||'-'} por semana</dd><dt>Cuidado</dt><dd>${S.ctx.care.map(x=>({filhos:'filhos pequenos',adolesc:'adolescentes',idosos:'familiares idosos',outro:'outro familiar',nenhum:'ninguém no momento'}[x])).join(', ')||'-'}</dd><dt>Fase</dt><dd>${S.ctx.phase.map(x=>({trans:'transição de carreira',adultos:'filhos adultos',ninho:'ninho vazio',luto:'mudança ou perda recente',inicio:'início de carreira',aposent:'perto da aposentadoria'}[x])).join(', ')||'-'}</dd><dt>Energia e sono</dt><dd>${S.ctx.energy} e ${S.ctx.sleep} de 5</dd><dt>Apoio</dt><dd>${S.ctx.support} de 5</dd><dt>Prioridades</dt><dd>${S.ctx.prio.map(p=>PRIO.find(x=>x[0]===p)[1]).join(', ')||'-'}</dd></dl><button class="link" data-a="editctx">Editar contexto</button></section>
+   ${tr.simple?'':`<section class="locked"><b>Camada opcional: tendências sob estresse</b><p class="small" style="margin:6px 0 0">Disponível na versão com instrumento licenciado, só para quem não tiver alerta na triagem e escolher ativá-la.</p></section>`}`;
+}
+function tHist(){
+  const h=S.history||[];
+  const retake=`<button class="btn" data-a="retake">Refazer o questionário</button>`;
+  if(h.length<2)return `<section class="card"><h3 class="sect">Evolução</h3><p class="sub">Cada vez que você conclui o questionário, o resultado fica registrado aqui. ${h.length?'Há 1 registro. ':''}Refaça entre 8 e 12 semanas para comparar funcionamento e enfrentamento.</p>${retake}</section>`;
+  const a=h[h.length-2],b=h[h.length-1];
+  const keys=['ID','SD','EM','IN','ANX','AVO','CPP','CPE','CPS'];
+  const rows=keys.filter(k=>a.sc[k]!=null&&b.sc[k]!=null).map(k=>{
+    const dl=b.sc[k]-a.sc[k],ch=Math.abs(dl)>=0.5;
+    return `<tr><td>${META[k].n}</td><td>${fmt(a.sc[k])}</td><td>${fmt(b.sc[k])}</td><td>${ch?(dl>0?'▲ ':'▼ ')+fmt(Math.abs(dl)):'estável'}</td></tr>`;}).join('');
+  const tb=`<table style="width:100%;border-collapse:collapse;font-size:.9rem"><thead><tr style="text-align:left;color:var(--muted)"><th>Escala</th><th>${esc(a.d.split('-').reverse().join('/'))}</th><th>${esc(b.d.split('-').reverse().join('/'))}</th><th>Mudança</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<section class="card"><h3 class="sect">Comparação entre os dois últimos registros</h3><p class="sub">${a.ex?'Registro anterior de demonstração. ':''}Mudanças de meio ponto ou mais são destacadas. Pequenas variações podem ser só oscilação das respostas, então use como conversa e não como veredito. Personalidade (Big Five) não entra aqui.</p>${tb}</section>
+   <section class="card"><p class="small">${h.length} registro${h.length>1?'s':''} guardado${h.length>1?'s':''} neste navegador.</p>${retake}</section>`;
+}
+function evBadge(ev){const n={A:3,B:2,C:1}[ev];return `<span class="badge ${ev==='C'?'c':''}"><span class="ev">${[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>Evidência ${ev}</span>`;}
+function tHip(list){
+  if(!list.length)return `<section class="card"><p>Nenhuma hipótese se aplica ao seu perfil agora.</p></section>`;
+  const cards=list.map(x=>{
+    const r=x.r,cv=S.conf[r.id];
+    const b=(v,l,cls)=>`<button class="${cls||''}" data-a="conf" data-id="${r.id}" data-v="${v}" aria-pressed="${cv===v}">${l}</button>`;
+    return `<article class="hyp"><div class="hh">${evBadge(r.ev)}${r.strength?' <span class="badge" style="background:var(--accent-soft)">Recurso seu</span>':''}<h3 class="tt">${r.skill}</h3><p>${r.hyp}</p><ul class="why">${x.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul><p class="small" style="margin:8px 0 0"><b>Fonte:</b> ${esc(SRC[r.id]||'a definir')}</p></div>
+     <div class="q"><div class="qq">${r.q}</div><div class="ans">${b('sim','Faz sentido')}${b('parte','Em parte')}${b('nao','Não é o meu caso','no')}</div>
+     ${cv==='parte'||cv==='nao'?`<div style="margin-top:10px"><label class="small" for="nt-${r.id}">Quer acrescentar contexto? (opcional)</label><textarea id="nt-${r.id}" data-note="${r.id}">${esc(S.notes[r.id]||'')}</textarea></div>`:''}</div></article>`;
+  }).join('');
+  const n=list.filter(x=>['sim','parte'].includes(S.conf[x.r.id])).length;
+  return `<section class="card"><h3 class="sect">Hipóteses para você avaliar</h3><p class="sub">São leituras possíveis dos seus resultados, não conclusões. Só o que você confirmar entra no plano.</p>
+   <div class="legend"><div>${evBadge('A')}<span>A prática tem apoio de meta-análise.</span></div><div>${evBadge('B')}<span>Estudos consistentes ou teoria sólida sugerem a relação.</span></div><div>${evBadge('C')}<span>Hipótese de especialista, ainda sem estudo direto.</span></div></div><p class="small" style="margin-top:10px">Fontes provisórias do protótipo, a conferir antes do uso real. Aqui há deficits a trabalhar e recursos a aproveitar.</p></section>
+   ${cards}
+   <section class="card"><div class="row" style="justify-content:space-between"><span>${n} confirmada${n===1?'':'s'}</span><button class="btn" data-a="tabplan" ${n?'':'disabled'}>Montar meu plano</button></div></section>`;
+}
+function weekDays(){const out=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i-7*(S.wk||0));out.push({iso:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),w:d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.',''),n:d.getDate(),today:i===0&&!(S.wk||0)});}return out;}
+function tPlano(shown,tr){
+  const cand=tr.simple?shown.filter(x=>x.r.id==='R11'||x.r.always):shown.filter(x=>['sim','parte'].includes(S.conf[x.r.id])||false);
+  const di=doseInfo();
+  if(tr.simple&&!cand.length)return `<section class="card"><p>Escolha valores e forças para liberar uma prática leve.</p></section>`;
+  if(!cand.length)return `<section class="card"><h3 class="sect">Seu plano começa pelas hipóteses</h3><p class="sub">Confirme pelo menos uma hipótese na aba anterior e volte aqui.</p><button class="btn" data-a="tab" data-k="hip">Ir para as hipóteses</button></section>`;
+  const goals=cand.map(x=>{const on=S.goals.includes(x.r.id);return `<button class="goal" data-a="goal" data-id="${x.r.id}" aria-pressed="${on}"><span class="bx">${on?'✓':''}</span><span><b>${x.r.skill}</b><br><span class="small">${x.r.cat}</span></span></button>`;}).join('');
+  const sel=S.goals.filter(id=>cand.some(x=>x.r.id===id));
+  const days=weekDays();
+  const wkLab=days[0].n+'/'+(new Date(days[0].iso+'T12:00').getMonth()+1)+' a '+days[6].n+'/'+(new Date(days[6].iso+'T12:00').getMonth()+1);
+  const nav=sel.length?`<section class="card"><div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-a="wk" data-v="1" aria-label="Semana anterior">‹ Anterior</button><b>${S.wk?S.wk+' semana'+(S.wk>1?'s':'')+' atrás':'Esta semana'} <span class="small">(${wkLab})</span></b><button class="btn ghost sm" data-a="wk" data-v="-1" ${S.wk?'':'disabled'}>Próxima ›</button></div></section>`:'';
+  const plan=nav+sel.map(id=>{
+    const r=RULES.find(x=>x.id===id),d=doseOf(id),lg=S.log[id]||[];
+    const cnt=days.filter(x=>lg.includes(x.iso)).length;
+    return `<article class="card plan"><div class="row" style="justify-content:space-between"><h3 class="sect" style="margin:0">${r.skill}</h3>${evBadge(r.ev)}</div>
+     <div class="row" style="margin:12px 0 4px"><span class="small">Tempo por prática</span><div class="seg" role="group">${[5,15,30].map(m=>`<button data-a="dose" data-id="${id}" data-v="${m}" aria-pressed="${d===m}" class="${m===di.d?'rec':''}">${m} min</button>`).join('')}</div></div>
+     <div class="pr"><b>Prática de ${d} minutos.</b> ${r.pr[d]}</div>
+     <dl class="kv"><dt>Como acompanhar</dt><dd>${r.ind}</dd></dl>
+     <div class="week" role="group" aria-label="Dias desta semana">${days.map(x=>`<button class="day ${x.today?'today':''}" data-a="day" data-id="${id}" data-d="${x.iso}" aria-pressed="${lg.includes(x.iso)}"><span>${x.w}</span><b>${x.n}</b></button>`).join('')}</div>
+     <div class="row" style="justify-content:space-between"><span class="small">${cnt} de 7 dias · ${lg.length} no total</span><div class="meter" style="width:55%"><i style="width:${cnt/7*100}%"></i></div></div></article>`;
+  }).join('');
+  const dt=new Date();dt.setDate(dt.getDate()+56);
+  const dt2=new Date();dt2.setDate(dt2.getDate()+84);
+  const f=d=>d.toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
+  return `<section class="card"><h3 class="sect">Escolha até 3 metas</h3><p class="sub">Menos metas, mais constância. Toque para incluir ou retirar.</p><div class="stack" style="gap:10px">${goals}</div>
+   <p class="small" style="margin-top:12px">Tamanho sugerido: <b>${di.d} minutos</b> por prática${di.why.length?', considerando '+di.why.join(' e '):', pelo tempo livre que você informou'}. Você pode mudar em cada meta; o tamanho sugerido tem ★.</p></section>
+   ${plan||`<section class="card"><p class="muted">Selecione uma meta acima para ver a prática e o acompanhamento.</p></section>`}
+   <section class="card"><h3 class="sect">Quando reavaliar</h3><dl class="kv"><dt>Práticas</dt><dd>toda semana, nos dias acima</dd><dt>Funcionamento e enfrentamento</dt><dd>entre ${f(dt)} e ${f(dt2)}</dd><dt>Personalidade</dt><dd>não é medida de progresso; uma nova descrição só após 6 a 12 meses</dd></dl></section>
+   <section class="card"><h3 class="sect">Lembrete e exportação</h3><p class="sub">Esta página não envia notificações. Escolha um dia e um horário e copie um evento para colar na sua agenda.</p>
+   <div class="chips">${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((n,i)=>`<button class="chip" data-a="rday" data-v="${i}" aria-pressed="${S.remind.day===i}">${n}</button>`).join('')}</div>
+   <div class="row" style="margin-top:10px"><label class="small" for="rt">Horário</label><input type="time" id="rt" value="${S.remind.time}" data-rt="1" style="font:inherit;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)"><button class="btn sm" data-a="ics" ${S.remind.day==null?'disabled':''}>Copiar lembrete</button></div>
+   <div class="row" style="margin-top:14px"><button class="btn ghost sm" data-a="copy">Copiar resumo</button><button class="btn ghost sm" data-a="json">Copiar dados completos</button></div></section>`;
+}
+
+/* ================= AÇÕES ================= */
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('on'),2200);}
+function modal(html){$('#modalRoot').innerHTML=`<div class="modal" data-a="mclose" role="dialog" aria-modal="true"><div class="box">${html}</div></div>`;const b=$('#modalRoot .box button');if(b)b.focus();}
+function mclose(){$('#modalRoot').innerHTML='';}
+function nextStep(){
+  if(S.i<FLOW.length-1){S.i++;
+    const st=FLOW[S.i];
+    // fim da triagem: verificar risco
+    save();render();
+  }
+}
+function afterTriage(){const g=S.ans.tg5;if(g!=null&&g>0){S.view='crisis';save();render();return true;}return false;}
+function sample(){
+  const a={tg1:0,tg2:1,tg3:1,tg4:1,tg5:0,n1:5,n2:4,n3:2,e1:2,e2:2,e3:4,o1:4,o2:4,o3:2,a1:4,a2:4,a3:2,c1:3,c2:2,c3:4,h1:4,h2:4,h3:2,p1:3,p2:3,i1:3,i2:3,s1:3,s2:4,m1:4,m2:4,t1:4,t2:4,x1:4,x2:4,v1:2,v2:3,q1:3,q2:3,r1:4,r2:4,u1:2,u2:2};
+  S=Object.assign(fresh(),{consent:true,view:'results',i:FLOW.length-1,ans:a,res:{val:['Liberdade','Cuidar dos outros','Conquista'],str:['Curiosidade','Bondade','Perseverança']},
+   ctx:{hours:'3-7',care:['filhos','idosos'],phase:['trans'],social:true,shift:'8',support:2,fin:3,energy:2,sleep:3,prio:['emo','rel','org']},tab:'perfil',
+   history:[{d:'2026-08-15',ex:true,sc:{ID:2.5,SD:3,EM:3.5,IN:3.5,ANX:4.5,AVO:3,CPP:2.5,CPE:4.5,CPS:2}},{d:'2026-11-09',ex:false,sc:{ID:3,SD:3.5,EM:4,IN:4,ANX:4,AVO:2.5,CPP:3,CPE:4,CPS:2}}]});
+  save();render();
+}
+const actions={
+  start(){S.consent=true;if(S.view==='welcome'){S.view=(S.history&&S.history.length&&S.i>=FLOW.length-1)?'results':'flow';}save();render();},
+  sample,
+  next(){nextStep();},
+  back(){if(S.i>0){S.i--;save();render();}},
+  ans(el){
+    if(lockNext)return;const st=FLOW[S.i];S.ans[st.id]=+el.dataset.v;save();
+    document.querySelectorAll('.lk').forEach(b=>b.setAttribute('aria-pressed',String(b===el)));
+    lockNext=true;
+    setTimeout(()=>{lockNext=false;
+      if(st.id==='tg5'&&afterTriage())return;
+      nextStep();},240);
+  },
+  tg(el){const k=el.dataset.k,v=el.dataset.v,arr=S.res[k],i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else if(arr.length<3)arr.push(v);else toast('Escolha até 3');save();render(true);},
+  cx1(el){const k=el.dataset.k;let v=el.dataset.v;if(k==='social')v=v==='1';S.ctx[k]=v;save();render(true);},
+  cxm(el){const k=el.dataset.k,v=el.dataset.v,arr=S.ctx[k],i=arr.indexOf(v);
+    if(i>=0)arr.splice(i,1);else{
+      if(k==='care'){if(v==='nenhum')arr.length=0;else{const j=arr.indexOf('nenhum');if(j>=0)arr.splice(j,1);}}
+      if(k==='prio'&&arr.length>=3){toast('Escolha até 3');return;}
+      if(k==='phase'&&v==='ninho'){const j=arr.indexOf('adultos');if(j<0)arr.push('adultos');}
+      arr.push(v);}
+    save();render(true);},
+  finish(){
+    const sc=scores(),o={};Object.keys(sc).forEach(k=>{if(sc[k]!=null)o[k]=+sc[k].toFixed(2);});
+    const today=new Date().toISOString().slice(0,10),hh=(S.history||[]).filter(x=>!(x.d===today&&!x.ex));S.history=hh.concat([{d:today,sc:o,light:!!S.light,ex:false}]).slice(-12);
+    S.view='results';S.tab='perfil';save();render();},
+  tab(el){S.tab=el.dataset.k;save();render();},
+  tabplan(){S.tab='plano';save();render();},
+  trait(el){const k=el.dataset.k;openTrait=openTrait===k?null:k;render(true);},
+  conf(el){const id=el.dataset.id;S.conf[id]=el.dataset.v;if(el.dataset.v==='nao'){S.goals=S.goals.filter(g=>g!==id);}save();render(true);},
+  goal(el){const id=el.dataset.id,i=S.goals.indexOf(id);if(i>=0)S.goals.splice(i,1);else if(S.goals.length<3)S.goals.push(id);else{toast('Mantenha até 3 metas');return;}save();render(true);},
+  dose(el){S.dose[el.dataset.id]=+el.dataset.v;save();render(true);},
+  day(el){const id=el.dataset.id,d=el.dataset.d,l=S.log[id]=S.log[id]||[],i=l.indexOf(d);if(i>=0)l.splice(i,1);else l.push(d);save();render(true);},
+  light(){S.light=true;S.view='flow';S.i=FLOW.findIndex(x=>x.id==='tg5')+1;save();render();},
+  redo(){S.ans.tg5=null;S.light=false;S.view='flow';S.i=FLOW.findIndex(x=>x.id==='tg5');save();render();},
+  wipe(){S=fresh();save();render();},
+  wipeAsk(){modal(`<h3 class="sect">Apagar tudo?</h3><p>Suas respostas, hipóteses e registros deste navegador serão removidos. Não há como desfazer.</p><div class="row"><button class="btn" data-a="wipeDo">Apagar</button><button class="btn ghost" data-a="mclose">Cancelar</button></div>`);},
+  wipeDo(){mclose();S=fresh();save();render();toast('Dados apagados');},
+  mclose(el,e){if(e.target===el)mclose();},
+  howto(){modal(`<h3 class="sect">Como usar</h3>
+   <ol style="padding-left:20px;margin:8px 0;font-size:.95rem">
+   <li><b>Responda com sinceridade.</b> Não há resposta certa. Pense no que é mais comum em você, não no que gostaria de ser. Leva cerca de 10 minutos.</li>
+   <li><b>Seu mapa.</b> A aba Perfil mostra sua posição em cada escala. Toque em um traço para ler o que ele descreve.</li>
+   <li><b>Hipóteses.</b> São leituras possíveis, não conclusões. Responda "Faz sentido", "Em parte" ou "Não é o meu caso". Só o que você confirma vai para o plano.</li>
+   <li><b>Plano.</b> Escolha até 3 metas. A prática tem 5, 15 ou 30 minutos conforme seu tempo e sua energia. Marque os dias em que fizer.</li>
+   <li><b>Evolução.</b> Refaça o questionário depois de 8 a 12 semanas para comparar. Seus registros ficam guardados.</li>
+   <li><b>Seus dados</b> ficam só neste navegador. Você pode copiá-los ou apagá-los quando quiser.</li></ol>
+   <p class="small">Este é um protótipo com itens ilustrativos. Não faz diagnóstico nem substitui um profissional. Em sofrimento intenso, ligue 188 (CVV).</p>
+   <div class="row"><button class="btn" data-a="mclose">Entendi</button></div>`);},
+  menu(){modal(`<h3 class="sect">Opções</h3><div class="stack" style="gap:10px"><button class="btn ghost" data-a="home">Voltar ao início</button><button class="btn ghost" data-a="wipeAsk">Apagar meus dados</button><button class="btn ghost" data-a="mclose">Fechar</button></div>`);},
+  home(){mclose();S.view='welcome';save();render();},
+  wk(el){S.wk=Math.max(0,(S.wk||0)+ +el.dataset.v);save();render(true);},
+  rday(el){const v=+el.dataset.v;S.remind.day=S.remind.day===v?null:v;save();render(true);},
+  ics(){
+    const d=new Date(),t=(S.remind.time||'20:00').split(':');
+    d.setDate(d.getDate()+((S.remind.day-d.getDay()+7)%7||7));d.setHours(+t[0],+t[1],0,0);
+    const p=n=>String(n).padStart(2,'0'),f=x=>x.getFullYear()+p(x.getMonth()+1)+p(x.getDate())+'T'+p(x.getHours())+p(x.getMinutes())+'00';
+    const e=new Date(d.getTime()+15*60000),days=['SU','MO','TU','WE','TH','FR','SA'][S.remind.day];
+    copyText('BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Minha prática de autodesenvolvimento\nDTSTART:'+f(d)+'\nDTEND:'+f(e)+'\nRRULE:FREQ=WEEKLY;BYDAY='+days+'\nEND:VEVENT\nEND:VCALENDAR','Evento copiado. Cole em um arquivo .ics ou use como modelo na agenda');
+  },
+  json(){copyText(JSON.stringify({exportado:new Date().toISOString(),respostas:S.ans,contexto:S.ctx,valores:S.res,metas:S.goals,registro:S.log,historico:S.history},null,1),'Dados copiados');},
+  editctx(){S.view='flow';S.i=FLOW.length-1;save();render();},
+  retake(){S.history=S.history||[];S.ans={};S.conf={};S.light=false;S.view='flow';S.i=0;S.tab='perfil';save();render();},
+  copy(){
+    const sc=scores();const L=[];L.push('Mapa de autoconhecimento (protótipo, itens ilustrativos, não é diagnóstico)');
+    ['N','E','O','A','C','H','P','ID','SD','EM','IN','ANX','AVO','CPP','CPE','CPS'].forEach(k=>{if(sc[k]!=null)L.push(META[k].n+': '+fmt(sc[k])+' de 5 ('+posLbl(sc[k])+')');});
+    L.push('Valores: '+S.res.val.join(', '));L.push('Forças: '+S.res.str.join(', '));
+    S.goals.forEach(id=>{const r=RULES.find(x=>x.id===id);L.push('Meta: '+r.skill+' ('+doseOf(id)+' min). '+r.pr[doseOf(id)]);});
+    copyText(L.join('\n'),'Resumo copiado');
+  }
+};
+function copyText(t,ok){
+  try{navigator.clipboard.writeText(t).then(()=>toast(ok),()=>fallbackCopy(t,ok));}catch(e){fallbackCopy(t,ok);}
+}
+function fallbackCopy(t,ok){
+  try{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();const r=document.execCommand('copy');a.remove();toast(r?ok:'Não foi possível copiar');}catch(e){toast('Não foi possível copiar');}
+}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=actions[el.dataset.a];if(f)f(el,e);});
+document.addEventListener('change',e=>{
+  if(e.target.id==='consent'){S.consent=e.target.checked;save();const b=$('#startBtn');if(b)b.disabled=!S.consent;}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset&&t.dataset.r){S.ctx[t.dataset.r]=+t.value;const lab=$('#'+t.dataset.r+'V');if(lab)lab.textContent=t.value;save();}
+  if(t.dataset&&t.dataset.rt){S.remind.time=t.value;save();}
+  if(t.dataset&&t.dataset.note){S.notes[t.dataset.note]=t.value;save();}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&$('.modal')){mclose();return;}
+  if(S.view!=='flow')return;const st=FLOW[S.i];if(!st||st.t!=='lik')return;
+  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;
+  if(e.key>='1'&&e.key<='5'){const b=document.querySelectorAll('.lk')[+e.key-1];if(b)b.click();}
+});
+if(S.view==='flow'&&S.i>=FLOW.length)S.i=FLOW.length-1;
+render();
+})();
+</script>
+</body>
+</html>

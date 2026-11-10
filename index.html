@@ -3,900 +3,381 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pocket Coach</title>
+<title>Rumo · Conhecer-se para crescer</title>
+<meta name="description" content="Um mapa de autoconhecimento e um coach de bolso para transformar o que você descobre em metas e passos pequenos. Seus dados ficam só no seu aparelho.">
 <meta name="theme-color" content="#13172B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pocket Coach">
+<meta name="apple-mobile-web-app-title" content="Rumo">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/fonts.css">
-<style>html,body{overscroll-behavior:none}#app{padding-top:env(safe-area-inset-top)}nav{padding-bottom:env(safe-area-inset-bottom)}.fab{bottom:calc(84px + env(safe-area-inset-bottom))}.toast{bottom:calc(92px + env(safe-area-inset-bottom))}</style>
-
 <style>
-/* Direção: mesa de coach noturna. Tinta azul-índigo, açafrão para o estado atual, verde-água para o desejado. Coluna única de celular. */
+/* Rumo: mesma linguagem visual do Pocket Coach: tinta índigo, açafrão para o que é "agora", verde-água para o que é "possível". */
 :root{
   --bg:#13172B; --bg-outer:#0B0E1C; --surface:#1B2042; --surface2:#262C58; --line:#2F3664;
-  --text:#EEF0FA; --muted:#98A1C8; --accent:#F4B860; --accent-ink:#241803; --teal:#5FD0C0; --rose:#F58497;
-  --lilac:#A99BF2; --sky:#6EB6F5;
+  --text:#EEF0FA; --muted:#98A1C8; --accent:#F4B860; --accent-ink:#241803; --teal:#5FD0C0; --lilac:#A99BF2;
   --display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
   --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
-  color-scheme:dark;
+  --bar:96px; color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{background:var(--bg-outer);color:var(--text);font:400 16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
-button,input,textarea,select{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none;padding:0}
-h1,h2,h3,p{margin:0}
-h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
-#app{position:relative;height:100%;max-width:460px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
-.top{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
-.top h1{font-size:24px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px}
-.brand svg{width:26px;height:26px}
-main{flex:1;overflow-y:auto;padding:4px 16px 28px;display:flex;flex-direction:column;gap:14px}
-nav{display:flex;background:var(--surface);border-top:1px solid var(--line)}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 10px;color:var(--muted);font-size:12px;font-weight:600}
-nav button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-nav button.on{color:var(--accent)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
-.card.flat{background:transparent}
-.row{display:flex;gap:10px;align-items:center}
-.between{justify-content:space-between}
-.col{display:flex;flex-direction:column;gap:10px}
+body{background:var(--bg-outer);color:var(--text);font:400 16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol{margin:0}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em;line-height:1.15;text-wrap:balance}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
 .muted{color:var(--muted)}
-.cap::first-letter{text-transform:uppercase}
-.small{font-size:13px}
-.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:14px;font-weight:700;border:1px solid var(--line);background:var(--surface2)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.ghost{background:transparent}
-.btn.block{width:100%}
-.btn.sm{min-height:36px;padding:0 12px;font-size:14px;border-radius:11px}
-.btn[disabled]{opacity:.4;cursor:not-allowed}
-.btn.danger{color:var(--rose)}
-.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:3px;gap:2px}
-.seg button{flex:1;padding:9px 6px;border-radius:10px;font-weight:600;font-size:14px;color:var(--muted)}
-.seg button.on{background:var(--surface2);color:var(--text)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600;color:var(--text)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;background:var(--surface2);color:var(--muted)}
-.tag.demo{background:transparent;border:1px dashed var(--muted)}
-.tag.low{background:rgba(245,132,151,.16);color:var(--rose)}
-.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}
-.bar>i{display:block;height:100%;border-radius:99px;background:var(--accent)}
-.bar.teal>i{background:var(--teal)}
-.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px dashed var(--muted);border-radius:14px;padding:10px 12px;font-size:13px;color:var(--muted)}
-.big{font-family:var(--display);font-weight:700;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
-.radar{width:100%;height:auto;display:block;max-width:360px;margin:0 auto}
-.radar .ring{fill:none;stroke:var(--line);stroke-width:1}
-.radar .axis{stroke:var(--line);stroke-width:1}
-.radar .mold{stroke:var(--muted);stroke-width:1.6;fill:rgba(255,255,255,.025)}
-.radar .cur{fill:rgba(244,184,96,.22);stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round}
-.radar .des{fill:rgba(95,208,192,.07);stroke:var(--teal);stroke-width:2;stroke-dasharray:5 4;stroke-linejoin:round}
-.radar .dot{fill:var(--accent)}
-.radar .lbl{fill:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer}
-.radar .lbl.sel{fill:var(--accent)}
-.legend{display:flex;gap:16px;justify-content:center;font-size:13px;color:var(--muted)}
-.legend i{display:inline-block;width:14px;height:0;border-top:3px solid var(--accent);vertical-align:middle;margin-right:6px}
-.legend i.d{border-top:3px dashed var(--teal)}
-.prow{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
-.prow:first-child{border-top:0}
-.prow .bar{grid-column:1/-1}
-.val{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums}
-.delta{font-size:12px;font-weight:700;margin-left:6px}
-.delta.up{color:var(--teal)}.delta.dn{color:var(--rose)}
-/* overlays */
-.overlay{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:20;animation:rise .22s ease-out}
-.overlay .head{display:flex;align-items:center;gap:12px;padding:14px 16px 8px}
-.overlay .body{flex:1;overflow-y:auto;padding:8px 18px 20px;display:flex;flex-direction:column;gap:16px}
-.overlay .foot{display:flex;gap:10px;padding:12px 16px 16px;border-top:1px solid var(--line);background:var(--surface)}
-.overlay .foot .btn{flex:1}
-.x{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-size:20px;color:var(--muted)}
-.prog{flex:1}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.scrim{position:absolute;inset:0;background:rgba(5,7,16,.6);z-index:30;display:flex;align-items:flex-end}
-.sheet{width:100%;max-height:88%;overflow-y:auto;background:var(--surface);border-radius:22px 22px 0 0;border:1px solid var(--line);border-bottom:0;padding:18px 18px 22px;display:flex;flex-direction:column;gap:14px;animation:rise .2s ease-out}
-.grip{width:44px;height:4px;border-radius:9px;background:var(--line);align-self:center}
-/* inputs */
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{font-size:13px;font-weight:700;color:var(--muted)}
-input[type=text],input[type=date],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:12px 14px;min-height:46px}
-textarea{min-height:96px;resize:vertical}
-input::placeholder,textarea::placeholder{color:#6F78A3}
-/* scales */
-.q{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
-.q:first-of-type{border-top:0}
-.scale{display:flex;gap:4px}
-.scale button{flex:1;min-width:0;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
-.scale button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-.likert{display:flex;flex-direction:column;gap:10px}
-.likert button{padding:15px 16px;border-radius:15px;border:1px solid var(--line);background:var(--surface);text-align:left;font-weight:600;display:flex;gap:12px;align-items:center}
-.likert button b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);font-size:13px}
-.likert button.on{border-color:var(--accent);background:rgba(244,184,96,.14)}
-.likert button.on b{background:var(--accent);color:var(--accent-ink)}
-.stmt{font-family:var(--display);font-size:26px;line-height:1.2;font-weight:700;text-wrap:balance}
-/* mood */
-.moods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mood{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:18px;border:1px solid var(--line);background:var(--surface);text-align:center}
-.mood .em{font-size:40px;line-height:1}
-.mood .nm{font-weight:700}
-.mood.on{border-color:var(--accent);background:rgba(244,184,96,.12)}
-.dots{display:flex;gap:6px;margin-top:2px}
-.dots span{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);background:var(--bg)}
-.dots span.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-/* tasks */
-.task{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
-.task:first-child{border-top:0}
-.chk{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;margin-top:1px}
-.chk.on{background:var(--teal);border-color:var(--teal)}
-.chk svg{width:15px;height:15px;stroke:#06201C;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.task .tx{flex:1;min-width:0;text-align:left}
-.task.done .tt{text-decoration:line-through;color:var(--muted)}
-.fab{position:absolute;right:16px;bottom:84px;z-index:10;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-/* chat */
-.bub{max-width:88%;padding:12px 14px;border-radius:18px;line-height:1.45}
-.bub.c{background:var(--surface);border:1px solid var(--line);border-top-left-radius:6px;align-self:flex-start}
-.bub.u{background:var(--accent);color:var(--accent-ink);font-weight:600;border-top-right-radius:6px;align-self:flex-end}
-.bub.new{animation:pop .35s ease-out both}
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pgrid button{padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--surface);text-align:left;display:flex;flex-direction:column;gap:4px}
-.pgrid .val{color:var(--accent)}
-.toast{position:absolute;left:50%;bottom:92px;transform:translate(-50%,10px);background:var(--text);color:#13172B;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:90%;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.stepper{display:flex;align-items:center;gap:8px}
-.stepper button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);font-size:18px;font-weight:700}
-.stepper .val{min-width:30px;text-align:center}
-.bf{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-top:1px solid var(--line)}
-.bf:first-child{border-top:0}
-.track{position:relative;height:10px;border-radius:99px;background:var(--surface2)}
-.track i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
-.track u{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--line)}
-.arrow{font-weight:700;font-size:15px;min-width:34px;text-align:right}
-.back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 14px 0 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;color:var(--text)}
-.top .l{display:flex;align-items:center;gap:12px;min-width:0}
-details.card summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
-details.card summary::-webkit-details-marker{display:none}
-details.card summary::after{content:'+';color:var(--accent);font-size:24px;line-height:1}
-details[open].card summary::after{content:'−'}
-.refs p{font-size:13px;color:var(--muted);padding-left:16px;text-indent:-16px;margin:8px 0}
-.about p,.about li{font-size:15px}
-.about ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
-.note{border-left:3px solid var(--accent);padding:8px 12px;background:rgba(244,184,96,.08);border-radius:0 10px 10px 0;font-size:14px}
-.spark{width:100%;height:60px;display:block}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:10px;z-index:100;font-weight:600}
+.skip:focus{left:8px}
+
+/* barra superior */
+header.bar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(19,23,43,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.bar .in{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:8px}
+.ext{font-size:.82rem;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px}.ext:hover{color:var(--text)}
+nav.tabs{display:flex;gap:4px;margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:3px}
+nav.tabs a{padding:7px 14px;border-radius:11px;text-decoration:none;font-weight:600;font-size:.92rem;color:var(--muted);white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+@media (max-width:560px){.brand{order:1}.ext{order:2;margin-left:auto}nav.tabs{order:3;width:100%;margin-left:0}nav.tabs a{flex:1;text-align:center;padding:7px 6px;font-size:.86rem}}
+
+/* painéis */
+main{padding-top:calc(var(--bar) + env(safe-area-inset-top))}
+@media (min-width:561px){:root{--bar:56px}}
+.view[hidden]{display:none}
+.frame{display:block;width:100%;border:0;height:calc(100dvh - var(--bar) - env(safe-area-inset-top));background:var(--bg-outer)}
+.frame-wrap{position:relative}
+
+/* início */
+.home{max-width:1000px;margin:0 auto;padding:28px 16px 64px}
+.hero{padding:28px 0 12px;max-width:720px}
+.eyebrow{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.hero h1{font-size:clamp(2rem,6vw,3.2rem);margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lead{font-size:1.12rem;color:#C9CEEA;max-width:60ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:14px;padding:13px 20px;font-weight:700;text-decoration:none;font-size:1rem;border:1.5px solid transparent}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.sec{border-color:var(--line);background:var(--surface);color:var(--text)}
+.btn.sec:hover{border-color:var(--muted)}
+.hint{font-size:.88rem;color:var(--muted)}
+
+section.blk{margin-top:44px}
+section.blk>h2{font-size:1.5rem;margin-bottom:6px}
+section.blk>p.sub{color:var(--muted);margin-bottom:18px;max-width:60ch}
+
+/* trilha */
+.trail{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:s}
+@media (max-width:760px){.trail{grid-template-columns:1fr}}
+.trail li{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px 16px 16px 16px;display:flex;flex-direction:column;gap:6px;min-height:132px}
+.trail .num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.92rem;border:2px solid var(--line);color:var(--muted);background:var(--bg)}
+.trail h3{font-size:1.05rem}
+.trail p{font-size:.9rem;color:var(--muted)}
+.trail .st{margin-top:auto;font-size:.78rem;font-weight:600;color:var(--muted)}
+.trail li.done{border-color:rgba(95,208,192,.55)}
+.trail li.done .num{background:var(--teal);border-color:var(--teal);color:#06201b}
+.trail li.done .st{color:var(--teal)}
+.trail li.next{border-color:var(--accent);background:linear-gradient(180deg,rgba(244,184,96,.10),var(--surface))}
+.trail li.next .num{border-color:var(--accent);color:var(--accent)}
+.trail li.next .st{color:var(--accent)}
+
+/* revisão */
+.review{margin-top:16px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);padding:16px 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.review.due{border-color:var(--accent);background:linear-gradient(180deg,rgba(244,184,96,.10),var(--surface))}
+.review b{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:2px}
+.review p{font-size:.92rem;color:var(--muted);max-width:56ch}
+.review .acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn.sm{padding:8px 14px;font-size:.88rem;border-radius:12px}
+button.btn{font:inherit;font-weight:700;cursor:pointer;color:var(--text)}
+button.btn.pri{color:var(--accent-ink)}
+
+/* ferramentas */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.tools{grid-template-columns:1fr}}
+.tool{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.tool .tag{font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--lilac)}
+.tool h3{font-size:1.4rem}
+.tool p{color:#C9CEEA}
+.tool ul{padding-left:18px;color:var(--muted);font-size:.93rem;display:grid;gap:4px}
+.tool .foot{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.pill{font-size:.8rem;font-weight:600;border-radius:999px;padding:4px 10px;background:var(--surface2);color:var(--muted)}
+.pill.on{background:rgba(95,208,192,.16);color:var(--teal)}
+
+/* honestidade */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.twocol{grid-template-columns:1fr}}
+.note{border-radius:18px;padding:18px 20px;border:1.5px solid var(--line);background:var(--surface)}
+.note h3{font-size:1.1rem;margin-bottom:8px}
+.note ul{padding-left:18px;display:grid;gap:6px;color:#C9CEEA;font-size:.95rem}
+.note.yes{border-color:rgba(95,208,192,.4)}
+.note.no{border-color:rgba(244,184,96,.4)}
+.pull{margin-top:44px;border-radius:22px;padding:26px;background:linear-gradient(135deg,var(--surface2),var(--surface));border:1.5px solid var(--line)}
+.pull p{font-family:var(--display);font-weight:500;font-size:clamp(1.15rem,3.4vw,1.5rem);line-height:1.35;max-width:36ch;text-wrap:balance}
+.pull small{display:block;margin-top:10px;color:var(--muted);font-size:.9rem}
+
+footer.help{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+footer.help b{color:var(--text)}
+@media (prefers-reduced-motion:no-preference){.view:not([hidden]){animation:in .25s ease both}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
 </style>
 </head>
 <body>
-<div id="app">
-  <div class="top" id="top"></div>
-  <main id="main"></main>
-  <nav id="nav" aria-label="Navegação principal"></nav>
-  <div id="layer"></div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-</div>
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="#inicio"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Rumo</span></a>
+    <nav class="tabs" aria-label="Seções">
+      <a href="#inicio" data-v="inicio">Início</a>
+      <a href="#mapa" data-v="mapa">Mapa de autoconhecimento</a>
+      <a href="#coach" data-v="coach">Coach</a>
+    </nav>
+    <a class="ext" id="ext" href="#" target="_blank" rel="noopener" hidden>Tela cheia ↗</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <!-- ================= INÍCIO ================= -->
+  <div class="view home" id="v-inicio" data-title="Rumo · Conhecer-se para crescer">
+    <div class="hero">
+      <span class="eyebrow">Autoconhecimento e autodesenvolvimento</span>
+      <h1>Entender quem você é ajuda a decidir <em>o que fazer a seguir.</em></h1>
+      <p class="lead">Dois instrumentos que trabalham juntos: um <b>mapa</b> de como você pensa, sente e se relaciona, e um <b>coach de bolso</b> que transforma o que você descobre em metas e passos pequenos. Sem pressa, sem milagres, no seu ritmo.</p>
+      <div class="cta-row">
+        <a class="btn pri" id="mainCta" href="#mapa">Começar meu mapa</a>
+        <span class="hint" id="mainHint">Leva cerca de 10 minutos. Sem cadastro.</span>
+      </div>
+    </div>
+
+    <section class="blk" aria-labelledby="h-trilha">
+      <h2 id="h-trilha">Sua trilha</h2>
+      <p class="sub">Quatro marcos, um de cada vez. Cada um que você completa acende aqui, e ninguém além de você vê isso.</p>
+      <ol class="trail" id="trail"></ol>
+      <div id="review"></div>
+    </section>
+
+    <section class="blk" aria-labelledby="h-tools">
+      <h2 id="h-tools">Os dois instrumentos</h2>
+      <p class="sub">Use o primeiro para se enxergar com mais clareza e o segundo para agir sobre o que importa. Também funcionam separados.</p>
+      <div class="tools">
+        <article class="tool">
+          <span class="tag">1 · Entender</span>
+          <h3>Mapa de autoconhecimento</h3>
+          <p>Perguntas sobre seu jeito de ser, de se relacionar e de lidar com o estresse. Em troca, você recebe um perfil, hipóteses para confirmar ou descartar e uma prática de 5, 15 ou 30 minutos conforme sua energia do dia.</p>
+          <ul>
+            <li>Traços de personalidade, relações e enfrentamento</li>
+            <li>Valores e forças pessoais</li>
+            <li>Plano com até 3 metas e registro dos dias em que você praticou</li>
+          </ul>
+          <div class="foot">
+            <a class="btn pri" href="#mapa">Abrir o mapa</a>
+            <span class="pill" id="pill-mapa">Não iniciado</span>
+          </div>
+        </article>
+        <article class="tool">
+          <span class="tag">2 · Agir</span>
+          <h3>Pocket Coach</h3>
+          <p>Uma Roda da Vida com 12 áreas para ver onde você está e onde quer chegar. Daí saem metas pequenas, tarefas simples, registro de humor e revisões semanais para ajustar o caminho.</p>
+          <ul>
+            <li>Roda da Vida com 12 pilares e comparação ao longo do tempo</li>
+            <li>Metas, tarefas e hábitos recorrentes</li>
+            <li>Acompanhamento de humor e temperamento</li>
+          </ul>
+          <div class="foot">
+            <a class="btn pri" href="#coach">Abrir o coach</a>
+            <span class="pill" id="pill-coach">Não iniciado</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="h-honesto">
+      <h2 id="h-honesto">O que esperar, com honestidade</h2>
+      <p class="sub">Mudar de vida raramente acontece de uma vez. Costuma acontecer em passos pequenos, repetidos, com ajustes no meio do caminho. É isso que estes instrumentos tentam facilitar.</p>
+      <div class="twocol">
+        <div class="note yes">
+          <h3>O que isto é</h3>
+          <ul>
+            <li>Uma forma de organizar o que você já sente e de ver padrões que passam despercebidos.</li>
+            <li>Um ponto de partida para escolher poucas metas realistas.</li>
+            <li>Um registro para você comparar, daqui a 8 a 12 semanas, como estava e como está.</li>
+            <li>Privado: suas respostas ficam somente neste aparelho.</li>
+          </ul>
+        </div>
+        <div class="note no">
+          <h3>O que isto não é</h3>
+          <ul>
+            <li>Não é diagnóstico, terapia nem substitui psicólogo ou médico.</li>
+            <li>O mapa ainda é um protótipo, com itens ilustrativos que não passaram por validação científica. Leia o resultado como hipótese, não como veredito.</li>
+            <li>Não promete resultados em prazo fixo. Quem decide o ritmo é você.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="pull">
+      <p>Você não precisa mudar tudo. Escolha uma área, uma meta e um passo de 5 minutos para hoje.</p>
+      <small>Quem começa pequeno e volta no dia seguinte já está mudando alguma coisa.</small>
+    </div>
+
+    <footer class="help" role="contentinfo">
+      <b>Precisa de ajuda agora?</b> CVV <b>188</b> (24 h, gratuito, também em cvv.org.br) · <b>SAMU 192</b> em risco imediato. Conversar com um profissional de saúde mental é um passo de cuidado, e esta ferramenta pode ser um complemento a isso.
+    </footer>
+  </div>
+
+  <!-- ================= MAPA ================= -->
+  <div class="view frame-wrap is-mapa" id="v-mapa" data-title="Mapa de autoconhecimento · Rumo" hidden>
+  </div>
+
+  <!-- ================= COACH ================= -->
+  <div class="view frame-wrap is-coach" id="v-coach" data-title="Pocket Coach · Rumo" hidden>
+  </div>
+</main>
+
 <script>
-(()=>{
+(function(){
 'use strict';
-/* ============ utilidades ============ */
-const KEY='pocketcoach.v2';
-const $=s=>document.querySelector(s);
-const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pad=n=>String(n).padStart(2,'0');
-const dk=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-const parse=k=>{const a=k.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])};
-const addD=(k,n)=>{const d=parse(k);d.setDate(d.getDate()+n);return dk(d)};
-const today=()=>dk(new Date());
-const f1=n=>(Math.round(n*10)/10).toFixed(1).replace('.',',');
-const fdate=(k,o)=>parse(k).toLocaleDateString('pt-BR',o||{day:'numeric',month:'short'});
-const diffDays=(a,b)=>Math.round((parse(a)-parse(b))/864e5);
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+var SRC={mapa:'mapa.html',coach:'coach.html'};
+var LABEL={mapa:'Mapa de autoconhecimento',coach:'Pocket Coach'};
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 
-/* ============ dados: pilares ============ */
-const P=[
- {id:'sau',ab:'SAU',n:'Saúde e disposição',area:'Pessoal'},
- {id:'int',ab:'INT',n:'Intelecto e habilidades',area:'Pessoal'},
- {id:'emo',ab:'EMO',n:'Equilíbrio emocional',area:'Pessoal'},
- {id:'car',ab:'CAR',n:'Carreira e negócios',area:'Contribuição social'},
- {id:'fin',ab:'FIN',n:'Finanças',area:'Contribuição social'},
- {id:'res',ab:'RES',n:'Responsabilidade social',area:'Contribuição social'},
- {id:'fam',ab:'FAM',n:'Família',d:'pais, irmãos e filhos',area:'Relacionamentos'},
- {id:'amo',ab:'AMO',n:'Relacionamento amoroso',area:'Relacionamentos'},
- {id:'soc',ab:'SOC',n:'Vida social',area:'Relacionamentos'},
- {id:'laz',ab:'LAZ',n:'Lazer',d:'hobbies e diversão',area:'Qualidade de vida'},
- {id:'esp',ab:'ESP',n:'Espiritualidade',area:'Qualidade de vida'},
- {id:'sat',ab:'SAT',n:'Satisfação com a vida',area:'Qualidade de vida'}];
-const PM=Object.fromEntries(P.map(p=>[p.id,p]));
-
-const COND=[
- {k:'estudante',t:'Sou estudante'},
- {k:'aposentado',t:'Sou aposentado(a)'},
- {k:'filhos',t:'Tenho filhos'},
- {k:'solteiro',t:'Não tenho relacionamento amoroso'}];
-
-const ITEMS={
- sau:{base:['Tenho um sono restaurador.','Pratico exercícios físicos de maneira regular e eficaz.','Tenho uma alimentação equilibrada e nutritiva.','Estou satisfeito(a) com minha aparência física.','Sou uma pessoa cheia de energia e vitalidade.']},
- int:{base:['Tenho buscado adquirir novos conhecimentos (palestras, cursos de capacitação, etc.).','O conhecimento adquirido traz resultados práticos para minha vida.','Pratico a leitura com frequência (livros, notícias, revistas especializadas, etc.).','Tenho aprendido habilidades que me ajudem a superar meus desafios.','Tenho buscado ampliar minha cultura de modo geral.']},
- emo:{base:['Consigo responder a eventos estressantes com assertividade, sem perder o controle.','Sinto emoções positivas com mais frequência do que emoções negativas.','Consigo tomar decisões assertivas em momentos de pressão.']},
- car:{base:['Estou satisfeito(a) com meu trabalho.','Tenho perspectivas de crescimento em minha carreira.','Trabalho na profissão que escolhi.','Invisto em meu desenvolvimento intelectual.','Tenho metas claras para essa área de minha vida. Sei aonde quero chegar.'],
-  cond:{estudante:['Estou plenamente satisfeito(a) com o curso que faço atualmente.','Faço este curso por escolha minha.','Faço cursos complementares significativos para minha futura carreira.','Dedico-me significativamente aos meus estudos.'],
-        aposentado:['Vivo meu tempo de forma bem organizada para aproveitar minha aposentadoria.','Pratico um hobby revigorante regularmente.','Estou satisfeito(a) com a minha condição de aposentado(a).']}},
- fin:{base:['Ganho adequadamente pelo trabalho que realizo.','Considero que possuo equilíbrio financeiro.','Meu padrão de vida é compatível com meus ganhos.','Ganho mais dinheiro do que preciso para manter uma boa qualidade de vida.','Tenho o hábito de investir meus rendimentos e acompanhar a rentabilidade.'],
-  cond:{estudante:['Meu recurso financeiro satisfaz minhas necessidades.','Gasto menos do que costumo receber.','Preocupo-me em administrar meus recursos financeiros.']}},
- res:{base:['Estou atento(a) às demandas da minha vizinhança/comunidade.','Preocupo-me com a preservação do meio ambiente e ajo com economia de eletricidade e água, reciclagem de lixo, etc.','Tenho costume de ajudar os mais necessitados (com dinheiro ou trabalho voluntário).','Participo de campanhas solidárias.']},
- fam:{base:['Sinto gratidão pelo que meus pais fizeram por mim.','Sinto gratidão pelo que meus cuidadores/tutores fizeram por mim.','Possuo uma relação harmoniosa e de respeito com minha família.','Vivo em união com minha família.','Expresso abertamente afeto e carinho pela minha família.','Estou satisfeito(a) com minhas relações familiares.'],
-  cond:{filhos:['Minha relação com meus filhos é de compreensão e respeito mútuo.','Demonstro aos meus filhos que eles podem confiar em mim.','Expresso nas minhas palavras e comportamento o meu carinho pelos meus filhos.','Minha relação com meus filhos é equilibrada, pois consigo demonstrar cuidado sem sufocá-los.','Reservo e passo um tempo de qualidade satisfatório com meu(s) filho(s), capaz de gerar união entre nós.']}},
- amo:{base:['Existe harmonia em meu relacionamento (namoro, casamento, etc.).','Busco considerar as ideias e opiniões do(a) meu(minha) companheiro(a).','Sinto que sou compreendido(a) por minha(meu) parceira(o).','Minha vida sexual é satisfatória.','Há respeito e fidelidade em meu relacionamento amoroso.'],
-  cond:{solteiro:['Estou satisfeito(a) em estar solteiro(a).','Sou feliz em estar comigo mesmo(a).','Estar solteiro(a), para mim, é uma opção neste momento.']}},
- soc:{base:['Possuo um círculo agradável de amigos e amigas.','Possuo vida social satisfatória, de acordo com meus propósitos.','Quando estou com minhas amizades, consigo agradar e ser agradado(a), sem me sufocar ou sufocar os outros.']},
- laz:{base:['Possuo um hobby/passatempo revigorante.','Tenho o hábito de me divertir na medida certa.','Meus momentos de lazer não são negligenciados constantemente em função das minhas obrigações.','Tenho vontade e energia suficientes para me dedicar aos meus momentos de lazer.']},
- esp:{base:['Pratico momentos de contemplação (da natureza, do corpo, da mente) regularmente.','Estou em paz comigo mesmo(a).','Tenho um sentido/propósito de vida.','Tenho uma visão positiva de futuro.','Sinto que faço parte de um todo maior do que eu.']},
- sat:{base:['Tenho conseguido trazer para a vida prática o potencial que existe dentro de mim.','Minha vida se aproxima dos meus ideais.','A minha condição de vida é excelente.','Até agora, consegui obter aquilo que era importante na vida.','Se pudesse viver a minha vida de novo, não alteraria praticamente nada.']}
-};
-function itemsFor(id,cond){
-  const it=ITEMS[id];let a=it.base.slice();
-  if(it.cond)Object.keys(it.cond).forEach(k=>{if(cond&&cond[k])a=a.concat(it.cond[k])});
-  return a;
-}
-
-/* ============ dados: coach (frases de acolhimento, subáreas e mensagens) ============ */
-const CH={
- car:{open:['Excelente escolha! Buscar evolução profissional mostra que você está comprometido com seu crescimento.','Muito bom! Trabalhar sua carreira pode abrir novos caminhos e fortalecer seu propósito.','Legal ver você focando nessa área: desenvolver-se nos negócios é investir no seu futuro.','Que ótimo você priorizar sua carreira e negócios. Isso mostra o quanto você valoriza o seu crescimento profissional!','Entendo como é importante focar em carreira e negócios; vamos trabalhar nisso juntos para você se sentir mais realizado.','Admiro sua escolha em investir na carreira e negócios. É um passo essencial para construir o futuro que você deseja.'],
-  subs:[['Gerenciar estresse e pressão no trabalho','Muitas pessoas sentem que o trabalho consome muita energia. Podemos começar com técnicas rápidas de regulação do estresse e depois criar estratégias de longo prazo.'],['Melhorar foco e produtividade','Vamos explorar ferramentas de atenção plena e organização mental, para que você consiga produzir mais sem se esgotar.'],['Equilibrar vida profissional e pessoal','Equilibrar responsabilidades profissionais e pessoais é essencial para o bem-estar. Podemos começar com pequenas práticas de gestão do tempo e autocuidado.'],['Encontrar mais propósito e satisfação no trabalho','Às vezes, o que falta não é esforço, mas significado. Vamos pensar juntos em como alinhar seu trabalho aos seus valores e metas pessoais.'],['Autoconfiança e liderança','Liderança começa com a forma como nos vemos. Vamos fortalecer sua autoconfiança e trabalhar habilidades para se posicionar com clareza e segurança.']]},
- sau:{open:['Ótimo passo! Cuidar da saúde é a base para ter energia e bem-estar em todas as áreas da vida.','Perfeito! Seu corpo é seu maior aliado, e dar atenção a ele é um gesto de amor próprio.','Escolha poderosa! Priorizar a saúde é garantir mais vitalidade e equilíbrio no dia a dia.','Fico feliz que você queira cuidar da saúde e disposição; isso é fundamental para uma vida cheia de energia.','É maravilhoso ver você priorizando saúde e disposição. Vamos explorar isso para você se sentir mais vital e forte.','Sua decisão de focar em saúde e disposição me inspira; ela reflete um compromisso real com o seu bem-estar.'],
-  subs:[['Criar uma rotina de autocuidado físico','Cuidar de si é um ato de presença. Vamos construir uma rotina leve e possível, que fortaleça seu corpo e sua mente no dia a dia.'],['Melhorar hábitos alimentares','A alimentação é uma das formas mais diretas de cuidar de si. Podemos começar com pequenas mudanças sustentáveis que façam você se sentir melhor a cada dia.'],['Aumentar energia e disposição diária','Às vezes, o corpo pede mais equilíbrio do que esforço. Vamos entender o que drena e o que recarrega sua energia para você se sentir mais vital e motivado.'],['Regular o sono e descanso','O descanso é parte do progresso. Podemos ajustar sua rotina para que o sono volte a ser um momento real de recuperação e bem-estar.'],['Retomar a prática de atividade física','Recomeçar pode ser mais simples do que parece. Vamos encontrar uma forma de movimento que combine com você e traga prazer, não obrigação.']]},
- int:{open:['Maravilhoso! Expandir o conhecimento é uma forma de se reinventar e crescer constantemente.','Excelente decisão! Desenvolver novas habilidades mantém sua mente ativa e criativa.','Que bom! Investir no seu aprendizado é abrir espaço para novas oportunidades.','Que escolha inteligente priorizar intelecto e habilidades. Isso abre portas para tantas oportunidades incríveis!','Entendo o valor de investir em intelecto e habilidades; vamos fortalecer isso para você brilhar ainda mais.','Adoro quando alguém como você foca em intelecto e habilidades: é o caminho para um crescimento contínuo e empolgante.'],
-  subs:[['Melhorar foco e concentração nos estudos','Manter o foco hoje é um desafio para quase todo mundo. Vamos explorar formas simples de treinar sua atenção e estudar com mais presença e leveza.'],['Desenvolver novas competências profissionais','Buscar novas habilidades mostra que você está em expansão. Podemos traçar um plano de aprendizado prático e alinhado aos seus objetivos de carreira.'],['Criar disciplina para o aprendizado contínuo','A disciplina não nasce da força, mas do propósito. Vamos construir juntos uma rotina de estudo que faça sentido e se torne prazerosa com o tempo.'],['Organizar tempo de estudo e rotina mental','Organizar a mente é tão importante quanto organizar o tempo. Podemos criar um fluxo de estudo que respeite seu ritmo e melhore sua produtividade mental.'],['Melhorar memória e retenção de informações','Memória também se treina. Vamos usar estratégias que facilitem o aprendizado e tornem o estudo mais leve e eficiente.']]},
- emo:{open:['Escolha inspiradora! Cuidar das emoções é um passo importante para viver com mais leveza.','Muito bem! Trabalhar o equilíbrio interno fortalece sua paz e suas relações.','Lindo ver você voltando o olhar para dentro: esse é o caminho da verdadeira transformação.','Parabéns por escolher o equilíbrio emocional; isso demonstra uma grande sensibilidade com o seu mundo interior.','É reconfortante saber que você quer trabalhar o equilíbrio emocional. Vamos criar mais harmonia na sua vida.','Sua atenção ao equilíbrio emocional é muito importante; ela ajuda a navegar pelos desafios com mais leveza.'],
-  subs:[['Reduzir ansiedade e preocupação excessiva','Tudo bem sentir-se sobrecarregado às vezes. Podemos começar com técnicas simples de respiração e presença para acalmar a mente e avançar para recuperar o equilíbrio.'],['Praticar autocompaixão e aceitação','Ser gentil consigo mesmo é um aprendizado diário. Vamos praticar maneiras de se acolher com mais leveza, mesmo nos dias em que as coisas não saem como o esperado.'],['Melhorar autoestima e autoconfiança','A confiança cresce quando você reconhece o seu valor. Vamos fortalecer essa voz interna que lembra o quanto você é capaz.'],['Superar bloqueios emocionais e crenças limitantes','Muitas vezes o que nos trava não é o mundo, mas as histórias que contamos a nós mesmos. Vamos identificar esses padrões e abrir espaço para novas possibilidades.'],['Aprender a lidar com críticas e frustrações','As críticas e frustrações fazem parte do caminho, mas não definem quem você é. Podemos trabalhar juntos formas de manter a serenidade e aprender com cada situação.']]},
- fin:{open:['Excelente escolha! Cuidar das finanças traz segurança e tranquilidade para o dia a dia.','Muito bom! Ter clareza sobre o dinheiro ajuda você a tomar decisões mais conscientes.','Legal! Organizar essa área é essencial para conquistar liberdade e estabilidade.','Ótima decisão focar em finanças: isso traz mais segurança e liberdade para o que realmente importa.','Compreendo como as finanças influenciam tudo; vamos organizá-las para você viver com mais tranquilidade.','Valorizo sua escolha pelas finanças; é um passo prático para construir uma base sólida e próspera.'],
-  subs:[['Sair das dívidas e recuperar estabilidade financeira','Dar esse passo já mostra muita responsabilidade. Vamos construir juntos um plano simples e realista para retomar o controle e aliviar o peso das dívidas.'],['Criar hábitos de consumo consciente','Equilibrar desejos e necessidades é um exercício de presença. Podemos começar ajustando pequenas escolhas do dia a dia para que o dinheiro trabalhe a seu favor.'],['Planejar metas financeiras de curto e longo prazo','Ter clareza sobre onde quer chegar é metade do caminho. Vamos definir metas financeiras que façam sentido e tragam motivação para cada conquista.'],['Aprender a investir e multiplicar recursos','Investir é uma forma de fazer seu esforço render mais. Podemos começar entendendo princípios simples para que você se sinta seguro nas suas decisões.'],['Construir independência e segurança financeira','Buscar estabilidade é buscar liberdade. Vamos traçar juntos estratégias que fortaleçam sua segurança financeira e sua tranquilidade no futuro.']]},
- res:{open:['Admirável escolha! Contribuir com o mundo amplia seu propósito e senso de pertencimento.','Inspirador! Quando você cuida do coletivo, também fortalece o melhor de si.','Maravilhoso ver esse olhar para o social: pequenas ações geram grandes transformações.','Que inspirador priorizar responsabilidade social. Isso mostra o seu desejo de fazer a diferença no mundo.','Entendo o impacto da responsabilidade social na sua vida; vamos explorar formas de contribuir com mais propósito.','Admiro quem, como você, investe em responsabilidade social: é uma forma bonita de se conectar com os outros.'],
-  subs:[['Engajar-se em causas comunitárias ou ambientais','Que bonito ver esse desejo de contribuir! Vamos encontrar formas práticas de engajamento que façam sentido para você e gerem impacto real.'],['Aprender a contribuir de forma ética e sustentável','Agir com consciência é uma forma poderosa de cuidar do futuro. Podemos pensar juntos em atitudes simples que tornem suas ações mais éticas e sustentáveis.'],['Fortalecer empatia e cidadania ativa','Empatia é o primeiro passo para uma sociedade mais humana. Vamos exercitar esse olhar sensível e transformar pequenas atitudes em grandes exemplos.'],['Tornar-se um agente de transformação social','Transformar o mundo começa com pequenas escolhas diárias. Podemos explorar como seu talento e sua voz podem gerar impacto positivo à sua volta.'],['Integrar valores sociais às escolhas pessoais','Viver alinhado aos próprios valores traz coerência e paz interior. Vamos refletir sobre como suas escolhas podem expressar aquilo em que você realmente acredita.']]},
- fam:{open:['Que bonito! Investir na família é nutrir vínculos que sustentam sua base emocional.','Excelente! Relações familiares equilibradas trazem mais harmonia e apoio à sua jornada.','Lindo passo! Cuidar da família é cuidar das suas raízes e da sua paz interior.','Fico tocado com sua escolha pela família; esses laços são o coração de tantas alegrias.','É essencial nutrir a família, como você está fazendo. Vamos fortalecer esses relacionamentos preciosos.','Sua dedicação à família me comove; ela reforça os vínculos que nos sustentam nos bons e maus momentos.'],
-  subs:[['Estabelecer limites saudáveis','Colocar limites também é uma forma de amar. Vamos trabalhar maneiras de se posicionar com respeito, preservando seus laços e sua paz.'],['Fortalecer vínculos afetivos e apoio mútuo','Família é lugar de afeto e construção. Podemos pensar juntos em gestos e atitudes que reforcem o cuidado e a presença entre vocês.'],['Resolver conflitos familiares pendentes','Conflitos não resolvidos pesam no coração. Vamos buscar caminhos de diálogo e compreensão para restaurar a harmonia nas relações.'],['Equilibrar tempo e presença com familiares','O tempo de qualidade vale mais que a quantidade. Podemos planejar pequenas formas de estar presente de verdade, mesmo na correria do dia a dia.'],['Construir um ambiente familiar mais harmonioso','Um lar tranquilo começa com pequenas atitudes de escuta e gentileza. Vamos refletir sobre como você pode inspirar essa harmonia no seu ambiente familiar.']]},
- amo:{open:['Perfeito! Cuidar do amor é fortalecer a conexão e o companheirismo.','Muito bom! Relações saudáveis começam quando escolhemos olhá-las com atenção e carinho.','Bela escolha! O amor é um espaço poderoso de crescimento e aprendizado.','Que lindo você querer investir no relacionamento amoroso: isso cultiva conexões profundas e felizes.','Compreendo a importância do relacionamento amoroso; vamos trabalhar para torná-lo ainda mais harmonioso.','Adoro ver foco no relacionamento amoroso; é uma área que traz tanta realização quando bem cuidada.'],
-  subs:[['Melhorar comunicação e escuta no relacionamento','A base de toda relação saudável é o diálogo sincero. Podemos começar praticando formas de se expressar e escutar com mais empatia.'],['Reacender conexão e intimidade emocional','É normal que a rotina esfrie os vínculos. Vamos explorar pequenas atitudes que ajudem a reconectar o afeto e a presença no dia a dia.'],['Aprender a lidar com ciúmes e inseguranças','Sentir ciúmes é humano, mas não precisa ser um peso. Vamos trabalhar autoconfiança e segurança emocional para fortalecer o vínculo com leveza.'],['Construir uma relação mais equilibrada e madura','Relacionamentos evoluem quando há crescimento dos dois lados. Podemos refletir sobre como criar um equilíbrio saudável entre dar e receber.'],['Desenvolver amor-próprio para relacionar-se melhor','O amor-próprio é o alicerce de qualquer relação verdadeira. Vamos fortalecer sua autoestima para que o amor flua de forma mais livre e autêntica.']]},
- soc:{open:['Legal! Conectar-se com pessoas que fazem bem é essencial para a alegria e o equilíbrio.','Excelente escolha! Relações sociais saudáveis fortalecem sua energia e bem-estar.','Muito bom! Estar com quem te inspira é uma forma de cuidar da sua felicidade.','Parabéns por priorizar a vida social: amigos e conexões enriquecem tanto o nosso dia a dia!','Entendo como a vida social faz diferença; vamos expandi-la para mais momentos leves e divertidos.','Sua escolha pela vida social é ótima; ela ajuda a criar uma rede de apoio e alegrias compartilhadas.'],
-  subs:[['Ampliar círculo social e fazer novas amizades','Conectar-se com novas pessoas é abrir espaço para experiências e aprendizados. Vamos pensar em formas leves e naturais de ampliar suas conexões.'],['Melhorar habilidades de comunicação interpessoal','Comunicar-se bem é mais sobre conexão do que sobre palavras. Podemos explorar maneiras de se expressar com autenticidade e escuta ativa.'],['Sentir-se mais confiante em ambientes sociais','É normal se sentir inseguro em certos contextos. Vamos trabalhar sua presença e autoconfiança para que você se sinta à vontade sendo quem é.'],['Criar vínculos significativos e duradouros','Amizades verdadeiras se constroem com tempo e reciprocidade. Podemos refletir sobre como cultivar relações mais profundas e genuínas.'],['Equilibrar tempo entre vida social e individual','Equilíbrio é encontrar o ponto certo entre estar com os outros e cuidar de si. Vamos ajustar esse ritmo para que sua vida social seja prazerosa e leve.']]},
- laz:{open:['Perfeito! O lazer é um lembrete de que a vida também é feita de prazer e descanso.','Excelente! Reservar tempo para diversão é cuidar da sua saúde emocional.','Muito bom! Permitir-se relaxar é fundamental para renovar suas energias.','Que delícia focar em lazer, hobbies e diversão: isso recarrega a alma de forma tão prazerosa!','Valorizo sua decisão pelo lazer e hobbies; vamos descobrir mais maneiras de trazer alegria ao cotidiano.','É refrescante priorizar hobbies e diversão, como você; isso equilibra a vida com momentos leves.'],
-  subs:[['Redescobrir prazer e leveza no dia a dia','A vida não precisa ser só sobre obrigações. Vamos reencontrar o prazer nas pequenas coisas e trazer mais leveza para sua rotina.'],['Criar tempo para atividades prazerosas','Reservar tempo para si é uma forma de recarregar a alma. Podemos começar reorganizando sua agenda para incluir momentos que realmente te façam bem.'],['Desenvolver um novo hobby ou talento','Explorar algo novo desperta criatividade e alegria. Vamos descobrir juntos o que pode reacender esse lado curioso e inspirador em você.'],['Equilibrar rotina entre produtividade e descanso','Produtividade também inclui saber pausar. Podemos ajustar seu ritmo para que o descanso se torne parte natural do seu equilíbrio diário.'],['Planejar momentos de lazer e viagens','Ter algo bom para esperar dá sentido à caminhada. Vamos pensar em experiências e viagens que tragam renovação e novas perspectivas.']]},
- esp:{open:['Lindo passo! A espiritualidade traz serenidade e sentido à caminhada.','Excelente escolha! Conectar-se com algo maior fortalece seu equilíbrio interior.','Muito bonito! Cultivar a espiritualidade é nutrir paz, propósito e presença.','Fico inspirado com sua escolha pela espiritualidade: ela traz paz e sentido profundo à existência.','Entendo o valor da espiritualidade no seu caminho; vamos nutri-la para mais conexão interior.','Admiro quem investe em espiritualidade; é uma jornada que ilumina e fortalece o espírito.'],
-  subs:[['Reconectar-se com valores e propósito de vida','Quando nos reconectamos com o que realmente importa, tudo ganha mais sentido. Vamos refletir juntos sobre o que inspira e orienta suas escolhas.'],['Desenvolver hábitos de meditação ou oração','Silenciar a mente é uma forma de ouvir a alma. Podemos começar com pequenas práticas de presença que tragam calma e clareza ao seu dia.'],['Buscar sentido e coerência nas experiências','Cada experiência traz um aprendizado. Vamos olhar para sua trajetória com mais significado e descobrir como ela se conecta ao que você valoriza.'],['Viver com mais serenidade e fé (independente de religião)','A serenidade vem quando confiamos no caminho, mesmo sem entender tudo. Podemos cultivar juntos essa fé tranquila que traz equilíbrio e paz.'],['Cultivar compaixão e paz interior','Cuidar do mundo começa por dentro. Vamos nutrir sua compaixão e fortalecer essa sensação de paz que nasce do autoconhecimento.']]},
- sat:{open:['Maravilhoso! Refletir sobre sua satisfação é o primeiro passo para viver com mais propósito.','Excelente escolha! Buscar harmonia entre as áreas da vida mostra maturidade e autoconhecimento.','Perfeito! Olhar para o todo é o caminho para construir uma vida mais plena e significativa.','Ótimo priorizar a satisfação com a vida: isso reflete um desejo genuíno de viver plenamente.','Compreendo como a satisfação com a vida é chave; vamos ajustar o que for preciso para mais felicidade.','Sua atenção à satisfação com a vida me motiva; ela é o combustível para uma jornada mais gratificante.'],
-  subs:[['Identificar o que dá sentido à sua existência','Descobrir o que realmente dá sentido à vida é um ato de coragem e autoconhecimento. Vamos olhar juntos para o que faz seu coração vibrar.'],['Equilibrar prioridades e papéis de vida','Equilíbrio não é fazer tudo, mas escolher o que realmente importa. Podemos repensar suas prioridades para que sua vida tenha mais harmonia e leveza.'],['Alinhar metas pessoais com valores essenciais','Quando suas metas refletem quem você é, cada passo tem propósito. Vamos conectar suas ações aos valores que sustentam sua essência.'],['Fortalecer sentimento de propósito e direção','Ter clareza de propósito traz foco e motivação genuína. Podemos explorar o que move você e como transformar isso em direção concreta.'],['Criar uma visão de futuro inspiradora','Imaginar o futuro é o primeiro passo para construí-lo. Vamos desenhar uma visão que desperte entusiasmo e faça você se sentir vivo no presente.']]}
-};
-const STEPS={
- sau:['Caminhar 15 minutos hoje','Dormir e acordar no mesmo horário por 3 dias','Beber um copo d’água ao acordar'],
- int:['Reservar 25 minutos de estudo sem celular','Escolher um curso ou livro e marcar a primeira sessão','Anotar uma coisa aprendida hoje'],
- emo:['Fazer 3 minutos de respiração lenta','Anotar o que senti hoje e o que provocou','Conversar com alguém de confiança sobre o que pesa'],
- car:['Listar 3 prioridades da semana no trabalho','Bloquear 1 hora de foco na agenda','Marcar uma conversa sobre carreira com alguém que admiro'],
- fin:['Listar todas as despesas fixas do mês','Definir um valor mensal para guardar','Revisar assinaturas e cancelar uma que não uso'],
- res:['Pesquisar uma causa ou ação voluntária perto de mim','Separar itens para doação','Adotar um hábito de economia de água ou energia'],
- fam:['Ligar para um familiar hoje','Combinar um programa com a família neste mês','Escrever uma mensagem de gratidão a alguém da família'],
- amo:['Reservar 20 minutos de conversa sem telas','Planejar um momento a dois ou comigo','Dizer algo que admiro em quem amo'],
- soc:['Convidar um amigo para um café','Retomar contato com alguém que não vejo há tempo','Participar de um grupo ou evento neste mês'],
- laz:['Reservar 1 hora por semana só para lazer','Listar 5 atividades que me dão prazer','Planejar um passeio para o fim de semana'],
- esp:['Praticar 5 minutos de silêncio ou oração','Escrever meus três valores mais importantes','Passar 15 minutos em contato com a natureza'],
- sat:['Escrever o que dá sentido à minha vida hoje','Descrever como seria um dia ideal daqui a 1 ano','Escolher uma meta alinhada aos meus valores']
-};
-
-/* ============ dados: Big Five (itens originais) ============ */
-const TR=[
- {k:'E',n:'Extroversão',c:'var(--accent)',ix:[0,1,2],
-  hi:'Você ganha energia com pessoas. Transforme metas em compromissos com alguém: um parceiro de prática ou um grupo.',
-  lo:'Você recarrega a sós. Prefira metas que se sustentem em rotinas individuais e inclua contatos sociais pequenos e planejados.'},
- {k:'A',n:'Amabilidade',c:'var(--teal)',ix:[3,4,5],
-  hi:'Você coopera e acolhe. Inclua metas de limites e de assertividade para não dizer “sim” além do que cabe.',
-  lo:'Você é direto(a) e firme. Combine essa força com pequenas práticas de escuta e gentileza nos desacordos.'},
- {k:'C',n:'Conscienciosidade',c:'var(--lilac)',ix:[6,7,8],
-  hi:'Você sustenta rotinas. Pode mirar metas ambiciosas e revisões semanais; fique atento(a) ao perfeccionismo.',
-  lo:'Passos menores, lembretes e prazos curtos funcionam melhor para você do que planos longos.'},
- {k:'N',n:'Neuroticismo',c:'var(--rose)',ix:[9,10,11],
-  hi:'Emoções intensas pedem estratégias de regulação. Considere priorizar Equilíbrio emocional e metas que reduzam a sobrecarga.',
-  lo:'Você mantém estabilidade sob pressão. Use essa base para metas mais desafiadoras.'},
- {k:'O',n:'Abertura à experiência',c:'var(--sky)',ix:[12,13,14],
-  hi:'Novidade te motiva. Varie as atividades e crie desafios para não perder o interesse.',
-  lo:'Rotinas conhecidas dão segurança. Construa mudanças em doses pequenas e graduais.'}];
-const BF=[
- ['Sinto-me energizado(a) quando estou entre outras pessoas.',0],
- ['Costumo puxar conversa com quem acabei de conhecer.',0],
- ['Em grupos grandes, prefiro ficar em segundo plano.',1],
- ['Procuro me colocar no lugar dos outros antes de julgá-los.',0],
- ['Faço questão de ajudar quem precisa, mesmo que isso me custe tempo.',0],
- ['Quando discordo de alguém, tenho dificuldade em ser gentil.',1],
- ['Cumpro o que planejo, mesmo sem ninguém cobrando.',0],
- ['Mantenho minhas tarefas e minhas coisas organizadas.',0],
- ['Deixo para a última hora o que poderia fazer antes.',1],
- ['Preocupo-me com facilidade, até com coisas pequenas.',0],
- ['Meu humor muda bruscamente ao longo do dia.',0],
- ['Costumo manter a calma em situações de pressão.',1],
- ['Gosto de experimentar ideias, lugares e atividades diferentes.',0],
- ['Fico curioso(a) para entender como as coisas funcionam.',0],
- ['Prefiro seguir métodos que já conheço a testar caminhos novos.',1]];
-const BF_ORDER=[0,3,6,9,12,1,4,7,10,13,2,5,8,11,14];
-const LIK=['Discordo totalmente','Discordo','Nem concordo nem discordo','Concordo','Concordo totalmente'];
-const LV=['Muito baixa','Baixa','Média','Alta','Muito alta'];
-const AR=['↓↓','↓','↔','↑','↑↑'];
-function lvl(m){m=Math.round(m*100)/100;return m<=1.67?0:m<=2.33?1:m<=3.66?2:m<=4.33?3:4}
-function bfScores(ans){
-  const o={};
-  TR.forEach(t=>{o[t.k]=mean(t.ix.map(i=>BF[i][1]?6-ans[i]:ans[i]))});
-  return o;
-}
-
-/* ============ dados: humor (inspirado no POMS) ============ */
-const MOODS=[
- {k:'V',e:'😄',n:'Animado'},{k:'T',e:'😟',n:'Tenso'},
- {k:'D',e:'😢',n:'Triste'},{k:'R',e:'😠',n:'Irritado'},
- {k:'F',e:'😴',n:'Cansado'},{k:'C',e:'😵‍💫',n:'Confuso'}];
-const INT=['Nada','Um pouco','Moderadamente','Bastante','Extremamente'];
-const TURNS=[{k:'manha',n:'Manhã'},{k:'tarde',n:'Tarde'},{k:'noite',n:'Noite'}];
-const carga=v=>(v.T||0)+(v.D||0)+(v.R||0)+(v.F||0)+(v.C||0)-(v.V||0);
-const turnNow=()=>{const h=new Date().getHours();return h<12?'manha':h<18?'tarde':'noite'};
-
-/* ============ estado ============ */
-function seed(){
-  const t=today();
-  const now={sau:7,int:7.8,emo:7.2,car:7.4,fin:4.6,res:5.2,fam:7.6,amo:8.2,soc:5,laz:6.4,esp:7,sat:7.9};
-  const old={};P.forEach((p,i)=>{old[p.id]=Math.max(0,Math.min(10,now[p.id]+[-.8,-.4,-1.2,-.6,.4,-.2,-.5,-.3,.2,-.9,-.4,-.8][i]))});
-  const des={};P.forEach(p=>{des[p.id]=Math.min(10,Math.ceil(now[p.id])+2)});
-  const moods=[];
-  for(let i=6;i>=1;i--){
-    TURNS.forEach((tn,j)=>{
-      const x=i*1.7+j;
-      const g=(a)=>Math.max(0,Math.min(4,Math.round(1.2+1.3*Math.sin(x*a))));
-      moods.push({date:addD(t,-i),turn:tn.k,v:{V:Math.max(0,Math.min(4,Math.round(2.4+1.3*Math.sin(x*.9+1)))),T:g(1.3),D:g(.7)>2?1:g(.7)-1<0?0:g(.7)-1,R:g(1.9)>2?1:0,F:Math.max(0,Math.min(4,Math.round(1.5+1.2*Math.sin(x*1.1+2)))),C:g(2.3)>2?1:0}});
-    });
-  }
-  return {
-    demo:true,cond:{},
-    history:[{date:addD(t,-96),scores:old},{date:addD(t,-6),scores:now}],
-    desired:des,
-    bf:{scores:{E:3,A:4.33,C:3.67,N:2.33,O:4},date:addD(t,-20),demo:true},
-    moods,
-    goals:[
-      {id:'g1',p:'sau',titulo:'Retomar a prática de atividade física',medida:'Caminhar 4 vezes por semana durante 1 mês',porque:'Cuidar da saúde para ter energia para a minha família.',motivos:['ident','intr'],desafio:3,resultado:'Acordar com mais disposição e subir escadas sem cansar.',obstaculo:'Cansaço no fim do dia.',se:'eu chegar em casa do trabalho',entao:'troco de roupa e caminho 15 minutos',imp:8,conf:6,rev:7,prog:[{date:addD(t,-8),v:2,c:5},{date:addD(t,-1),v:5,c:6}],due:addD(t,45),status:'ativa',created:addD(t,-10)},
-      {id:'g2',p:'fin',titulo:'Planejar metas financeiras de curto e longo prazo',medida:'Orçamento mensal pronto e reserva de 1 mês',porque:'Ter tranquilidade e liberdade para escolher.',motivos:['ident','intro'],desafio:4,resultado:'Saber para onde vai cada real e ter uma reserva.',obstaculo:'Evitar abrir o aplicativo do banco por ansiedade.',se:'eu sentir vontade de adiar a conferência das contas',entao:'abro o orçamento e olho só uma categoria',imp:9,conf:4,rev:7,prog:[{date:addD(t,-1),v:1,c:4}],due:addD(t,75),status:'ativa',created:addD(t,-8)}],
-    tasks:[
-      {id:'t1',title:'Caminhada de 15 minutos',goal:'g1',due:t,rec:'daily',done:false,log:[addD(t,-2),addD(t,-1)]},
-      {id:'t2',title:'Dormir antes das 23h',goal:'g1',due:t,rec:'daily',done:false,log:[addD(t,-1)]},
-      {id:'t3',title:'Listar todas as despesas fixas do mês',goal:'g2',due:addD(t,2),rec:'none',done:false,log:[]},
-      {id:'t4',title:'Pesquisar uma opção de reserva de emergência',goal:'g2',due:addD(t,5),rec:'none',done:false,log:[]},
-      {id:'t5',title:'Escolher o tênis de caminhada',goal:'g1',due:addD(t,-3),rec:'none',done:true,log:[addD(t,-3)]}],
-    reviews:[],n:10};
-}
-function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.history)return s}}catch(e){}return null}
-const S=load()||seed();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-const ui={stack:[],tab:'home',sub:'roda',selP:null,editDes:false,filter:'hoje',ov:null,sheet:null,mood:null,shown:0};
-const cur=()=>S.history.length?S.history[S.history.length-1]:null;
-const prev=()=>S.history.length>1?S.history[S.history.length-2]:null;
-const desired=()=>{const c=cur();if(!c)return null;const d={};P.forEach(p=>{d[p.id]=(S.desired&&S.desired[p.id]!=null)?S.desired[p.id]:Math.min(10,Math.ceil(c.scores[p.id])+2)});return d};
-const lowest=(n)=>{const c=cur();if(!c)return[];return P.slice().sort((a,b)=>c.scores[a.id]-c.scores[b.id]).slice(0,n)};
-const nid=()=>'x'+(S.n++);
-function clearDemo(){S.demo=false;S.goals=[];S.tasks=[];S.moods=[];S.reviews=[];S.bf=null;S.history=[];S.desired={}}
-
-/* ============ componentes ============ */
-function radar(sc,des,o){
-  o=o||{};const cx=160,cy=160,R=100;
-  const pt=(i,v,r)=>{const a=(-90+i*30)*Math.PI/180;const rr=(r==null?R:r)*v/10;return[cx+rr*Math.cos(a),cy+rr*Math.sin(a)]};
-  const poly=f=>P.map((p,i)=>pt(i,f(p)).map(n=>n.toFixed(1)).join(',')).join(' ');
-  let s='<svg viewBox="'+(o.mini?'46 46 228 228':'0 0 320 320')+'" class="radar" role="img" aria-label="Roda da Vida com 12 pilares">';
-  [2,4,6,8,10].forEach(v=>{s+='<circle class="'+(v===10?'mold':'ring')+'" cx="160" cy="160" r="'+(R*v/10)+'"/>'});
-  P.forEach((p,i)=>{const q=pt(i,10);s+='<line class="axis" x1="160" y1="160" x2="'+q[0].toFixed(1)+'" y2="'+q[1].toFixed(1)+'"/>'});
-  if(des)s+='<polygon class="des" points="'+poly(p=>des[p.id])+'"/>';
-  if(sc){
-    s+='<polygon class="cur" points="'+poly(p=>sc[p.id])+'"/>';
-    P.forEach((p,i)=>{const q=pt(i,sc[p.id]);s+='<circle class="dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(o.sel===p.id?6:3.2)+'"/>'});
-  }
-  if(!o.mini)P.forEach((p,i)=>{
-    const q=pt(i,10,R+19),c=Math.cos((-90+i*30)*Math.PI/180);
-    const an=c>.3?'start':c<-.3?'end':'middle';
-    s+='<g'+(o.act?' data-a="selP" data-id="'+p.id+'"':'')+'><circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="17" fill="transparent"/><text class="lbl'+(o.sel===p.id?' sel':'')+'" x="'+q[0].toFixed(1)+'" y="'+(q[1]+3.6).toFixed(1)+'" text-anchor="'+an+'">'+p.ab+'</text></g>';
+/* ---------- roteamento por hash: #inicio, #mapa, #coach ---------- */
+function route(){
+  var v=(location.hash||'#inicio').slice(1);
+  if(v!=='mapa'&&v!=='coach')v='inicio';
+  $$('.view').forEach(function(el){el.hidden=(el.id!=='v-'+v)});
+  $$('nav.tabs a').forEach(function(a){
+    if(a.dataset.v===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
   });
-  return s+'</svg>';
-}
-const legend=(d)=>'<div class="legend"><span><i></i>Atual</span>'+(d?'<span><i class="d"></i>Desejada</span>':'')+'</div>';
-const icon={
- home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
- avaliar:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
- metas:'<path d="M5 21V4M5 4h12l-2 4 2 4H5"/>',
- plano:'<path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>'};
-const check='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-function taskRow(t,withGoal){
-  const done=t.log.includes(today());
-  const g=t.goal&&S.goals.find(x=>x.id===t.goal);
-  const bits=[];
-  if(t.due&&!done){const d=diffDays(t.due,today());bits.push(d<0?'<span style="color:var(--rose)">Atrasada '+(-d)+(d===-1?' dia':' dias')+'</span>':d===0?'Hoje':d===1?'Amanhã':fdate(t.due))}
-  if(t.rec!=='none')bits.push('↻ '+(t.rec==='daily'?'diária':'semanal'));
-  if(withGoal&&g)bits.push(esc(PM[g.p].n));
-  return '<div class="task'+(done?' done':'')+'"><button class="chk'+(done?' on':'')+'" data-a="tog" data-id="'+t.id+'" aria-label="'+(done?'Desmarcar':'Concluir')+': '+esc(t.title)+'">'+(done?check:'')+'</button><button class="tx" data-a="editTask" data-id="'+t.id+'"><div class="tt">'+esc(t.title)+'</div><div class="small muted">'+bits.join(' · ')+'</div></button></div>';
-}
-function streak(){
-  const set=new Set();S.tasks.forEach(t=>t.log.forEach(d=>set.add(d)));
-  let d=today();if(!set.has(d))d=addD(d,-1);
-  let n=0;while(set.has(d)){n++;d=addD(d,-1)}return n;
-}
-function todayTasks(){const t=today();return S.tasks.filter(x=>(!x.done&&x.due&&x.due<=t)||x.log.includes(t))}
-
-/* ============ telas principais ============ */
-function viewHome(){
-  const c=cur(),h=new Date().getHours(),g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
-  const dt=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-  let s='';
-  if(S.demo)s+='<div class="banner"><span>Você está vendo dados de exemplo. Eles somem quando você conclui sua primeira avaliação.</span><button class="btn sm ghost" data-a="clearDemo">Limpar</button></div>';
-  s+='<div><h2 style="font-size:30px">'+g+'.</h2><p class="muted cap">'+dt+'</p></div>';
-  if(c){
-    const lw=lowest(1)[0],d=desired(),avg=mean(P.map(p=>c.scores[p.id]));
-    s+='<section class="card col"><div class="row between"><span class="eyebrow">Seu ponto de partida</span><span class="tag">Roda de '+fdate(c.date)+'</span></div><div class="row" style="align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:1 1 150px;min-width:150px">'+radar(c.scores,d,{mini:true})+'</div><div class="col" style="flex:1 1 150px;gap:6px"><span class="muted small">Equilíbrio geral</span><span class="big">'+f1(avg)+'</span><span class="muted small" style="margin-top:6px">Pilar que mais pede atenção</span><b style="font-family:var(--display);font-size:19px">'+esc(lw.n)+' · '+f1(c.scores[lw.id])+'</b></div></div><button class="btn primary block" data-a="coach" data-id="'+lw.id+'">Trabalhar em '+esc(lw.n.toLowerCase())+'</button></section>';
-  }else{
-    s+='<section class="card col"><h3 style="font-size:21px">Comece pela Roda da Vida</h3><p class="muted">Avalie 12 áreas da sua vida em cerca de 10 minutos. Depois escolhemos juntos por onde começar.</p><button class="btn primary block" data-a="roda">Iniciar avaliação</button></section>';
-  }
-  const mt=S.moods.filter(m=>m.date===today());
-  s+='<section class="card col"><div class="row between"><h3 style="font-size:19px">Humor de hoje</h3><button class="btn sm" data-a="goMood">Registrar</button></div><div class="row" style="gap:8px">'+TURNS.map(t=>{const r=mt.find(m=>m.turn===t.k);return '<div style="flex:1;text-align:center;padding:10px 4px;border-radius:12px;border:1px solid var(--line);background:'+(r?'rgba(95,208,192,.12)':'var(--bg)')+'"><div class="small muted">'+t.n+'</div><b style="color:'+(r?'var(--teal)':'var(--muted)')+'">'+(r?'Feito':'Pendente')+'</b></div>'}).join('')+'</div></section>';
-  const tt=todayTasks(),dn=tt.filter(t=>t.log.includes(today())).length;
-  s+='<section class="card"><div class="row between"><h3 style="font-size:19px">Prioridades de hoje</h3><span class="tag">'+dn+' de '+tt.length+'</span></div>'+(tt.length?'<div class="bar teal" style="margin:12px 0 4px"><i style="width:'+(tt.length?dn/tt.length*100:0)+'%"></i></div>'+tt.slice(0,4).map(t=>taskRow(t,true)).join(''):'<p class="muted" style="margin-top:8px">Nada para hoje. Que tal criar um passo pequeno para uma meta?</p>')+'<button class="btn ghost block" style="margin-top:8px" data-a="tab" data-id="plano">Ver plano completo</button></section>';
-  const st=streak(),lr=S.reviews.length?S.reviews[S.reviews.length-1]:null;
-  s+='<div class="row" style="align-items:stretch"><div class="card col" style="flex:1;gap:4px"><span class="eyebrow">Sequência</span><span class="big">'+st+'</span><span class="small muted">'+(st===1?'dia':'dias')+' com tarefa concluída</span></div><div class="card col" style="flex:1;gap:8px"><span class="eyebrow">Revisão semanal</span><span class="small muted">'+(lr?'Última em '+fdate(lr.date):'Ainda não feita')+'</span><button class="btn sm" data-a="review">Fazer agora</button></div></div>';
-  s+='<div class="row"><button class="btn ghost" style="flex:1" data-a="about">Como funciona</button><button class="btn ghost" style="flex:1" data-a="privacy">Privacidade e dados</button></div>';
-  return s;
-}
-
-function viewAvaliar(){
-  let s='<div class="seg" role="tablist">'+[['roda','Roda da Vida'],['humor','Humor'],['perfil','Perfil']].map(a=>'<button role="tab" aria-selected="'+(ui.sub===a[0])+'" class="'+(ui.sub===a[0]?'on':'')+'" data-a="sub" data-id="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>';
-  return s+(ui.sub==='roda'?subRoda():ui.sub==='humor'?subHumor():subPerfil());
-}
-function subRoda(){
-  const c=cur();
-  if(!c)return '<section class="card col"><h3 style="font-size:21px">Sua Roda da Vida</h3><p class="muted">Responda afirmações de 0 a 10 sobre 12 áreas da vida. Você pode pausar e continuar depois.</p><button class="btn primary block" data-a="roda">Iniciar avaliação</button></section>';
-  const pv=prev(),sel=ui.selP||lowest(1)[0].id,sp=PM[sel],d=desired(),avg=mean(P.map(p=>c.scores[p.id]));
-  let s='<section class="card col"><div class="row between"><div><div class="eyebrow">Equilíbrio geral</div><div class="big" style="margin-top:6px">'+f1(avg)+'</div></div><div style="text-align:right"><span class="tag'+(S.demo?' demo':'')+'">'+(S.demo?'Exemplo · ':'')+fdate(c.date,{day:'numeric',month:'short',year:'numeric'})+'</span></div></div>'+radar(c.scores,d,{sel:sel,act:true})+legend(true)+'<p class="small muted" style="text-align:center">Toque em um pilar para ver os detalhes.</p><p class="small muted" style="text-align:center">A Roda é um recurso de reflexão e priorização, não uma medida validada. <button data-a="about" style="color:var(--accent);font-weight:700">Saiba mais</button></p></section>';
-  const lowS=lowest(3).map(p=>p.id);
-  s+='<section class="card col"><div class="row between"><div><div class="eyebrow">'+esc(sp.area)+'</div><h3 style="font-size:21px;margin-top:2px">'+esc(sp.n)+'</h3></div><span class="big" style="font-size:34px;color:var(--accent)">'+f1(c.scores[sel])+'</span></div><div class="bar"><i style="width:'+c.scores[sel]*10+'%"></i></div><button class="btn primary block" data-a="coach" data-id="'+sel+'">Trabalhar nisso</button></section>';
-  s+='<section class="card"><h3 style="font-size:19px;margin-bottom:6px">Do menor para o maior</h3>'+P.slice().sort((a,b)=>c.scores[a.id]-c.scores[b.id]).map(p=>{
-    const v=c.scores[p.id],dl=pv?v-pv.scores[p.id]:null;
-    return '<div class="prow"><button data-a="selP" data-id="'+p.id+'" style="text-align:left;font-weight:600">'+esc(p.n)+(lowS.includes(p.id)?' <span class="tag low">Atenção</span>':'')+'</button><span class="val">'+f1(v)+(dl!=null&&Math.abs(dl)>=.1?'<span class="delta '+(dl>0?'up':'dn')+'">'+(dl>0?'▲ +':'▼ ')+f1(dl).replace('-','−')+'</span>':'')+'</span><div class="bar"><i style="width:'+v*10+'%"></i></div></div>';
-  }).join('')+(pv?'<p class="small muted" style="margin-top:6px">Variação em relação à avaliação de '+fdate(pv.date,{day:'numeric',month:'short',year:'numeric'})+'.</p>':'')+'</section>';
-  s+='<button class="btn block" data-a="roda">Refazer avaliação</button>';
-  return s;
-}
-function weekMood(){
-  const out=[];
-  for(let i=6;i>=0;i--){const k=addD(today(),-i),r=S.moods.filter(m=>m.date===k);out.push({k:k,v:r.length?mean(r.map(m=>carga(m.v))):null,n:r.length})}
-  return out;
-}
-function moodChart(){
-  const w=weekMood(),W=320,H=150,base=118,max=72,lo=-4,hi=20,bw=30,gap=(W-24-7*bw)/6;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Carga emocional dos últimos 7 dias">';
-  [0,10,20].forEach(v=>{const y=base-(v-lo)/(hi-lo)*max;s+='<line x1="12" x2="308" y1="'+y+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/><text x="12" y="'+(y-3)+'" fill="var(--muted)" font-size="9" font-weight="600">'+v+'</text>'});
-  w.forEach((d,i)=>{
-    const x=12+i*(bw+gap),lab=fdate(d.k,{weekday:'short'}).replace('.','');
-    if(d.v==null)s+='<rect x="'+x+'" y="'+(base-8)+'" width="'+bw+'" height="8" rx="4" fill="none" stroke="var(--line)" stroke-dasharray="3 3"/>';
-    else{const h=Math.max(6,(Math.max(lo,Math.min(hi,d.v))-lo)/(hi-lo)*max),y=base-h;s+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="6" fill="'+(i===6?'var(--accent)':'var(--surface2)')+'"/><text x="'+(x+bw/2)+'" y="'+(y-5)+'" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700">'+Math.round(d.v)+'</text>'}
-    s+='<text x="'+(x+bw/2)+'" y="'+(base+16)+'" text-anchor="middle" fill="var(--muted)" font-size="10" font-weight="600" style="text-transform:capitalize">'+lab+'</text>';
-  });
-  return s+'</svg>';
-}
-function moodInit(){
-  const t=turnNow(),r=S.moods.find(m=>m.date===today()&&m.turn===t);
-  ui.mood={turn:t,sel:{}};
-  if(r)MOODS.forEach(m=>{if(r.v[m.k]>0)ui.mood.sel[m.k]=r.v[m.k]});
-}
-function subHumor(){
-  if(!ui.mood)moodInit();
-  const m=ui.mood,exists=S.moods.some(x=>x.date===today()&&x.turn===m.turn);
-  let s='<section class="card col"><div><h3 style="font-size:21px">Como você está agora?</h3><p class="muted small" style="margin-top:4px">Toque nos emojis que combinam com o momento e marque a intensidade. Sem seleção significa humor neutro.</p></div><div class="chips">'+TURNS.map(t=>'<button class="chip'+(m.turn===t.k?' on':'')+'" data-a="turn" data-id="'+t.k+'">'+t.n+'</button>').join('')+'</div><div class="moods">'+MOODS.map(o=>{
-    const v=m.sel[o.k]||0;
-    return '<div class="mood'+(v?' on':'')+'"><button data-a="mood" data-id="'+o.k+'" style="display:flex;flex-direction:column;align-items:center;gap:4px;width:100%" aria-pressed="'+(v>0)+'"><span class="em" aria-hidden="true">'+o.e+'</span><span class="nm">'+o.n+'</span></button>'+(v?'<div class="dots" role="group" aria-label="Intensidade de '+o.n+'">'+[1,2,3,4].map(i=>'<span class="'+(i<=v?'on':'')+'" data-a="int" data-id="'+o.k+'" data-v="'+i+'" role="button" tabindex="0" aria-label="'+INT[i]+'">'+i+'</span>').join('')+'</div><span class="small muted">'+INT[v]+'</span>':'')+'</div>';
-  }).join('')+'</div><button class="btn primary block" data-a="saveMood">'+(exists?'Atualizar':'Salvar')+' humor da '+TURNS.find(t=>t.k===m.turn).n.toLowerCase()+'</button></section>';
-  const w=weekMood(),have=w.filter(x=>x.v!=null).length;
-  s+='<section class="card col"><div class="row between"><h3 style="font-size:19px">Últimos 7 dias</h3><span class="tag'+(S.demo?' demo':'')+'">'+(S.demo?'Exemplo':'Carga emocional')+'</span></div>';
-  if(have){
-    const rec=S.moods.filter(x=>diffDays(today(),x.date)<7),tot={};
-    MOODS.forEach(o=>{tot[o.k]=rec.reduce((a,x)=>a+(x.v[o.k]||0),0)});
-    const neg=MOODS.filter(o=>o.k!=='V').sort((a,b)=>tot[b.k]-tot[a.k])[0];
-    s+=moodChart()+'<p class="small muted">Carga emocional = tensão + tristeza + irritação + cansaço + confusão − vigor. Quanto menor, melhor.</p>'+(tot[neg.k]>0?'<p>Emoção mais presente na semana: <b>'+neg.e+' '+neg.n+'</b>.</p>':'')+'<p class="small muted">Inspirado nas dimensões do POMS. Não é um instrumento clínico. Em sofrimento intenso, procure um profissional ou ligue 188 (CVV, 24 horas).</p>';
-  }else s+='<p class="muted">Registre seu humor em alguns turnos e o gráfico aparece aqui.</p>';
-  return s+'</section>';
-}
-function subPerfil(){
-  const b=S.bf;
-  if(!b)return '<section class="card col"><h3 style="font-size:21px">Seu perfil de personalidade</h3><p class="muted">15 afirmações sobre como você costuma agir. Leva cerca de 3 minutos e mostra suas tendências nos cinco grandes fatores.</p><button class="btn primary block" data-a="bf">Iniciar</button></section>';
-  let s='<section class="card"><div class="row between"><div><div class="eyebrow">Big Five</div><h3 style="font-size:21px;margin-top:2px">Suas tendências</h3></div><span class="tag'+(b.demo?' demo':'')+'">'+(b.demo?'Exemplo · ':'')+fdate(b.date,{day:'numeric',month:'short',year:'numeric'})+'</span></div>';
-  TR.forEach(t=>{
-    const m=b.scores[t.k],l=lvl(m),txt=l>=3?t.hi:l<=1?t.lo:'Você equilibra os dois polos deste traço. Ajuste a estratégia ao contexto de cada meta.';
-    s+='<div class="bf"><div class="row between"><b>'+t.n+'</b><span class="row" style="gap:8px"><span class="small muted">'+LV[l]+'</span><span class="arrow" style="color:'+t.c+'">'+AR[l]+'</span></span></div><div class="track" role="img" aria-label="'+t.n+': '+LV[l]+'"><i style="width:'+(m-1)/4*100+'%;background:'+t.c+'"></i><u style="left:25%"></u><u style="left:50%"></u><u style="left:75%"></u></div><p class="small muted">'+txt+'</p></div>';
-  });
-  s+='<p class="small muted" style="margin-top:8px">Mostra tendências para autoconhecimento. Não é diagnóstico nem avaliação psicológica. Refaça a cada 6 a 12 meses. As dicas são hipóteses de trabalho, não prescrições.</p></section><button class="btn block" data-a="bf">Refazer</button>';
-  return s;
-}
-
-function viewMetas(){
-  const c=cur(),d=desired();
-  let s='';
-  if(c){
-    s+='<section class="card col"><div class="row between"><div><div class="eyebrow">Mural dos desejos</div><h3 style="font-size:21px;margin-top:2px">Onde você quer chegar</h3></div></div>'+radar(c.scores,d,{mini:true})+legend(true)+'<button class="btn block" data-a="editDes">'+(ui.editDes?'Fechar ajuste':'Ajustar roda desejada')+'</button>';
-    if(ui.editDes)s+='<div>'+P.map(p=>'<div class="prow" style="grid-template-columns:1fr auto"><div><b>'+esc(p.n)+'</b><div class="small muted">Atual '+f1(c.scores[p.id])+'</div></div><div class="stepper"><button data-a="des" data-id="'+p.id+'" data-v="-1" aria-label="Diminuir '+esc(p.n)+'">−</button><span class="val">'+d[p.id]+'</span><button data-a="des" data-id="'+p.id+'" data-v="1" aria-label="Aumentar '+esc(p.n)+'">+</button></div></div>').join('')+'</div>';
-    s+='</section>';
-  }
-  const act=S.goals.filter(g=>g.status==='ativa'),dn=S.goals.filter(g=>g.status==='concluida');
-  s+='<div class="row between"><h3 style="font-size:21px">Minhas metas</h3><button class="btn sm primary" data-a="newGoal">+ Nova meta</button></div>';
-  if(!act.length)s+='<div class="card muted">Nenhuma meta ativa. Escolha um pilar e transforme um desejo em plano.</div>';
-  act.forEach(g=>{
-    const lp=(g.prog||[]).slice(-1)[0],ts=S.tasks.filter(t=>t.goal===g.id&&t.rec==='none'),dd=ts.filter(t=>t.done).length,pc=ts.length?dd/ts.length*100:0,days=diffDays(g.due,today());
-    s+='<button class="card col" style="text-align:left;gap:8px" data-a="goal" data-id="'+g.id+'"><div class="row between"><span class="tag">'+esc(PM[g.p].n)+'</span><span class="small muted">'+(days<0?'Prazo vencido':days===0?'Vence hoje':'Faltam '+days+' dias')+'</span></div><b style="font-family:var(--display);font-size:18px;line-height:1.25">'+esc(g.titulo)+'</b><div class="bar teal"><i style="width:'+pc+'%"></i></div><span class="small muted">'+(ts.length?dd+' de '+ts.length+' passos concluídos':'Sem passos únicos ainda')+'</span>'+(lp?'<span class="small muted">Progresso percebido: <b style="color:var(--text)">'+lp.v+'/10</b> · confiança '+lp.c+'/10</span>':'')+'</button>';
-  });
-  if(dn.length)s+='<div class="eyebrow" style="margin-top:6px">Concluídas</div>'+dn.map(g=>'<button class="card row between" style="text-align:left" data-a="goal" data-id="'+g.id+'"><span class="muted">'+esc(g.titulo)+'</span><span class="tag low" style="background:rgba(95,208,192,.15);color:var(--teal)">Feita</span></button>').join('');
-  return s;
-}
-
-function viewPlano(){
-  const t=today(),open=S.tasks.filter(x=>!x.done);
-  let list;
-  if(ui.filter==='hoje')list=todayTasks();
-  else if(ui.filter==='semana')list=open.filter(x=>x.due&&x.due>t&&x.due<=addD(t,7)).sort((a,b)=>a.due<b.due?-1:1);
-  else list=open.slice().sort((a,b)=>(a.due||'9')<(b.due||'9')?-1:1);
-  const tt=todayTasks(),dn=tt.filter(x=>x.log.includes(t)).length,st=streak();
-  let s='<section class="card col"><div class="row between"><div><div class="big">'+dn+'<span class="muted" style="font-size:22px"> de '+tt.length+'</span></div><div class="small muted" style="margin-top:6px">tarefas de hoje concluídas</div></div><div style="text-align:right"><div class="val" style="font-size:24px;color:var(--accent)">'+st+'</div><div class="small muted">'+(st===1?'dia':'dias')+' seguidos</div></div></div><div class="bar teal"><i style="width:'+(tt.length?dn/tt.length*100:0)+'%"></i></div></section>';
-  s+='<div class="seg">'+[['hoje','Hoje'],['semana','Semana'],['todas','Todas']].map(a=>'<button class="'+(ui.filter===a[0]?'on':'')+'" data-a="filter" data-id="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>';
-  s+='<section class="card">'+(list.length?list.map(x=>taskRow(x,true)).join(''):'<p class="muted">'+(ui.filter==='hoje'?'Nada para hoje. Aproveite, ou adicione um passo pequeno.':ui.filter==='semana'?'Nenhuma tarefa nos próximos 7 dias.':'Nenhuma tarefa aberta.')+'</p>')+'</section>';
-  if(ui.filter==='todas'){const cd=S.tasks.filter(x=>x.done).slice(-5).reverse();if(cd.length)s+='<div class="eyebrow">Concluídas recentemente</div><section class="card">'+cd.map(x=>taskRow(x,true)).join('')+'</section>'}
-  s+='<div style="height:56px"></div><button class="btn primary fab" data-a="newTask">+ Nova tarefa</button>';
-  return s;
-}
-
-/* ============ overlays e sheets ============ */
-function ovRoda(o){
-  if(o.step===-1){
-    return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Roda da Vida</div></div></div><div class="body"><h2 style="font-size:28px">Antes de começar</h2><p class="muted">Você vai avaliar 12 áreas da vida. Para cada afirmação, dê uma nota de 0 (total insatisfação) a 10 (plena satisfação), pensando em como está hoje.</p><div class="card col"><b>Alguma destas situações se aplica a você?</b><div class="chips">'+COND.map(c=>'<button class="chip'+(o.cond[c.k]?' on':'')+'" data-a="cond" data-id="'+c.k+'" aria-pressed="'+!!o.cond[c.k]+'">'+c.t+'</button>').join('')+'</div><p class="small muted">Mostramos perguntas extras só para o que você marcar.</p></div><button class="btn ghost" data-a="rodaFill">Preencher com valores aleatórios (para testar)</button></div><div class="foot"><button class="btn primary" data-a="rodaStart">Começar</button></div>';
-  }
-  if(o.step>=12){
-    const sc=o.result,lw=P.slice().sort((a,b)=>sc[a.id]-sc[b.id]).slice(0,3);
-    return '<div class="head"><button class="x" data-a="close" aria-label="Fechar">×</button><div class="prog"><div class="eyebrow">Avaliação concluída</div></div></div><div class="body"><h2 style="font-size:28px">Sua Roda da Vida está pronta</h2>'+radar(sc,null,{})+'<div class="card col"><b>Três pilares que mais pedem atenção</b>'+lw.map(p=>'<div class="row between"><span>'+esc(p.n)+'</span><span class="val" style="color:var(--accent)">'+f1(sc[p.id])+'</span></div>').join('')+'</div></div><div class="foot"><button class="btn" data-a="closeToRoda">Ver minha roda</button><button class="btn primary" data-a="coach" data-id="'+lw[0].id+'">Trabalhar em '+esc(lw[0].n.toLowerCase())+'</button></div>';
-  }
-  const p=P[o.step],its=itemsFor(p.id,o.cond),ans=o.ans[p.id]||[],ok=its.every((_,i)=>ans[i]!=null);
-  return '<div class="head"><button class="x" data-a="rodaBack" aria-label="Voltar">‹</button><div class="prog"><div class="small muted" style="margin-bottom:6px">Pilar '+(o.step+1)+' de 12 · '+esc(p.area)+'</div><div class="bar"><i style="width:'+(o.step/12*100)+'%"></i></div></div><button class="x" data-a="close" aria-label="Fechar">×</button></div><div class="body"><h2 style="font-size:28px">'+esc(p.n)+(p.d?'<span class="muted" style="font-size:16px;font-weight:500"> ('+esc(p.d)+')</span>':'')+'</h2><div>'+its.map((t,i)=>'<div class="q"><p>'+esc(t)+'</p><div class="scale" role="group" aria-label="Nota de 0 a 10">'+[0,1,2,3,4,5,6,7,8,9,10].map(v=>'<button class="'+(ans[i]===v?'on':'')+'" data-a="ans" data-i="'+i+'" data-v="'+v+'" aria-pressed="'+(ans[i]===v)+'">'+v+'</button>').join('')+'</div><div class="ends"><span>Nada satisfeito(a)</span><span>Totalmente satisfeito(a)</span></div></div>').join('')+'</div></div><div class="foot"><button class="btn" data-a="rodaBack">Voltar</button><button class="btn primary" data-a="rodaNext"'+(ok?'':' disabled')+'>'+(o.step===11?'Concluir':'Continuar')+'</button></div>';
-}
-function ovBf(o){
-  const n=BF_ORDER[o.i],a=o.ans[n];
-  return '<div class="head"><button class="x" data-a="bfBack" aria-label="Voltar">‹</button><div class="prog"><div class="small muted" style="margin-bottom:6px">Afirmação '+(o.i+1)+' de 15</div><div class="bar"><i style="width:'+(o.i/15*100)+'%"></i></div></div><button class="x" data-a="close" aria-label="Fechar">×</button></div><div class="body"><p class="muted">Quanto você concorda com a frase?</p><p class="stmt">'+esc(BF[n][0])+'</p><div class="likert">'+LIK.map((t,i)=>'<button class="'+(a===i+1?'on':'')+'" data-a="bfAns" data-v="'+(i+1)+'" aria-pressed="'+(a===i+1)+'"><b>'+(i+1)+'</b>'+t+'</button>').join('')+'</div></div>';
-}
-const sbk='<div class="row"><button class="back" data-a="sheetBack"><span aria-hidden="true">‹</span> Voltar</button></div>';
-function rowSel(on,txt,attrs){
-  return '<button style="display:block;width:100%" '+attrs+' aria-pressed="'+!!on+'"><span style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:15px;border:1px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'rgba(244,184,96,.14)':'var(--surface)')+';font-weight:600;text-align:left"><b style="flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:'+(on?'var(--accent)':'var(--surface2)')+';color:var(--accent-ink)">'+(on?'✓':'')+'</b>'+esc(txt)+'</span></button>';
-}
-function ovPick(){
-  const c=cur();
-  return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Nova meta</div></div></div><div class="body"><h2 style="font-size:28px">Qual área da vida?</h2><p class="muted">Escolha o pilar em que você quer avançar agora.</p><div class="pgrid">'+P.map(p=>'<button data-a="coach" data-id="'+p.id+'"><b>'+esc(p.n)+'</b>'+(c?'<span class="val">'+f1(c.scores[p.id])+'</span>':'')+'</button>').join('')+'</div></div>';
-}
-function rulerFeedback(o){
-  const i=o.imp,c=o.conf;
-  if(i<=4)return 'Você deu '+i+' para a importância. Isso é uma informação útil, não um problema. O que faria esse número subir um ponto? Vale perguntar também se este objetivo nasce de um valor seu ou de uma expectativa de outras pessoas.';
-  if(c<=4)return 'Importância '+i+' e confiança '+c+'. Você quer avançar, mas duvida da própria capacidade, e isso é comum. A teoria da autoeficácia sugere que passos pequenos e viáveis ajudam a construir confiança. Vamos desenhar um primeiro passo bem menor.';
-  if(c>=9)return 'Importância '+i+' e confiança '+c+'. Ótimo ponto de partida. Um cuidado: confiança muito alta pode levar a subestimar obstáculos, por isso o plano vai incluir o que pode atrapalhar.';
-  return 'Importância '+i+' e confiança '+c+'. Boa base para começar. Vamos transformar isso em um plano concreto.';
-}
-function ovCoach(o){
-  const p=PM[o.p],d=CH[o.p],B=[{w:'c',t:d.open[o.open]},{w:'c',t:'Que bom! Dentro de “'+p.n+'”, o que você gostaria de trabalhar primeiro?'}];
-  const ready=o.sub!=null&&o.imp!=null&&o.conf!=null;
-  if(o.sub!=null){B.push({w:'u',t:d.subs[o.sub][0]});B.push({w:'c',t:d.subs[o.sub][1]})}
-  if(ready)B.push({w:'c',t:rulerFeedback(o)});
-  const html=B.map((b,i)=>'<div class="bub '+b.w+(i>=ui.shown?' new':'')+'" style="'+(i>=ui.shown?'animation-delay:'+((i-ui.shown)*.45)+'s':'')+'">'+esc(b.t)+'</div>').join('');
-  ui.shown=B.length;
-  const ruler=(key,q,lo,hi)=>'<div class="card col" style="gap:8px"><b>'+q+'</b><div class="scale" role="group" aria-label="'+q+'">'+[0,1,2,3,4,5,6,7,8,9,10].map(v=>'<button class="'+(o[key]===v?'on':'')+'" data-a="rul" data-k="'+key+'" data-v="'+v+'" aria-pressed="'+(o[key]===v)+'">'+v+'</button>').join('')+'</div><div class="ends"><span>'+lo+'</span><span>'+hi+'</span></div></div>';
-  let acts;
-  if(o.sub==null)acts='<div class="chips" style="flex-direction:column;align-items:stretch">'+d.subs.map((s,i)=>'<button class="chip" style="text-align:left;border-radius:16px;padding:12px 14px" data-a="sub2" data-id="'+i+'">'+esc(s[0])+'</button>').join('')+'</div>';
-  else if(!ready)acts='<div class="col"><p class="muted small">Duas perguntas rápidas para calibrar o plano:</p>'+ruler('imp','Em uma escala de 0 a 10, o quanto isso é importante para você agora?','Nada importante','Muito importante')+ruler('conf','E o quanto você se sente confiante de conseguir avançar nisso?','Nada confiante','Muito confiante')+'<button class="btn ghost" data-a="otherSub">Escolher outra subárea</button></div>';
-  else acts='<div class="col" style="margin-top:6px"><button class="btn primary block" data-a="toGoal">Transformar em meta</button><button class="btn block" data-a="rulReset">Ajustar minhas respostas</button><button class="btn ghost block" data-a="otherSub">Escolher outra subárea</button></div>';
-  return '<div class="head"><button class="x" data-a="coachBack" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">'+esc(p.area)+'</div><b style="font-family:var(--display)">'+esc(p.n)+'</b></div><button class="x" data-a="close" aria-label="Fechar">×</button></div><div class="body" style="gap:12px">'+html+acts+'</div>';
-}
-const MOT=[['intr','Porque me interessa e me dá prazer fazer isso'],['ident','Porque isso é importante para a vida que quero ter'],['intro','Porque eu me sentiria culpado(a) ou mal se não fizesse'],['ext','Porque outras pessoas esperam isso de mim']];
-const MOTS={intr:'Interesse e prazer',ident:'Importância pessoal',intro:'Culpa ou obrigação interna',ext:'Expectativa de outras pessoas'};
-const DESF=['Muito fácil','Fácil','Moderada','Desafiadora','Muito difícil'];
-const AVOID=/^\s*(parar|deixar de|evitar|n[ãa]o|nunca)\b/i;
-function goalValid(o){
-  const f=o.f;
-  if(o.step===0)return f.titulo.trim().length>2;
-  if(o.step===1)return f.motivos.length>0;
-  if(o.step===2)return f.medida.trim().length>2&&f.desafio!=null;
-  if(o.step===3)return f.se.trim().length>1&&f.entao.trim().length>1;
-  return true;
-}
-function ovGoal(o){
-  const f=o.f,p=PM[o.p],st=STEPS[o.p];
-  const T=['Qual é a sua meta?','Por que ela importa para você?','Como medir e quão desafiadora é?','Obstáculo e plano','Prazo e revisão','Primeiros passos'];
-  let b='';
-  if(o.step===0)b='<p class="muted">Escreva o que você quer alcançar ou passar a fazer.</p><div class="field"><label for="g-t">Minha meta</label><textarea id="g-t" data-f="titulo" placeholder="Ex.: Caminhar 4 vezes por semana">'+esc(f.titulo)+'</textarea></div><div class="note" id="g-avoid"'+(AVOID.test(f.titulo)?'':' hidden')+'>Metas de aproximação (“começar a…”) tendem a ser mais sustentáveis do que metas de evitação (“parar de…”). Que comportamento você quer ter no lugar?</div>';
-  if(o.step===1){
-    const aut=f.motivos.some(m=>m==='intr'||m==='ident'),ctl=f.motivos.some(m=>m==='intro'||m==='ext');
-    const msg=ctl&&!aut?'Seus motivos parecem vir mais de pressão do que de valores próprios. Antes de seguir, pergunte-se: que valor meu esta meta serve? Se não houver resposta, talvez valha ajustar a meta.':ctl&&aut?'Há motivos próprios e também pressão externa ou interna. Vale fortalecer o lado dos seus valores no campo abaixo.':aut?'Motivos ligados aos seus valores e interesses costumam sustentar melhor o esforço.':'';
-    b='<p class="muted">Marque tudo o que se aplica. Não há resposta certa.</p><div class="col">'+MOT.map(m=>rowSel(f.motivos.includes(m[0]),m[1],'data-a="mot" data-id="'+m[0]+'"')).join('')+'</div>'+(msg?'<div class="note">'+msg+'</div>':'')+'<div class="field"><label for="g-p">Com qual valor seu essa meta se conecta? (opcional)</label><textarea id="g-p" data-f="porque" style="min-height:76px" placeholder="Ex.: Cuidar da minha saúde para estar presente com a minha família">'+esc(f.porque)+'</textarea></div>';
-  }
-  if(o.step===2){
-    const dm=f.desafio==null?'':f.desafio<=2?'Pode ser fácil demais para motivar. Metas específicas e um pouco desafiadoras costumam gerar mais esforço (Locke & Latham, 2002).':f.desafio<=4?'Boa faixa: desafiadora e viável.':'Metas muito difíceis podem desanimar. Considere dividir em etapas de 30 a 60 dias.';
-    b='<p class="muted">Defina algo que você consiga observar ou contar.</p><div class="field"><label for="g-m">Como vou observar o progresso?</label><textarea id="g-m" data-f="medida" placeholder="Ex.: 4 caminhadas por semana durante 1 mês">'+esc(f.medida)+'</textarea></div><div class="field"><label>Quão desafiadora é esta meta para você?</label><div class="chips">'+DESF.map((t,i)=>'<button class="chip'+(f.desafio===i+1?' on':'')+'" data-a="des2" data-v="'+(i+1)+'">'+(i+1)+' · '+t+'</button>').join('')+'</div></div>'+(dm?'<div class="note">'+dm+'</div>':'');
-  }
-  if(o.step===3)b='<p class="muted">Imaginar o resultado e, em seguida, o obstáculo real gera compromisso mais realista do que apenas sonhar com o sucesso.</p><div class="field"><label for="g-r">Melhor resultado: se tudo der certo, como será sua vida daqui a alguns meses?</label><textarea id="g-r" data-f="resultado" style="min-height:76px">'+esc(f.resultado)+'</textarea></div><div class="field"><label for="g-o">Principal obstáculo interno: o que em você (hábito, emoção, pensamento) pode atrapalhar?</label><textarea id="g-o" data-f="obstaculo" style="min-height:76px" placeholder="Ex.: cansaço no fim do dia">'+esc(f.obstaculo)+'</textarea></div><div class="card col"><b>Plano “se-então”</b><p class="small muted">Ligue uma situação concreta a uma ação. O gatilho pode ser o próprio obstáculo (“Se eu sentir cansaço…”).</p><div class="field"><label for="g-s">Se (situação ou gatilho)</label><input type="text" id="g-s" data-f="se" value="'+esc(f.se)+'" placeholder="Ex.: eu chegar em casa do trabalho"></div><div class="field"><label for="g-e">Então eu (ação)</label><input type="text" id="g-e" data-f="entao" value="'+esc(f.entao)+'" placeholder="Ex.: troco de roupa e caminho 15 minutos"></div></div>';
-  if(o.step===4)b='<div class="field"><label>Prazo</label><div class="chips">'+[30,60,90,180].map(n=>'<button class="chip'+(f.dias===n?' on':'')+'" data-a="dias" data-v="'+n+'">'+n+' dias</button>').join('')+'</div></div><p>Prazo final: <b>'+fdate(addD(today(),f.dias),{day:'numeric',month:'long',year:'numeric'})+'</b></p><div class="note">Rotinas levaram uma mediana de 66 dias para ficar automáticas, com grande variação (18 a 254 dias; Lally et al., 2010). Para hábitos, 60 a 90 dias é um prazo mais realista.</div><div class="field"><label>Com que frequência vou revisar?</label><div class="chips">'+[[7,'Semanal'],[14,'Quinzenal']].map(r=>'<button class="chip'+(f.rev===r[0]?' on':'')+'" data-a="rev" data-v="'+r[0]+'">'+r[1]+'</button>').join('')+'</div></div><p class="small muted">Acompanhar o progresso com frequência aumenta a chance de atingir a meta, sobretudo quando você registra (Harkin et al., 2016).</p>';
-  if(o.step===5)b='<p class="muted">'+(f.conf!=null&&f.conf<=4?'Como a sua confiança está baixa, comece com um único passo bem pequeno.':'Comece por passos pequenos. O primeiro deve levar no máximo 10 minutos.')+'</p><div class="col">'+st.concat(f.extra).map((t,i)=>rowSel(f.sel.includes(i),t,'data-a="stepSel" data-i="'+i+'"')).join('')+'</div><div class="field"><label for="g-x">Outro passo</label><div class="row"><input type="text" id="g-x" data-f="custom" placeholder="Escreva e toque em adicionar" value="'+esc(f.custom)+'"><button class="btn" data-a="addStep">Adicionar</button></div></div>'+rowSel(f.planTask,'Criar um lembrete diário do meu plano “se-então”','data-a="planTask"');
-  return '<div class="head"><button class="x" data-a="goalBack" aria-label="Voltar">‹</button><div class="prog"><div class="small muted" style="margin-bottom:6px">'+esc(p.n)+' · passo '+(o.step+1)+' de 6</div><div class="bar"><i style="width:'+(o.step/6*100)+'%"></i></div></div><button class="x" data-a="close" aria-label="Fechar">×</button></div><div class="body"><h2 style="font-size:28px">'+T[o.step]+'</h2>'+b+'</div><div class="foot"><button class="btn primary" data-a="goalNext"'+(goalValid(o)?'':' disabled')+'>'+(o.step===5?'Criar meta e passos':'Continuar')+'</button></div>';
-}
-function shTask(sh){
-  const f=sh.f,t=today(),opts=[['Hoje',t],['Amanhã',addD(t,1)],['Em 7 dias',addD(t,7)],['Sem data','']];
-  return '<div class="grip"></div>'+sbk+'<h3 style="font-size:21px">'+(f.id?'Editar tarefa':'Nova tarefa')+'</h3><div class="field"><label for="t-t">O que fazer</label><input type="text" id="t-t" data-f="title" value="'+esc(f.title)+'" placeholder="Ex.: Caminhar 15 minutos"></div><div class="field"><label for="t-g">Meta vinculada</label><select id="t-g" data-f="goal"><option value="">Sem meta</option>'+S.goals.filter(g=>g.status==='ativa').map(g=>'<option value="'+g.id+'"'+(f.goal===g.id?' selected':'')+'>'+esc(g.titulo)+'</option>').join('')+'</select></div><div class="field"><label>Quando</label><div class="chips">'+opts.map(o=>'<button class="chip'+(f.due===o[1]?' on':'')+'" data-a="tdue" data-v="'+o[1]+'">'+o[0]+'</button>').join('')+'</div></div><div class="field"><label>Repetir</label><div class="chips">'+[['none','Uma vez'],['daily','Todo dia'],['weekly','Toda semana']].map(r=>'<button class="chip'+(f.rec===r[0]?' on':'')+'" data-a="trec" data-v="'+r[0]+'">'+r[1]+'</button>').join('')+'</div></div><div class="row"><button class="btn primary" style="flex:1" data-a="saveTask">Salvar</button>'+(f.id?'<button class="btn danger" data-a="delTask">Excluir</button>':'')+'<button class="btn ghost" data-a="sheetBack">Cancelar</button></div>';
-}
-function spark(pr){
-  if(pr.length<2)return '';
-  const W=300,H=60,n=pr.length,x=i=>10+i*(W-20)/(n-1),y=v=>H-8-(v/10)*(H-16);
-  return '<svg class="spark" viewBox="0 0 300 60" role="img" aria-label="Progresso percebido ao longo do tempo"><polyline points="'+pr.map((e,i)=>x(i).toFixed(1)+','+y(e.v).toFixed(1)).join(' ')+'" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+pr.map((e,i)=>'<circle cx="'+x(i).toFixed(1)+'" cy="'+y(e.v).toFixed(1)+'" r="3.4" fill="var(--teal)"/>').join('')+'</svg>';
-}
-function shGoal(sh){
-  const g=S.goals.find(x=>x.id===sh.id);if(!g)return '';
-  const ts=S.tasks.filter(t=>t.goal===g.id),pr=g.prog||[],lp=pr[pr.length-1];
-  const blk=(l,t)=>t?'<div><div class="eyebrow">'+l+'</div><p>'+esc(t)+'</p></div>':'';
-  return '<div class="grip"></div>'+sbk+'<div><span class="tag">'+esc(PM[g.p].n)+'</span><h3 style="font-size:22px;margin-top:8px">'+esc(g.titulo)+'</h3></div>'+blk('Medida de sucesso',g.medida)+blk('Melhor resultado',g.resultado)+blk('Obstáculo interno',g.obstaculo)+(g.se&&g.entao?'<div class="note"><b>Plano:</b> se '+esc(g.se)+', então eu '+esc(g.entao)+'.</div>':'')+blk('Valor ligado à meta',g.porque)+((g.motivos||[]).length?'<div><div class="eyebrow">Motivos</div><div class="chips" style="margin-top:6px">'+g.motivos.map(m=>'<span class="tag">'+MOTS[m]+'</span>').join('')+'</div></div>':'')+(g.imp!=null?'<div class="row" style="gap:16px"><div><div class="eyebrow">Importância</div><b class="val" style="font-size:22px">'+g.imp+'/10</b></div><div><div class="eyebrow">Confiança inicial</div><b class="val" style="font-size:22px">'+g.conf+'/10</b></div></div>':'')+'<div><div class="eyebrow">Prazo</div><p>'+fdate(g.due,{day:'numeric',month:'long',year:'numeric'})+'</p></div><div><div class="eyebrow">Progresso percebido</div>'+(lp?'<p>Último registro: <b>'+lp.v+'/10</b> · confiança '+lp.c+'/10 · '+fdate(lp.date)+'</p>'+spark(pr):'<p class="muted">Ainda sem registros. Use a revisão semanal.</p>')+'<button class="btn sm" style="margin-top:8px" data-a="review">Registrar progresso</button></div><div><div class="eyebrow">Passos</div>'+(ts.length?ts.map(t=>taskRow(t,false)).join(''):'<p class="muted">Nenhum passo ainda.</p>')+'</div><button class="btn block" data-a="stepFor" data-id="'+g.id+'">+ Adicionar passo</button><div class="row">'+(g.status==='ativa'?'<button class="btn primary" style="flex:1" data-a="doneGoal" data-id="'+g.id+'">Concluir meta</button>':'<button class="btn" style="flex:1" data-a="reopenGoal" data-id="'+g.id+'">Reabrir</button>')+'<button class="btn danger" data-a="delGoal" data-id="'+g.id+'">Excluir</button></div>';
-}
-const stepRow=(lab,id,k,val)=>'<div class="row between"><span class="small">'+lab+'</span><div class="stepper"><button data-a="rv" data-id="'+id+'" data-k="'+k+'" data-v="-1" aria-label="Diminuir">−</button><span class="val">'+val+'</span><button data-a="rv" data-id="'+id+'" data-k="'+k+'" data-v="1" aria-label="Aumentar">+</button></div></div>';
-function shReview(sh){
-  const gs=S.goals.filter(g=>g.status==='ativa'),q=[['ok','O que funcionou nesta semana?'],['stuck','O que travou?'],['adj','O que ajusto na próxima semana?']];
-  return '<div class="grip"></div>'+sbk+'<h3 style="font-size:21px">Revisão da semana</h3><p class="muted small">Registrar o progresso com frequência aumenta a chance de atingir a meta (Harkin et al., 2016). Leva cerca de 2 minutos.</p>'+gs.map(g=>{const r=sh.g[g.id]||{v:0,c:5};return '<div class="card col" style="gap:10px;background:var(--bg)"><b>'+esc(g.titulo)+'</b>'+stepRow('Progresso percebido (0 a 10)',g.id,'v',r.v)+stepRow('Confiança de conseguir (0 a 10)',g.id,'c',r.c)+'</div>'}).join('')+q.map(a=>'<div class="field"><label for="r-'+a[0]+'">'+a[1]+'</label><textarea id="r-'+a[0]+'" data-f="'+a[0]+'" style="min-height:70px">'+esc(sh.f[a[0]]||'')+'</textarea></div>').join('')+'<div class="row"><button class="btn primary" style="flex:1" data-a="saveReview">Salvar revisão</button><button class="btn ghost" data-a="sheetBack">Cancelar</button></div>';
-}
-const REFS=[
- 'Bandura, A. (1977). Self-efficacy: toward a unifying theory of behavioral change. Psychological Review, 84(2), 191–215.',
- 'Carver, C. S., & Scheier, M. F. (1982). Control theory: a useful conceptual framework for personality–social, clinical, and health psychology. Psychological Bulletin, 92(1), 111–135.',
- 'Doran, G. T. (1981). There’s a S.M.A.R.T. way to write management’s goals and objectives. Management Review, 70(11), 35–36.',
- 'Elliot, A. J., & Church, M. A. (1997). A hierarchical model of approach and avoidance achievement motivation. Journal of Personality and Social Psychology, 72(1), 218–232.',
- 'Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achievement: a meta-analysis of effects and processes. Advances in Experimental Social Psychology, 38, 69–119.',
- 'Harkin, B., et al. (2016). Does monitoring goal progress promote goal attainment? A meta-analysis of the experimental evidence. Psychological Bulletin, 142(2), 198–229.',
- 'Kiresuk, T. J., & Sherman, R. E. (1968). Goal attainment scaling: a general method for evaluating comprehensive community mental health programs. Community Mental Health Journal, 4(6), 443–453.',
- 'Lally, P., et al. (2010). How are habits formed: modelling habit formation in the real world. European Journal of Social Psychology, 40(6), 998–1009.',
- 'Locke, E. A., & Latham, G. P. (2002). Building a practically useful theory of goal setting and task motivation: a 35-year odyssey. American Psychologist, 57(9), 705–717.',
- 'McNair, D. M., Lorr, M., & Droppleman, L. F. (1971). Manual for the Profile of Mood States. EdITS.',
- 'Michie, S., et al. (2013). The behavior change technique taxonomy (v1) of 93 hierarchically clustered techniques. Annals of Behavioral Medicine, 46(1), 81–95.',
- 'Miller, W. R., & Rollnick, S. (2013). Motivational Interviewing: helping people change (3rd ed.). Guilford Press.',
- 'Oettingen, G. (2012). Future thought and behaviour change. European Review of Social Psychology, 23(1), 1–63.',
- 'Roberts, B. W., et al. (2017). A systematic review of personality trait change through intervention. Psychological Bulletin, 143(2), 117–141.',
- 'Rohlfs, I. C. P. M., et al. (2008). A Escala de Humor de Brunel (BRUMS): instrumento para detecção precoce da síndrome do excesso de treinamento. Revista Brasileira de Medicina do Esporte, 14(3), 176–181.',
- 'Ryan, R. M., & Deci, E. L. (2000). Self-determination theory and the facilitation of intrinsic motivation, social development, and well-being. American Psychologist, 55(1), 68–78.',
- 'Sheldon, K. M., & Elliot, A. J. (1999). Goal striving, need satisfaction, and longitudinal well-being: the self-concordance model. Journal of Personality and Social Psychology, 76(3), 482–497.',
- 'Shiffman, S., Stone, A. A., & Hufford, M. R. (2008). Ecological momentary assessment. Annual Review of Clinical Psychology, 4, 1–32.',
- 'Theeboom, T., Beersma, B., & van Vianen, A. E. M. (2014). Does coaching work? A meta-analysis on the effects of coaching on individual level outcomes in an organizational context. Journal of Positive Psychology, 9(1), 1–18.'];
-function ovAbout(){
-  const S1=[
-   ['Visão geral','<p>O Pocket Coach é uma ferramenta de autodesenvolvimento orientada a metas. O fluxo segue o ciclo de autorregulação da teoria do controle (Carver & Scheier, 1982): perceber onde estou, definir aonde quero chegar, planejar, agir, monitorar o progresso e ajustar.</p><p>Na meta-análise de Theeboom et al. (2014), intervenções de coaching em contexto organizacional tiveram efeitos positivos, de g = 0,43 (enfrentamento) a g = 0,74 (autorregulação orientada a metas). São dados de coaching com profissional, em organizações. Eles não demonstram a eficácia deste aplicativo, que ainda precisa ser testado.</p>',true],
-   ['Roda da Vida','<p>O instrumento é atribuído a Paul J. Meyer (Success Motivation Institute, década de 1960) e nasceu na prática de coaching. Até onde sabemos, não há estudos psicométricos que sustentem a estrutura de 12 pilares; aqui ele é um recurso de reflexão e priorização, não uma medida validada.</p><p>Cada afirmação recebe nota de 0 a 10 e o escore do pilar é a média dos itens. Pilares com 3 itens (Equilíbrio emocional e Vida social) têm menos precisão. O molde circular representa a roda ideal; a distância entre ele e o seu desenho mostra onde a roda “trepida”. Não suavizamos a curva entre pilares, porque valores entre duas categorias não têm significado.</p>'],
-   ['Humor diário','<p>Medidas momentâneas repetidas ao longo do dia captam variações que a lembrança retrospectiva distorce (avaliação momentânea ecológica; Shiffman et al., 2008). As seis dimensões vêm do modelo do POMS (McNair et al., 1971): tensão, depressão, raiva, vigor, fadiga e confusão.</p><p>Aqui cada dimensão é medida por um único emoji, com intensidade de 1 a 4. É um rastreio de tendência, não uma escala validada. Para pesquisa, a versão brasileira de referência é a Escala de Humor de Brunel (BRUMS/BRAMS; Rohlfs et al., 2008), com 24 itens.</p>'],
-   ['Perfil (Big Five)','<p>O modelo dos cinco grandes fatores é o mais consolidado para descrever diferenças de personalidade. Os 15 itens deste protótipo são originais e ainda não foram validados; com 3 itens por traço, a consistência interna tende a ser modesta.</p><p>Os traços são relativamente estáveis, embora possam mudar de forma gradual com intervenções (Roberts et al., 2017). Por isso o perfil serve de contexto para planejar, não de rótulo nem de alvo. As dicas por traço são hipóteses de trabalho, ainda sem teste empírico neste formato.</p>'],
-   ['Metas e plano','<ul><li><b>Réguas de importância e confiança.</b> Vêm da Entrevista Motivacional (Miller & Rollnick, 2013) e da autoeficácia (Bandura, 1977). Importância baixa pede explorar valores; confiança baixa pede um passo menor.</li><li><b>Metas.</b> Metas específicas e desafiadoras, com feedback e compromisso, melhoram o desempenho (Locke & Latham, 2002). Preferimos metas de aproximação às de evitação (Elliot & Church, 1997).</li><li><b>Motivos.</b> Metas ligadas a valores próprios sustentam melhor o esforço e o bem-estar (Ryan & Deci, 2000; Sheldon & Elliot, 1999).</li><li><b>Contraste mental e “se-então”.</b> Imaginar o resultado desejado e o obstáculo, e então formular intenções de implementação, ajuda a agir (Oettingen, 2012). As intenções de implementação têm efeito médio-grande (d = 0,65; Gollwitzer & Sheeran, 2006).</li><li><b>Monitoramento.</b> Acompanhar o progresso aumenta a chance de atingir a meta (d = 0,40), sobretudo quando é registrado (Harkin et al., 2016). Por isso a revisão pede progresso e confiança.</li><li><b>Hábitos.</b> A mediana foi de 66 dias para a automatização, de 18 a 254 (Lally et al., 2010). Não prometemos “21 dias”.</li><li><b>Técnicas.</b> O fluxo reúne técnicas da taxonomia de Michie et al. (2013): definição de metas, planejamento de ação, automonitoramento e revisão de metas.</li></ul>'],
-   ['O que evitamos','<ul><li>Promessas de transformação rápida e o mito dos “21 dias”.</li><li>SMART como se fosse teoria científica: a sigla é de 1981, do campo da administração (Doran, 1981). Usamos princípios com base empírica na teoria de metas.</li><li>Pensamento positivo isolado: imaginar só o sucesso, sem considerar obstáculos, pode reduzir o esforço (Oettingen, 2012).</li><li>Tipologias e rótulos de personalidade como destino.</li><li>Conselhos prontos: o coach pergunta, reflete e deixa a decisão com você.</li></ul>'],
-   ['Limites e cuidados','<ul><li>Não é psicoterapia nem avaliação clínica e não substitui um profissional.</li><li>Dados de humor são sensíveis: neste app ficam apenas no seu aparelho (veja Privacidade e dados). Uma versão com conta exigirá consentimento e proteção conforme a LGPD.</li><li>Em sofrimento intenso, procure um profissional de saúde mental. Se estiver pensando em se machucar, ligue 188 (CVV, 24 horas) ou procure um serviço de urgência.</li></ul>'],
-   ['Próximas etapas de validação','<ul><li>Roda da Vida: análise fatorial exploratória e confirmatória, consistência interna por pilar e invariância entre grupos.</li><li>Big Five: validade dos 15 itens frente a um instrumento consolidado e normas brasileiras.</li><li>Eficácia: estudo piloto com lista de espera, medindo autoeficácia, bem-estar e atingimento de metas (por exemplo, Goal Attainment Scaling; Kiresuk & Sherman, 1968).</li></ul>']];
-  return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Fundamentos</div></div></div><div class="body about"><h2 style="font-size:28px">Como o Pocket Coach funciona</h2><p class="muted">Cada etapa do aplicativo tem uma justificativa na literatura científica, e cada limite está declarado.</p>'+S1.map(s=>'<details class="card"'+(s[2]?' open':'')+'><summary>'+s[0]+'</summary><div class="col" style="margin-top:10px">'+s[1]+'</div></details>').join('')+'<details class="card"><summary>Referências</summary><div class="refs" style="margin-top:8px">'+REFS.map(r=>'<p>'+esc(r)+'</p>').join('')+'</div></details></div>';
-}
-function ovPrivacy(o){
-  const nb=S.history.length,nm=S.moods.length,ng=S.goals.length,nt=S.tasks.length;
-  return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Privacidade e dados</div></div></div><div class="body"><h2 style="font-size:28px">Seus dados ficam com você</h2><p class="muted">Tudo o que você registra fica apenas neste aparelho. Não há conta, servidor nem análise de uso, e quem criou o aplicativo não tem acesso às suas informações.</p><section class="card col"><b>O que está guardado aqui</b><div class="row between"><span class="muted">Avaliações da Roda</span><b class="val">'+nb+'</b></div><div class="row between"><span class="muted">Registros de humor</span><b class="val">'+nm+'</b></div><div class="row between"><span class="muted">Metas</span><b class="val">'+ng+'</b></div><div class="row between"><span class="muted">Tarefas</span><b class="val">'+nt+'</b></div><div class="row between"><span class="muted">Perfil Big Five</span><b class="val">'+(S.bf?'Sim':'Não')+'</b></div></section><section class="card col"><b>Backup</b><p class="small muted">Se você limpar os dados do navegador, apagar o app ou trocar de aparelho, o histórico se perde. Exporte um backup e guarde onde preferir. O arquivo não é criptografado.</p><div class="row" style="flex-wrap:wrap"><button class="btn primary" data-a="bkExport">Exportar arquivo</button><button class="btn" data-a="bkCopy">Copiar como texto</button></div><div class="row"><button class="btn" data-a="bkFile">Importar arquivo</button></div><input type="file" id="bk-file" accept="application/json,.json" hidden><div class="field"><label for="bk-txt">Ou cole aqui o texto de um backup</label><textarea id="bk-txt" style="min-height:70px" placeholder="Cole o conteúdo do backup"></textarea></div><button class="btn" data-a="bkPaste">Importar texto colado</button><p class="small muted">Importar substitui todos os dados atuais.</p></section><section class="card col"><b>Apagar tudo</b><p class="small muted">Remove avaliações, humor, metas, tarefas e perfil deste aparelho. Não dá para desfazer.</p>'+(o.wipe?'<div class="note">Tem certeza? Faça um backup antes se quiser guardar algo.</div><div class="row"><button class="btn danger" style="flex:1" data-a="wipe">Sim, apagar tudo</button><button class="btn ghost" data-a="wipeNo">Cancelar</button></div>':'<button class="btn danger" data-a="wipeAsk">Apagar todos os meus dados</button>')+'</section></div>';
-}
-function cleanImport(d){
-  const num=(x,a,b,def)=>{x=Number(x);return isFinite(x)?Math.max(a,Math.min(b,x)):def};
-  const dt=x=>/^\d{4}-\d{2}-\d{2}$/.test(x)?x:today();
-  const str=(x,n)=>String(x==null?'':x).slice(0,n||600);
-  const arr=x=>Array.isArray(x)?x:[];
-  const ob=x=>(x&&typeof x==='object')?x:{};
-  const o={demo:false,cond:{},n:1000+Math.max(0,Math.floor(num(d.n,0,1e6,0)))};
-  COND.forEach(c=>{if(ob(d.cond)[c.k])o.cond[c.k]=true});
-  o.history=arr(d.history).slice(-60).map(h=>{const sc={};P.forEach(p=>{sc[p.id]=num(ob(ob(h).scores)[p.id],0,10,0)});return{date:dt(ob(h).date),scores:sc}});
-  o.desired={};P.forEach(p=>{if(ob(d.desired)[p.id]!=null)o.desired[p.id]=Math.round(num(d.desired[p.id],0,10,8))});
-  const bs=ob(ob(d.bf).scores);
-  o.bf=d.bf&&d.bf.scores?{scores:Object.fromEntries(TR.map(t=>[t.k,num(bs[t.k],1,5,3)])),date:dt(d.bf.date),demo:false}:null;
-  o.moods=arr(d.moods).slice(-1500).filter(m=>TURNS.some(t=>t.k===ob(m).turn)).map(m=>({date:dt(m.date),turn:m.turn,v:Object.fromEntries(MOODS.map(k=>[k.k,Math.round(num(ob(m.v)[k.k],0,4,0))]))}));
-  o.goals=arr(d.goals).slice(0,300).filter(g=>PM[ob(g).p]).map(g=>({id:str(g.id,24)||'x'+Math.random().toString(36).slice(2,8),p:g.p,titulo:str(g.titulo,300),medida:str(g.medida),porque:str(g.porque),resultado:str(g.resultado),obstaculo:str(g.obstaculo),se:str(g.se,300),entao:str(g.entao,300),motivos:arr(g.motivos).filter(m=>MOTS[m]),desafio:g.desafio==null?null:Math.round(num(g.desafio,1,5,3)),imp:g.imp==null?null:Math.round(num(g.imp,0,10,5)),conf:g.conf==null?null:Math.round(num(g.conf,0,10,5)),rev:num(g.rev,1,60,7),prog:arr(g.prog).slice(-200).map(e=>({date:dt(ob(e).date),v:Math.round(num(ob(e).v,0,10,0)),c:Math.round(num(ob(e).c,0,10,5))})),due:dt(g.due),status:g.status==='concluida'?'concluida':'ativa',created:dt(g.created)}));
-  o.tasks=arr(d.tasks).slice(0,3000).map(t=>ob(t)).filter(t=>str(t.title)).map(t=>({id:str(t.id,24)||'x'+Math.random().toString(36).slice(2,8),title:str(t.title,300),goal:t.goal?str(t.goal,24):null,due:/^\d{4}-\d{2}-\d{2}$/.test(t.due)?t.due:null,rec:['daily','weekly'].includes(t.rec)?t.rec:'none',done:!!t.done,log:arr(t.log).slice(-800).map(dt)}));
-  o.reviews=arr(d.reviews).slice(-300).map(r=>({date:dt(ob(r).date),a:{ok:str(ob(ob(r).a).ok),stuck:str(ob(ob(r).a).stuck),adj:str(ob(ob(r).a).adj)}}));
-  return o;
-}
-function importData(txt){
-  try{
-    const j=JSON.parse(txt),d=(j&&j.app==='pocket-coach'&&j.data)?j.data:j;
-    if(!d||typeof d!=='object'||!Array.isArray(d.history))throw new Error('formato');
-    const o=cleanImport(d);
-    Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,o);save();
-    ui.ov=null;ui.stack=[];ui.tab='home';ui.selP=null;ui.mood=null;render();toast('Backup importado');
-  }catch(e){toast('Não consegui ler esse backup')}
-}
-function backupText(){return JSON.stringify({app:'pocket-coach',v:2,exported:new Date().toISOString(),data:S},null,1)}
-async function exportBackup(){
-  const txt=backupText(),name='pocket-coach-backup-'+today()+'.json';
-  try{
-    const file=new File([txt],name,{type:'application/json'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Backup do Pocket Coach'});toast('Backup pronto');return}
-  }catch(e){if(e&&e.name==='AbortError')return}
-  try{
-    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast('Backup gerado. Se não baixou, use “Copiar como texto”');
-  }catch(e){toast('Use “Copiar como texto”')}
-}
-async function copyBackup(){
-  const txt=backupText();
-  try{await navigator.clipboard.writeText(txt);toast('Backup copiado. Cole em um lugar seguro');return}catch(e){}
-  const t=document.getElementById('bk-txt');if(t){t.value=txt;t.focus();t.select();toast('Selecione e copie o texto')}
-}
-function wipeAll(){
-  Object.keys(S).forEach(k=>delete S[k]);
-  Object.assign(S,{demo:false,cond:{},history:[],desired:{},bf:null,moods:[],goals:[],tasks:[],reviews:[],n:10});
-  save();ui.ov=null;ui.stack=[];ui.tab='home';ui.selP=null;ui.mood=null;render();toast('Dados apagados');
-}
-
-function ovHtml(o){return o.type==='roda'?ovRoda(o):o.type==='bf'?ovBf(o):o.type==='pick'?ovPick():o.type==='coach'?ovCoach(o):o.type==='about'?ovAbout():o.type==='privacy'?ovPrivacy(o):ovGoal(o)}
-
-/* ============ renderização ============ */
-const TITLES={home:'Início',avaliar:'Avaliar',metas:'Metas',plano:'Plano'};
-function render(){
-  const main=$('#main'),sc=main.scrollTop;
-  const bk=ui.stack.length?'<button class="back" data-a="back" aria-label="Voltar"><span aria-hidden="true">‹</span> Voltar</button>':'';
-  const brand='<div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--accent)" stroke-width="2.4"/><circle cx="16" cy="16" r="7" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-dasharray="4 3"/><circle cx="16" cy="16" r="2.4" fill="var(--accent)"/></svg>Pocket Coach</div>';
-  $('#top').innerHTML=bk?'<div class="l">'+bk+'<h1 style="font-size:21px">'+TITLES[ui.tab]+'</h1></div>':(ui.tab==='home'?brand:'<h1>'+TITLES[ui.tab]+'</h1>');
-  main.innerHTML=ui.tab==='home'?viewHome():ui.tab==='avaliar'?viewAvaliar():ui.tab==='metas'?viewMetas():viewPlano();
-  main.scrollTop=sc;
-  $('#nav').innerHTML=[['home','Início'],['avaliar','Avaliar'],['metas','Metas'],['plano','Plano']].map(a=>'<button class="'+(ui.tab===a[0]?'on':'')+'" data-a="navtab" data-id="'+a[0]+'" aria-label="'+a[1]+'"'+(ui.tab===a[0]?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+icon[a[0]]+'</svg>'+a[1]+'</button>').join('');
-  const L=$('#layer'),ob=L.querySelector('.overlay .body'),osc=ob?ob.scrollTop:0,keep=ui.ovKeep;
-  let h='';
-  if(ui.ov){const o=ui.ov;h+='<div class="overlay" role="dialog" aria-modal="true">'+ovHtml(o)+'</div>'}
-  if(ui.sheet){const s=ui.sheet;h+='<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true">'+(s.type==='task'?shTask(s):s.type==='goal'?shGoal(s):shReview(s))+'</div></div>'}
-  L.innerHTML=h;
-  if(keep){const nb=L.querySelector('.overlay .body');if(nb)nb.scrollTop=osc;ui.ovKeep=false}
-}
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2400)}
-const go=(tab,sub)=>{ui.tab=tab;if(sub)ui.sub=sub;ui.ov=null;ui.sheet=null;$('#main').scrollTop=0;render()};
-
-/* ============ ações ============ */
-function completeTask(t){
-  const d=today();
-  if(t.log.includes(d)){t.log=t.log.filter(x=>x!==d);if(t.rec==='none')t.done=false;else t.due=d;return}
-  t.log.push(d);
-  if(t.rec==='none')t.done=true;else t.due=addD(d,t.rec==='daily'?1:7);
-}
-function finishRoda(o){
-  const sc={};
-  P.forEach(p=>{const a=o.ans[p.id];sc[p.id]=mean(a)});
-  if(S.demo)clearDemo();
-  S.cond=o.cond;S.history.push({date:today(),scores:sc});S.desired={};
-  const d={};P.forEach(p=>{d[p.id]=Math.min(10,Math.ceil(sc[p.id])+2)});S.desired=d;
-  save();o.result=sc;o.step=12;
-}
-function startCoach(id,from){ui.ov={type:'coach',p:id,open:Math.floor(Math.random()*6),sub:null,imp:null,conf:null,from:from||null};ui.shown=0;ui.sheet=null;render()}
-function pushNav(){ui.stack.push({tab:ui.tab,sub:ui.sub,filter:ui.filter})}
-function act(a,el){
-  const id=el.dataset.id,v=el.dataset.v,o=ui.ov;
-  switch(a){
-  case 'navtab':ui.stack=[];go(id);break;
-  case 'tab':pushNav();go(id);break;
-  case 'back':{const b=ui.stack.pop();if(b){ui.tab=b.tab;ui.sub=b.sub;ui.filter=b.filter;ui.ov=null;ui.sheet=null;$('#main').scrollTop=0;render()}break}
-  case 'about':ui.ov={type:'about'};render();break;
-  case 'privacy':ui.ov={type:'privacy',wipe:false};render();break;
-  case 'wipeAsk':o.wipe=true;render();break;
-  case 'wipeNo':o.wipe=false;render();break;
-  case 'wipe':wipeAll();break;
-  case 'bkExport':exportBackup();break;
-  case 'bkCopy':copyBackup();break;
-  case 'bkFile':{const f=document.getElementById('bk-file');if(f)f.click();break}
-  case 'bkPaste':{const t=document.getElementById('bk-txt');if(t&&t.value.trim())importData(t.value);else toast('Cole o texto do backup primeiro');break}
-  case 'sheetBack':{const f=ui.sheet&&ui.sheet.f;ui.sheet=(f&&f.back)?{type:'goal',id:f.back}:null;render();break}
-  case 'sub':ui.sub=id;if(id==='humor')moodInit();render();break;
-  case 'goMood':pushNav();moodInit();go('avaliar','humor');break;
-  case 'selP':ui.selP=id;render();break;
-  case 'clearDemo':clearDemo();save();render();toast('Exemplos removidos');break;
-  case 'close':ui.ov=null;render();break;
-  case 'closeSheet':ui.sheet=null;render();break;
-  case 'scrim':ui.sheet=null;render();break;
-  case 'closeToRoda':ui.ov=null;ui.tab='avaliar';ui.sub='roda';ui.selP=null;render();break;
-  /* roda */
-  case 'roda':ui.ov={type:'roda',step:-1,cond:Object.assign({},S.cond||{}),ans:{}};ui.sheet=null;render();break;
-  case 'cond':o.cond[id]=!o.cond[id];render();break;
-  case 'rodaStart':o.step=0;ui.ovKeep=false;render();break;
-  case 'rodaFill':P.forEach(p=>{o.ans[p.id]=itemsFor(p.id,o.cond).map(()=>2+Math.floor(Math.random()*8))});finishRoda(o);render();break;
-  case 'ans':{const p=P[o.step];(o.ans[p.id]=o.ans[p.id]||[])[+el.dataset.i]=+v;ui.ovKeep=true;render();break}
-  case 'rodaBack':if(o.step<=0)o.step=-1;else o.step--;render();break;
-  case 'rodaNext':if(o.step===11)finishRoda(o);else o.step++;render();{const b=$('#layer .overlay .body');if(b)b.scrollTop=0}break;
-  /* big five */
-  case 'bf':ui.ov={type:'bf',i:0,ans:new Array(15).fill(null)};render();break;
-  case 'bfAns':o.ans[BF_ORDER[o.i]]=+v;render();setTimeout(()=>{if(ui.ov!==o)return;if(o.i<14){o.i++;render()}else{S.bf={scores:bfScores(o.ans),date:today(),demo:false};save();ui.ov=null;ui.tab='avaliar';ui.sub='perfil';render();toast('Perfil salvo')}},220);break;
-  case 'bfBack':if(o.i>0){o.i--;render()}else{ui.ov=null;render()}break;
-  /* humor */
-  case 'turn':ui.mood.turn=id;{const r=S.moods.find(m=>m.date===today()&&m.turn===id);ui.mood.sel={};if(r)MOODS.forEach(m=>{if(r.v[m.k]>0)ui.mood.sel[m.k]=r.v[m.k]})}render();break;
-  case 'mood':if(ui.mood.sel[id])delete ui.mood.sel[id];else ui.mood.sel[id]=2;render();break;
-  case 'int':ui.mood.sel[id]=+v;render();break;
-  case 'saveMood':{const vv={};MOODS.forEach(m=>{vv[m.k]=ui.mood.sel[m.k]||0});S.moods=S.moods.filter(m=>!(m.date===today()&&m.turn===ui.mood.turn));S.moods.push({date:today(),turn:ui.mood.turn,v:vv});save();render();toast('Humor registrado');break}
-  /* metas / desejada */
-  case 'editDes':ui.editDes=!ui.editDes;render();break;
-  case 'des':{const d=desired();S.desired=d;S.desired[id]=Math.max(0,Math.min(10,d[id]+(+v)));save();render();break}
-  case 'newGoal':ui.ov={type:'pick'};render();break;
-  case 'coach':startCoach(id,o&&o.type==='pick'?'pick':null);break;
-  case 'sub2':o.sub=+id;o.imp=null;o.conf=null;render();{const b=$('#layer .overlay .body');if(b)b.scrollTop=b.scrollHeight}break;
-  case 'otherSub':o.sub=null;o.imp=null;o.conf=null;ui.shown=2;render();break;
-  case 'coachBack':if(o.sub!=null){o.sub=null;o.imp=null;o.conf=null;ui.shown=2;render()}else if(o.from==='pick'){ui.ov={type:'pick'};render()}else{ui.ov=null;render()}break;
-  case 'rul':o[el.dataset.k]=+v;render();if(o.imp!=null&&o.conf!=null){const b=$('#layer .overlay .body');if(b)b.scrollTop=b.scrollHeight}break;
-  case 'rulReset':o.imp=null;o.conf=null;ui.shown=4;render();break;
-  case 'toGoal':{const s=CH[o.p].subs[o.sub][0];ui.ov={type:'goal',p:o.p,step:0,back:{p:o.p,open:o.open,sub:o.sub,imp:o.imp,conf:o.conf,from:o.from},f:{titulo:s,motivos:[],porque:'',medida:'',desafio:null,resultado:'',obstaculo:'',se:'',entao:'',dias:90,rev:7,sel:o.conf<=4?[0]:[0,1],extra:[],custom:'',planTask:true,imp:o.imp,conf:o.conf}};render();break}
-  case 'goalBack':if(o.step>0)o.step--;else{ui.ov=Object.assign({type:'coach'},o.back);ui.shown=99}render();break;
-  case 'mot':{const m=o.f.motivos,k=m.indexOf(id);if(k>=0)m.splice(k,1);else m.push(id);render();break}
-  case 'des2':o.f.desafio=+v;render();break;
-  case 'rev':o.f.rev=+v;render();break;
-  case 'planTask':o.f.planTask=!o.f.planTask;render();break;
-  case 'dias':o.f.dias=+v;render();break;
-  case 'stepSel':{const i=+el.dataset.i,s=o.f.sel;const k=s.indexOf(i);if(k>=0)s.splice(k,1);else s.push(i);render();break}
-  case 'addStep':if(o.f.custom.trim()){o.f.extra.push(o.f.custom.trim());o.f.sel.push(STEPS[o.p].length+o.f.extra.length-1);o.f.custom='';render()}break;
-  case 'goalNext':
-    if(o.step<5){o.step++;render();{const b=$('#layer .overlay .body');if(b)b.scrollTop=0}break}
-    {const f=o.f,gid=nid(),all=STEPS[o.p].concat(f.extra);
-     S.goals.push({id:gid,p:o.p,titulo:f.titulo.trim(),motivos:f.motivos.slice(),porque:f.porque.trim(),medida:f.medida.trim(),desafio:f.desafio,resultado:f.resultado.trim(),obstaculo:f.obstaculo.trim(),se:f.se.trim(),entao:f.entao.trim(),imp:f.imp,conf:f.conf,rev:f.rev,prog:[],due:addD(today(),f.dias),status:'ativa',created:today()});
-     f.sel.slice().sort((a,b)=>a-b).forEach((i,k)=>S.tasks.push({id:nid(),title:all[i],goal:gid,due:addD(today(),1+k*2),rec:'none',done:false,log:[]}));
-     let n=f.sel.length;
-     if(f.planTask&&f.se.trim()&&f.entao.trim()){S.tasks.push({id:nid(),title:'Plano: se '+f.se.trim()+', então '+f.entao.trim(),goal:gid,due:addD(today(),1),rec:'daily',done:false,log:[]});n++}
-     save();ui.ov=null;ui.tab='metas';render();toast('Meta criada com '+n+(n===1?' passo':' passos'));}
-    break;
-  case 'goal':ui.sheet={type:'goal',id:id};render();break;
-  case 'doneGoal':{const g=S.goals.find(x=>x.id===id);g.status='concluida';save();ui.sheet=null;render();toast('Meta concluída. Parabéns!');break}
-  case 'reopenGoal':{S.goals.find(x=>x.id===id).status='ativa';save();ui.sheet=null;render();break}
-  case 'delGoal':S.goals=S.goals.filter(x=>x.id!==id);S.tasks.forEach(t=>{if(t.goal===id)t.goal=null});save();ui.sheet=null;render();toast('Meta excluída');break;
-  case 'stepFor':ui.sheet={type:'task',f:{id:null,title:'',goal:id,due:addD(today(),1),rec:'none',back:id}};render();break;
-  /* tarefas */
-  case 'filter':ui.filter=id;render();break;
-  case 'tog':{const t=S.tasks.find(x=>x.id===id);completeTask(t);save();render();break}
-  case 'newTask':ui.sheet={type:'task',f:{id:null,title:'',goal:'',due:today(),rec:'none'}};render();break;
-  case 'editTask':{const t=S.tasks.find(x=>x.id===id),prevSheet=ui.sheet;ui.sheet={type:'task',f:{id:t.id,title:t.title,goal:t.goal||'',due:t.due||'',rec:t.rec,back:prevSheet&&prevSheet.type==='goal'?prevSheet.id:null}};render();break}
-  case 'tdue':ui.sheet.f.due=v;render();break;
-  case 'trec':ui.sheet.f.rec=v;render();break;
-  case 'saveTask':{const f=ui.sheet.f;if(!f.title.trim()){toast('Escreva o que fazer');break}
-    if(f.id){const t=S.tasks.find(x=>x.id===f.id);Object.assign(t,{title:f.title.trim(),goal:f.goal||null,due:f.due||null,rec:f.rec})}
-    else S.tasks.push({id:nid(),title:f.title.trim(),goal:f.goal||null,due:f.due||null,rec:f.rec,done:false,log:[]});
-    save();ui.sheet=f.back?{type:'goal',id:f.back}:null;render();toast('Tarefa salva');break}
-  case 'delTask':{const f=ui.sheet.f;S.tasks=S.tasks.filter(x=>x.id!==f.id);save();ui.sheet=f.back?{type:'goal',id:f.back}:null;render();break}
-  case 'review':{const g={};S.goals.filter(x=>x.status==='ativa').forEach(x=>{const pr=x.prog||[],l=pr[pr.length-1];g[x.id]={v:l?l.v:0,c:l?l.c:(x.conf!=null?x.conf:5)}});ui.sheet={type:'review',f:{},g:g};render();break}
-  case 'rv':{const r=ui.sheet.g[id],k=el.dataset.k;r[k]=Math.max(0,Math.min(10,r[k]+(+v)));render();break}
-  case 'saveReview':{const t=today();S.goals.forEach(x=>{const r=ui.sheet.g[x.id];if(!r)return;x.prog=(x.prog||[]).filter(e=>e.date!==t);x.prog.push({date:t,v:r.v,c:r.c})});S.reviews.push({date:t,a:ui.sheet.f});save();ui.sheet=null;render();toast('Revisão salva');break}
-  }
-}
-document.addEventListener('click',e=>{
-  const el=e.target.closest('[data-a]');if(!el)return;
-  if(el.dataset.a==='scrim'&&e.target!==el)return;
-  act(el.dataset.a,el);
-});
-document.addEventListener('keydown',e=>{
-  if((e.key==='Enter'||e.key===' ')&&e.target.getAttribute&&e.target.getAttribute('role')==='button'&&e.target.dataset.a){e.preventDefault();act(e.target.dataset.a,e.target)}
-  if(e.key==='Escape'){if(ui.sheet){ui.sheet=null;render()}else if(ui.ov){ui.ov=null;render()}}
-});
-document.addEventListener('input',e=>{
-  const f=e.target.dataset&&e.target.dataset.f;if(!f)return;
-  if(ui.sheet&&ui.sheet.f)ui.sheet.f[f]=e.target.value;
-  else if(ui.ov&&ui.ov.f){
-    ui.ov.f[f]=e.target.value;
-    if(ui.ov.type==='goal'){
-      const b=document.querySelector('[data-a="goalNext"]');if(b)b.disabled=!goalValid(ui.ov);
-      const h=document.getElementById('g-avoid');if(h&&f==='titulo')h.hidden=!AVOID.test(e.target.value);
+  if(SRC[v]){
+    var wrap=$('#v-'+v);
+    if(!$('iframe',wrap)){
+      var f=document.createElement('iframe');
+      f.className='frame';f.src=SRC[v];f.title=LABEL[v];
+      f.setAttribute('allow','clipboard-write');
+      wrap.insertBefore(f,wrap.firstChild);
     }
   }
+  document.title=$('#v-'+v).dataset.title;
+  var ext=$('#ext');ext.hidden=!SRC[v];if(SRC[v])ext.href=SRC[v];
+  if(v==='inicio')refresh();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- progresso: lê (somente leitura) o que cada app guarda no aparelho ---------- */
+function read(key){try{var r=localStorage.getItem(key);return r?JSON.parse(r):null}catch(e){return null}}
+function status(){
+  var a=read('sia-proto-v1')||{}, c=read('pocketcoach.v2')||{};
+  var mapaFeito=!!(a.history&&a.history.length);
+  var mapaIniciou=mapaFeito||(a.ans&&Object.keys(a.ans).length>0);
+  var real=c&&!c.demo;
+  var roda=!!(real&&c.history&&c.history.length);
+  var meta=!!(real&&c.goals&&c.goals.length)||!!(a.goals&&a.goals.length);
+  var passo=!!(real&&c.tasks&&c.tasks.some(function(t){return t.done||(t.log&&t.log.length)}))||
+            !!(a.log&&Object.keys(a.log).length);
+  return {mapaFeito:mapaFeito,mapaIniciou:mapaIniciou,roda:roda,meta:meta,passo:passo,
+          cMetas:real&&c.goals?c.goals.length:0,cTarefas:real&&c.tasks?c.tasks.length:0};
+}
+var STEPS=[
+  {k:'mapaFeito',t:'Conhecer seu mapa',d:'Responder o questionário e ler o perfil como hipótese.',href:'#mapa',cta:'Começar meu mapa',hint:'Leva cerca de 10 minutos. Sem cadastro.'},
+  {k:'roda',t:'Ver sua Roda da Vida',d:'Dar uma nota a 12 áreas e marcar onde quer chegar.',href:'#coach',cta:'Fazer minha Roda da Vida',hint:'Cerca de 10 minutos. Você pode pular o que não se aplica.'},
+  {k:'meta',t:'Escolher uma meta pequena',d:'Uma só, com medida clara e um motivo que seja seu.',href:'#coach',cta:'Definir minha primeira meta',hint:'Metas pequenas e específicas têm mais chance de sair do papel.'},
+  {k:'passo',t:'Dar o primeiro passo',d:'Uma tarefa de 5 minutos já conta. Marque quando fizer.',href:'#coach',cta:'Registrar um primeiro passo',hint:'Não precisa ser perfeito. Precisa ser feito.'}
+];
+function refresh(){
+  var s=status(),next=null;
+  var html=STEPS.map(function(st,i){
+    var done=!!s[st.k],cls='';
+    if(done)cls='done';else if(!next){next=st;cls='next'}
+    var label=done?'Concluído':(cls==='next'?'Seu próximo passo':'Em seguida');
+    return '<li class="'+cls+'"><span class="num" aria-hidden="true">'+(done?'✓':(i+1))+'</span><h3>'+st.t+'</h3><p>'+st.d+'</p><span class="st">'+label+'</span></li>';
+  }).join('');
+  $('#trail').innerHTML=html;
+
+  var cta=$('#mainCta'),hint=$('#mainHint');
+  if(next){
+    cta.href=next.href;hint.textContent=next.hint;
+    cta.textContent=(next.k==='mapaFeito'&&s.mapaIniciou)?'Continuar meu mapa':next.cta;
+  }else{
+    cta.href='#coach';cta.textContent='Continuar meu acompanhamento';
+    hint.textContent='Tudo em dia. Refaça o mapa e a Roda da Vida em 8 a 12 semanas para ver o que mudou.';
+  }
+  var pend=pendingFromMapa();
+  if(pend>0&&(!next||next.k!=='mapaFeito')){
+    cta.href='#coach';cta.textContent='Levar as metas do Mapa para o Coach';
+    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando no Início do Coach.':'Há '+pend+' práticas escolhidas no Mapa esperando no Início do Coach.';
+  }
+  $('#review').innerHTML=reviewHtml();
+  var pm=$('#pill-mapa'),pc=$('#pill-coach');
+  pm.textContent=s.mapaFeito?'Mapa feito':(s.mapaIniciou?'Em andamento':'Não iniciado');
+  pm.classList.toggle('on',s.mapaFeito);
+  var cs=s.roda?('Roda feita'+(s.cMetas?' · '+s.cMetas+(s.cMetas>1?' metas':' meta'):'')):'Não iniciado';
+  pc.textContent=cs;pc.classList.toggle('on',s.roda);
+}
+/* ---------- lembrete de revisão (8 a 12 semanas) ---------- */
+var DAY=864e5;
+function parseD(k){var a=String(k).split('-').map(Number);return new Date(a[0],a[1]-1,a[2])}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtD(d){return d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}
+function lastDates(){
+  var a=read('sia-proto-v1')||{}, c=read('pocketcoach.v2')||{};
+  var m=a.history&&a.history.length?a.history[a.history.length-1].d:null;
+  var r=(c&&!c.demo&&c.history&&c.history.length)?c.history[c.history.length-1].date:null;
+  return {mapa:m&&parseD(m),roda:r&&parseD(r)};
+}
+function reviewHtml(){
+  var L=lastDates(),ds=[L.mapa,L.roda].filter(Boolean);
+  if(!ds.length)return '';
+  var snooze=localStorage.getItem('rumo.snooze');
+  var last=new Date(Math.max.apply(null,ds)),now=new Date();now.setHours(0,0,0,0);
+  var days=Math.round((now-last)/DAY),weeks=Math.floor(days/7);
+  var from=new Date(last.getTime()+56*DAY),to=new Date(last.getTime()+84*DAY);
+  if(days>=56){
+    if(snooze&&snooze>iso(now))return '';
+    var old=(!L.mapa||(L.roda&&L.roda<L.mapa))?'roda':'mapa';
+    return '<div class="review due"><div><b>Que tal rever como você está?</b><p>Faz '+weeks+' semanas desde a sua última avaliação. Refazer agora mostra o que mudou e ajuda a escolher o próximo foco. Se não estiver com cabeça para isso, tudo bem, o convite fica para depois.</p></div><div class="acts">'+
+      (L.mapa?'<a class="btn pri sm" href="#mapa">Refazer o mapa</a>':'')+(L.roda?'<a class="btn '+(L.mapa?'sec':'pri')+' sm" href="#coach">Refazer a Roda da Vida</a>':'')+
+      '<button class="btn sec sm" type="button" data-act="snooze">Lembrar em 2 semanas</button></div></div>';
+  }
+  return '<div class="review"><div><b>Próxima revisão sugerida: entre '+fmtD(from)+' e '+fmtD(to)+'</b><p>Passaram '+(weeks===1?'1 semana':weeks+' semanas')+' desde a sua última avaliação. Rever a cada 8 a 12 semanas dá tempo para as mudanças aparecerem.</p></div><div class="acts"><button class="btn sec sm" type="button" data-act="ics" data-from="'+iso(from)+'">Adicionar ao calendário</button></div></div>';
+}
+function downloadIcs(fromIso){
+  var d=parseD(fromIso),e=new Date(d.getTime()+DAY);
+  var f=function(x){return x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0')};
+  var txt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Rumo//PT-BR//','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    'UID:rumo-revisao-'+f(d)+'@rumo','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,''),
+    'DTSTART;VALUE=DATE:'+f(d),'DTEND;VALUE=DATE:'+f(e),'SUMMARY:Rever meu mapa e minha Roda da Vida (Rumo)',
+    'DESCRIPTION:Hora de olhar como estou. Refazer o mapa e a Roda da Vida mostra o que mudou desde a última vez. Sem pressa: dá para fazer até 4 semanas depois.',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/calendar'}));a.download='rumo-revisao.ics';
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]');if(!b)return;
+  if(b.dataset.act==='snooze'){var d=new Date();d.setDate(d.getDate()+14);try{localStorage.setItem('rumo.snooze',iso(d))}catch(_){}refresh()}
+  if(b.dataset.act==='ics')downloadIcs(b.dataset.from);
 });
-document.addEventListener('change',e=>{
-  if(e.target&&e.target.id==='bk-file'){const fl=e.target.files&&e.target.files[0];if(!fl)return;if(fl.size>8e6){toast('Arquivo grande demais');return}const r=new FileReader();r.onload=()=>importData(String(r.result));r.onerror=()=>toast('Não consegui ler o arquivo');r.readAsText(fl);e.target.value='';return}
-  const f=e.target.dataset&&e.target.dataset.f;if(!f)return;
-  if(ui.sheet&&ui.sheet.f)ui.sheet.f[f]=e.target.value;
-});
-render();
-})();
-</script>
-<script>
+/* metas que o Mapa publicou e o Coach ainda não recebeu */
+function pendingFromMapa(){
+  var h=read('rumo.handoff.v1'),done=read('rumo.handoff.done')||[];
+  return h&&h.items?h.items.filter(function(i){return i&&done.indexOf(i.rid)<0}).length:0;
+}
+
+/* os apps rodam em iframes da mesma origem: o evento "storage" avisa quando eles salvam algo */
+window.addEventListener('storage',function(){if(!$('#v-inicio').hidden)refresh()});
+
+/* ---------- offline ---------- */
 try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}catch(e){}
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+
+refresh();route();
+})();
 </script>
 </body>
 </html>
