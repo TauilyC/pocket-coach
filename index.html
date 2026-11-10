@@ -50,6 +50,7 @@ nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)
 main{padding-top:var(--bar)}
 .view[hidden]{display:none}
 .frame{display:block;width:100%;border:0;height:calc(100dvh - var(--bar));background:var(--bg-outer)}
+.frame[hidden]{display:none}
 .frame-wrap{position:relative}
 
 /* início */
@@ -85,6 +86,13 @@ section.blk>p.sub{color:var(--muted);margin-bottom:18px;max-width:60ch}
 .trail li.next{border-color:var(--accent);background:linear-gradient(180deg,rgba(244,184,96,.10),var(--surface))}
 .trail li.next .num{border-color:var(--accent);color:var(--accent)}
 .trail li.next .st{color:var(--accent)}
+
+/* aviso quando um instrumento não abre dentro da página */
+.fallback{max-width:520px;margin:48px auto;padding:0 16px}
+.fallback .box{background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:22px;display:grid;gap:12px}
+.fallback h2{font-size:1.3rem}
+.fallback p{color:#C9CEEA}
+.fallback .acts{display:flex;flex-wrap:wrap;gap:10px}
 
 /* revisão */
 .review{margin-top:16px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);padding:16px 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
@@ -261,6 +269,7 @@ function route(){
       f.className='frame';f.src=SRC[v];f.title=LABEL[v];
       f.setAttribute('allow','clipboard-write');
       wrap.insertBefore(f,wrap.firstChild);
+      watchFrame(v,wrap,f);
     }
   }
   document.body.dataset.view=v;
@@ -268,6 +277,23 @@ function route(){
   var ext=$('#ext');ext.hidden=!SRC[v];if(SRC[v])ext.href=SRC[v];
   if(v==='inicio')refresh();
   window.scrollTo(0,0);
+}
+/* Se o navegador bloquear a exibição dentro da página (ou ela não carregar), não deixa a tela vazia. */
+function watchFrame(v,wrap,f){
+  var settled=false;
+  function fail(){
+    if(settled)return;settled=true;
+    f.hidden=true;
+    var box=document.createElement('div');box.className='fallback';box.setAttribute('role','alert');
+    box.innerHTML='<div class="box"><h2>Não deu para abrir o '+LABEL[v]+' aqui dentro</h2><p>O navegador não mostrou essa parte dentro desta página. Em tela cheia ele funciona normalmente, e o que você já registrou continua salvo no aparelho.</p><div class="acts"><a class="btn pri" href="'+SRC[v]+'">Abrir o '+LABEL[v]+' em tela cheia</a><button class="btn sec" type="button" data-act="retry" data-v="'+v+'">Tentar de novo</button></div><p class="hint">Para voltar ao Rumo, use o botão Voltar do navegador ou do celular.</p></div>';
+    wrap.appendChild(box);
+  }
+  f.addEventListener('load',function(){
+    var ok=false;
+    try{ok=!!(f.contentDocument&&f.contentDocument.body&&f.contentDocument.body.children.length>0&&f.contentWindow.location.pathname.indexOf(SRC[v])>-1)}catch(e){ok=false}
+    if(ok)settled=true;else fail();
+  });
+  setTimeout(function(){if(!settled)fail()},10000);
 }
 window.addEventListener('hashchange',route);
 function setBar(){var h=document.querySelector('header.bar').offsetHeight;if(h)document.documentElement.style.setProperty('--bar',h+'px')}
@@ -365,6 +391,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-act]');if(!b)return;
   if(b.dataset.act==='snooze'){var d=new Date();d.setDate(d.getDate()+14);try{localStorage.setItem('rumo.snooze',iso(d))}catch(_){}refresh()}
   if(b.dataset.act==='ics')downloadIcs(b.dataset.from);
+  if(b.dataset.act==='retry'){var w=$('#v-'+b.dataset.v),old=$('iframe',w),fb=$('.fallback',w);if(fb)fb.remove();if(old)old.remove();route()}
 });
 /* metas que o Mapa publicou e o Coach ainda não recebeu */
 function pendingFromMapa(){
