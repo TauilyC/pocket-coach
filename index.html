@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pocket Coach · Conhecer-se para crescer</title>
+<title>Rumo · Conhecer-se para crescer</title>
 <meta name="description" content="Um mapa de autoconhecimento e um coach de bolso para transformar o que você descobre em metas e passos pequenos. Seus dados ficam só no seu aparelho.">
 <meta name="theme-color" content="#13172B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pocket Coach">
+<meta name="apple-mobile-web-app-title" content="Rumo">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
-/* Mesma linguagem do Pocket Coach: tinta índigo, açafrão para o que é "agora", verde-água para o que é "possível". */
+/* Rumo: mesma linguagem visual do Pocket Coach: tinta índigo, açafrão para o que é "agora", verde-água para o que é "possível". */
 :root{
   --bg:#13172B; --bg-outer:#0B0E1C; --surface:#1B2042; --surface2:#262C58; --line:#2F3664;
   --text:#EEF0FA; --muted:#98A1C8; --accent:#F4B860; --accent-ink:#241803; --teal:#5FD0C0; --lilac:#A99BF2;
@@ -86,6 +86,16 @@ section.blk>p.sub{color:var(--muted);margin-bottom:18px;max-width:60ch}
 .trail li.next .num{border-color:var(--accent);color:var(--accent)}
 .trail li.next .st{color:var(--accent)}
 
+/* revisão */
+.review{margin-top:16px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);padding:16px 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.review.due{border-color:var(--accent);background:linear-gradient(180deg,rgba(244,184,96,.10),var(--surface))}
+.review b{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:2px}
+.review p{font-size:.92rem;color:var(--muted);max-width:56ch}
+.review .acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn.sm{padding:8px 14px;font-size:.88rem;border-radius:12px}
+button.btn{font:inherit;font-weight:700;cursor:pointer;color:var(--text)}
+button.btn.pri{color:var(--accent-ink)}
+
 /* ferramentas */
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.tools{grid-template-columns:1fr}}
@@ -120,7 +130,7 @@ footer.help b{color:var(--text)}
 
 <header class="bar">
   <div class="in">
-    <a class="brand" href="#inicio"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Pocket Coach</span></a>
+    <a class="brand" href="#inicio"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Rumo</span></a>
     <nav class="tabs" aria-label="Seções">
       <a href="#inicio" data-v="inicio">Início</a>
       <a href="#mapa" data-v="mapa">Mapa de autoconhecimento</a>
@@ -132,7 +142,7 @@ footer.help b{color:var(--text)}
 
 <main id="conteudo">
   <!-- ================= INÍCIO ================= -->
-  <div class="view home" id="v-inicio" data-title="Pocket Coach · Conhecer-se para crescer">
+  <div class="view home" id="v-inicio" data-title="Rumo · Conhecer-se para crescer">
     <div class="hero">
       <span class="eyebrow">Autoconhecimento e autodesenvolvimento</span>
       <h1>Entender quem você é ajuda a decidir <em>o que fazer a seguir.</em></h1>
@@ -147,6 +157,7 @@ footer.help b{color:var(--text)}
       <h2 id="h-trilha">Sua trilha</h2>
       <p class="sub">Quatro marcos, um de cada vez. Cada um que você completa acende aqui, e ninguém além de você vê isso.</p>
       <ol class="trail" id="trail"></ol>
+      <div id="review"></div>
     </section>
 
     <section class="blk" aria-labelledby="h-tools">
@@ -219,11 +230,11 @@ footer.help b{color:var(--text)}
   </div>
 
   <!-- ================= MAPA ================= -->
-  <div class="view frame-wrap is-mapa" id="v-mapa" data-title="Mapa de autoconhecimento · Pocket Coach" hidden>
+  <div class="view frame-wrap is-mapa" id="v-mapa" data-title="Mapa de autoconhecimento · Rumo" hidden>
   </div>
 
   <!-- ================= COACH ================= -->
-  <div class="view frame-wrap is-coach" id="v-coach" data-title="Coach · Pocket Coach" hidden>
+  <div class="view frame-wrap is-coach" id="v-coach" data-title="Pocket Coach · Rumo" hidden>
   </div>
 </main>
 
@@ -297,12 +308,67 @@ function refresh(){
     cta.href='#coach';cta.textContent='Continuar meu acompanhamento';
     hint.textContent='Tudo em dia. Refaça o mapa e a Roda da Vida em 8 a 12 semanas para ver o que mudou.';
   }
+  var pend=pendingFromMapa();
+  if(pend>0&&(!next||next.k!=='mapaFeito')){
+    cta.href='#coach';cta.textContent='Levar as metas do Mapa para o Coach';
+    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando no Início do Coach.':'Há '+pend+' práticas escolhidas no Mapa esperando no Início do Coach.';
+  }
+  $('#review').innerHTML=reviewHtml();
   var pm=$('#pill-mapa'),pc=$('#pill-coach');
   pm.textContent=s.mapaFeito?'Mapa feito':(s.mapaIniciou?'Em andamento':'Não iniciado');
   pm.classList.toggle('on',s.mapaFeito);
   var cs=s.roda?('Roda feita'+(s.cMetas?' · '+s.cMetas+(s.cMetas>1?' metas':' meta'):'')):'Não iniciado';
   pc.textContent=cs;pc.classList.toggle('on',s.roda);
 }
+/* ---------- lembrete de revisão (8 a 12 semanas) ---------- */
+var DAY=864e5;
+function parseD(k){var a=String(k).split('-').map(Number);return new Date(a[0],a[1]-1,a[2])}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtD(d){return d.toLocaleDateString('pt-BR',{day:'numeric',month:'long'})}
+function lastDates(){
+  var a=read('sia-proto-v1')||{}, c=read('pocketcoach.v2')||{};
+  var m=a.history&&a.history.length?a.history[a.history.length-1].d:null;
+  var r=(c&&!c.demo&&c.history&&c.history.length)?c.history[c.history.length-1].date:null;
+  return {mapa:m&&parseD(m),roda:r&&parseD(r)};
+}
+function reviewHtml(){
+  var L=lastDates(),ds=[L.mapa,L.roda].filter(Boolean);
+  if(!ds.length)return '';
+  var snooze=localStorage.getItem('rumo.snooze');
+  var last=new Date(Math.max.apply(null,ds)),now=new Date();now.setHours(0,0,0,0);
+  var days=Math.round((now-last)/DAY),weeks=Math.floor(days/7);
+  var from=new Date(last.getTime()+56*DAY),to=new Date(last.getTime()+84*DAY);
+  if(days>=56){
+    if(snooze&&snooze>iso(now))return '';
+    var old=(!L.mapa||(L.roda&&L.roda<L.mapa))?'roda':'mapa';
+    return '<div class="review due"><div><b>Que tal rever como você está?</b><p>Faz '+weeks+' semanas desde a sua última avaliação. Refazer agora mostra o que mudou e ajuda a escolher o próximo foco. Se não estiver com cabeça para isso, tudo bem, o convite fica para depois.</p></div><div class="acts">'+
+      (L.mapa?'<a class="btn pri sm" href="#mapa">Refazer o mapa</a>':'')+(L.roda?'<a class="btn '+(L.mapa?'sec':'pri')+' sm" href="#coach">Refazer a Roda da Vida</a>':'')+
+      '<button class="btn sec sm" type="button" data-act="snooze">Lembrar em 2 semanas</button></div></div>';
+  }
+  return '<div class="review"><div><b>Próxima revisão sugerida: entre '+fmtD(from)+' e '+fmtD(to)+'</b><p>Passaram '+(weeks===1?'1 semana':weeks+' semanas')+' desde a sua última avaliação. Rever a cada 8 a 12 semanas dá tempo para as mudanças aparecerem.</p></div><div class="acts"><button class="btn sec sm" type="button" data-act="ics" data-from="'+iso(from)+'">Adicionar ao calendário</button></div></div>';
+}
+function downloadIcs(fromIso){
+  var d=parseD(fromIso),e=new Date(d.getTime()+DAY);
+  var f=function(x){return x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0')};
+  var txt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Rumo//PT-BR//','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    'UID:rumo-revisao-'+f(d)+'@rumo','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,''),
+    'DTSTART;VALUE=DATE:'+f(d),'DTEND;VALUE=DATE:'+f(e),'SUMMARY:Rever meu mapa e minha Roda da Vida (Rumo)',
+    'DESCRIPTION:Hora de olhar como estou. Refazer o mapa e a Roda da Vida mostra o que mudou desde a última vez. Sem pressa: dá para fazer até 4 semanas depois.',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/calendar'}));a.download='rumo-revisao.ics';
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]');if(!b)return;
+  if(b.dataset.act==='snooze'){var d=new Date();d.setDate(d.getDate()+14);try{localStorage.setItem('rumo.snooze',iso(d))}catch(_){}refresh()}
+  if(b.dataset.act==='ics')downloadIcs(b.dataset.from);
+});
+/* metas que o Mapa publicou e o Coach ainda não recebeu */
+function pendingFromMapa(){
+  var h=read('rumo.handoff.v1'),done=read('rumo.handoff.done')||[];
+  return h&&h.items?h.items.filter(function(i){return i&&done.indexOf(i.rid)<0}).length:0;
+}
+
 /* os apps rodam em iframes da mesma origem: o evento "storage" avisa quando eles salvam algo */
 window.addEventListener('storage',function(){if(!$('#v-inicio').hidden)refresh()});
 

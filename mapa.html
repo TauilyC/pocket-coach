@@ -434,7 +434,19 @@ const fresh=()=>({view:'welcome',consent:false,i:0,ans:{},res:{val:[],str:[]},
 function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return mem;}}
 let S=Object.assign(fresh(),load()||{});
 S.ctx=Object.assign(fresh().ctx,S.ctx||{});
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){try{mem=JSON.parse(JSON.stringify(S));}catch(_){}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){try{mem=JSON.parse(JSON.stringify(S));}catch(_){}}try{syncHandoff();}catch(_){}}
+/* Ponte com o Coach: publica (só neste aparelho) as metas que a pessoa escolheu no plano, para o Coach oferecê-las como meta.
+   Pilar do Coach correspondente a cada prática. Sem metas escolhidas, não há nada publicado. */
+const HANDOFF_KEY='rumo.handoff.v1';
+const PILLAR={R1:'emo',R2:'soc',R3:'int',R4:'sat',R5:'soc',R6:'amo',R7:'emo',R8:'sau',R9:'soc',R10:'emo',R11:'esp',R12:'car',R13:'esp'};
+function syncHandoff(){
+  try{
+    const items=(S.goals||[]).map(id=>RULES.find(r=>r.id===id)).filter(r=>r&&PILLAR[r.id]).map(r=>{const d=doseOf(r.id);
+      return {rid:r.id,skill:r.skill,pillar:PILLAR[r.id],dose:d,practice:r.pr[d],ind:r.ind};});
+    if(items.length)localStorage.setItem(HANDOFF_KEY,JSON.stringify({at:Date.now(),items}));
+    else localStorage.removeItem(HANDOFF_KEY);
+  }catch(e){}
+}
 
 /* ================= FLUXO ================= */
 const FLOW=[{t:'sec',id:'tri'}];

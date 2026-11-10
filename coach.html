@@ -529,12 +529,27 @@ function todayTasks(){const t=today();if(isRest())return S.tasks.filter(x=>x.log
 function goalPaused(x){const g=x.goal&&S.goals.find(y=>y.id===x.goal);return !!g&&g.status==='pausada'}
 
 /* ============ telas principais ============ */
+/* ============ ponte com o Mapa de autoconhecimento ============ */
+const HO_KEY='rumo.handoff.v1',HO_DONE='rumo.handoff.done';
+function hoRead(k,d){try{const r=localStorage.getItem(k);return r?JSON.parse(r):d}catch(e){return d}}
+function hoPending(){
+  const h=hoRead(HO_KEY,null),done=hoRead(HO_DONE,[]);
+  return h&&Array.isArray(h.items)?h.items.filter(i=>i&&PM[i.pillar]&&!done.includes(i.rid)):[];
+}
+function hoDone(rid){try{const d=hoRead(HO_DONE,[]);if(!d.includes(rid)){d.push(rid);localStorage.setItem(HO_DONE,JSON.stringify(d))}}catch(e){}}
+function mapaCard(){
+  const it=hoPending();if(!it.length)return '';
+  return '<section class="card col span2"><span class="eyebrow">Do seu Mapa de autoconhecimento</span><h3 style="font-size:21px">Você escolheu '+(it.length>1?'estas práticas':'esta prática')+' no Mapa. Quer levá-'+(it.length>1?'las':'la')+' para o plano?</h3><p class="muted small">Cada uma vira uma meta que você ajusta do seu jeito, já com a primeira prática como passo.</p>'+
+    it.map(i=>'<div class="row between" style="gap:10px;align-items:center"><div class="col" style="gap:2px;min-width:0"><b style="font-size:15px">'+esc(i.skill)+'</b><span class="small muted">'+esc(PM[i.pillar].n)+' · prática de '+esc(i.dose)+' min</span></div><button class="btn sm primary" style="flex:none" data-a="fromMapa" data-id="'+esc(i.rid)+'">Criar meta</button></div>').join('')+
+    '<button class="btn sm ghost" data-a="mapaDismiss">Agora não</button></section>';
+}
 function viewHome(){
   const c=cur(),h=new Date().getHours(),g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const dt=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   let s='';
   if(S.demo)s+='<div class="banner"><span>Você está vendo dados de exemplo. Eles somem quando você conclui sua primeira avaliação.</span><button class="btn sm ghost" data-a="clearDemo">Limpar</button></div>';
   s+='<div class="span2 row between" style="align-items:flex-start;gap:12px"><div><h2 style="font-size:30px">'+g+'.</h2><p class="muted cap">'+dt+'</p></div><button class="btn sm" style="flex:none;text-align:center;line-height:1.2;padding:8px 12px" data-a="guide">Como usar o<br class="mbr"> Pocket Coach</button></div>';
+  s+=mapaCard();
   if(c){
     const lw=attention(1)[0],d=desired(),avg=mean(P.map(p=>c.scores[p.id]));
     s+='<section class="card col"><div class="row between"><span class="eyebrow">Seu ponto de partida</span><span class="tag">Roda de '+fdate(c.date)+'</span></div><div class="row" style="align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:1 1 150px;min-width:150px">'+radar(c.scores,d,{mini:true})+'</div><div class="col" style="flex:1 1 150px;gap:6px"><span class="muted small">Equilíbrio geral</span><span class="big">'+f1(avg)+'</span><span class="muted small" style="margin-top:6px">'+(hasDes()?'Maior distância até a sua roda desejada':'Pilar com a menor nota')+'</span><b style="font-family:var(--display);font-size:19px">'+esc(lw.n)+' · '+f1(c.scores[lw.id])+'</b></div></div><button class="btn primary block" data-a="coach" data-id="'+lw.id+'">Trabalhar em '+esc(lw.n.toLowerCase())+'</button></section>';
@@ -1082,6 +1097,7 @@ async function copyBackup(){
 function wipeAll(){
   Object.keys(S).forEach(k=>delete S[k]);
   Object.assign(S,{demo:false,cond:{},history:[],desired:{},af:null,onb:true,moods:[],goals:[],tasks:[],reviews:[],rest:[],alertMute:null,n:10});
+  try{localStorage.removeItem(HO_DONE)}catch(e){}
   save();ui.ov=null;ui.stack=[];ui.tab='home';ui.selP=null;ui.mood=null;render();toast('Dados apagados');
 }
 
@@ -1209,7 +1225,12 @@ function act(a,el){
   case 'rul':o[el.dataset.k]=+v;render();if(o.imp!=null&&o.conf!=null){const b=$('#layer .overlay .body');if(b)b.scrollTop=b.scrollHeight}break;
   case 'rulReset':o.imp=null;o.conf=null;ui.shown=4;render();break;
   case 'toGoal':{const s=CH[o.p].subs[o.sub][0];ui.ov={type:'goal',p:o.p,step:0,back:{p:o.p,open:o.open,sub:o.sub,imp:o.imp,conf:o.conf,from:o.from},f:{titulo:s,motivos:[],porque:'',medida:'',desafio:null,resultado:'',obstaculo:'',se:'',entao:'',dias:90,rev:7,sel:o.conf<=4?[0]:[0,1],extra:[],custom:'',planTask:true,imp:o.imp,conf:o.conf}};render();break}
-  case 'goalBack':if(o.step>0)o.step--;else{ui.ov=Object.assign({type:'coach'},o.back);ui.shown=99}render();break;
+  case 'fromMapa':{const it=hoPending().find(i=>i.rid===id);if(!it)break;if(limitHit()){ui.ov={type:'limit'};render();break}
+    const p=it.pillar,ex=String(it.practice||'').slice(0,200);
+    ui.ov={type:'goal',p:p,step:0,fromMapa:true,f:{fromRid:it.rid,titulo:'Desenvolver: '+String(it.skill).slice(0,120),motivos:[],porque:'',medida:String(it.ind||'').slice(0,300),desafio:null,resultado:'',obstaculo:'',se:'',entao:'',dias:90,rev:7,sel:ex?[STEPS[p].length]:[0],extra:ex?[ex]:[],custom:'',planTask:true,imp:null,conf:null}};
+    ui.tab='home';render();break}
+  case 'mapaDismiss':hoPending().forEach(i=>hoDone(i.rid));render();toast('Tudo bem. As sugestões saíram daqui');break;
+  case 'goalBack':if(o.step>0)o.step--;else if(o.fromMapa)ui.ov=null;else{ui.ov=Object.assign({type:'coach'},o.back);ui.shown=99}render();break;
   case 'mot':{const m=o.f.motivos,k=m.indexOf(id);if(k>=0)m.splice(k,1);else m.push(id);render();break}
   case 'des2':o.f.desafio=+v;render();break;
   case 'rev':o.f.rev=+v;render();break;
@@ -1219,11 +1240,12 @@ function act(a,el){
   case 'addStep':if(o.f.custom.trim()){o.f.extra.push(o.f.custom.trim());o.f.sel.push(STEPS[o.p].length+o.f.extra.length-1);o.f.custom='';render()}break;
   case 'goalNext':
     if(o.step<5){o.step++;render();{const b=$('#layer .overlay .body');if(b)b.scrollTop=0}break}
-    {const f=o.f,gid=nid(),all=STEPS[o.p].concat(f.extra);
+    {const f=o.f,gid=nid(),all=STEPS[o.p].concat(f.extra);if(f.fromRid&&S.demo)clearDemo();
      S.goals.push({id:gid,p:o.p,titulo:f.titulo.trim(),motivos:f.motivos.slice(),porque:f.porque.trim(),medida:f.medida.trim(),desafio:f.desafio,resultado:f.resultado.trim(),obstaculo:f.obstaculo.trim(),se:f.se.trim(),entao:f.entao.trim(),imp:f.imp,conf:f.conf,rev:f.rev,prog:[],due:addD(today(),f.dias),status:'ativa',created:today(),base:cur()?cur().scores[o.p]:null});
      f.sel.slice().sort((a,b)=>a-b).forEach((i,k)=>S.tasks.push({id:nid(),title:all[i],goal:gid,due:addD(today(),1+k*2),rec:'none',done:false,log:[]}));
      let n=f.sel.length;
      if(f.planTask&&f.se.trim()&&f.entao.trim()){S.tasks.push({id:nid(),title:'Plano: se '+f.se.trim()+', então '+f.entao.trim(),goal:gid,due:addD(today(),1),rec:'daily',done:false,log:[]});n++}
+     if(f.fromRid)hoDone(f.fromRid);
      save();ui.ov=null;ui.tab='metas';render();toast('Meta criada com '+n+(n===1?' passo':' passos'));}
     break;
   case 'goal':ui.sheet={type:'goal',id:id};render();break;
@@ -1282,6 +1304,7 @@ document.addEventListener('change',e=>{
   if(ui.sheet&&ui.sheet.f)ui.sheet.f[f]=e.target.value;
 });
 if(!S.onb)ui.ov={type:'onb',i:0};
+window.addEventListener('storage',e=>{if(e.key===HO_KEY&&ui.tab==='home'&&!ui.ov&&!ui.sheet)render()});
 render();
 })();
 </script>
