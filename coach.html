@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<script>try{if(top!==self)document.documentElement.classList.add('embed')}catch(e){document.documentElement.classList.add('embed')}</script>
+<script src="rumo-bar.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Coach · Rumo</title>
 <meta name="theme-color" content="#13172B">
@@ -27,8 +27,8 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-.embed .sbrand{display:none}
-.embed .top:has(.brand){display:none}
+.rumo .sbrand{display:none}
+.rumo .top:has(.brand){display:none}
 html,body{height:100%;margin:0}
 body{background:var(--bg-outer);color:var(--text);font:400 16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button,input,textarea,select{font:inherit;color:inherit}
@@ -444,7 +444,7 @@ function seed(){
 function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.history){delete s.bf;return s}}}catch(e){}return null}
 const blank=()=>({demo:false,cond:{},history:[],desired:{},af:null,onb:false,moods:[],goals:[],tasks:[],reviews:[],rest:[],alertMute:null,n:10});
 const S=load()||blank();
-const EMBED=document.documentElement.classList.contains('embed');
+const EMBED=document.documentElement.classList.contains('rumo');
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const ui={stack:[],tab:'home',sub:'roda',selP:null,editDes:false,filter:'hoje',ov:null,sheet:null,mood:null,shown:0};
 const cur=()=>S.history.length?S.history[S.history.length-1]:null;
@@ -1312,6 +1312,7 @@ document.addEventListener('change',e=>{
 });
 if(!S.onb)ui.ov={type:'onb',i:0};
 window.addEventListener('storage',e=>{if(e.key===HO_KEY&&ui.tab==='home'&&!ui.ov&&!ui.sheet)render()});
+window.addEventListener('pageshow',e=>{if(e.persisted&&ui.tab==='home'&&!ui.ov&&!ui.sheet)render()});
 render();
 })();
 </script>
