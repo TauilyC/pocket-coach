@@ -21,7 +21,7 @@
   --text:#EEF0FA; --muted:#98A1C8; --accent:#F4B860; --accent-ink:#241803; --teal:#5FD0C0; --lilac:#A99BF2;
   --display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
   --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --bar:96px; color-scheme:dark;
+  --bar:64px; color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -36,26 +36,26 @@ a{color:inherit}
 
 /* barra superior */
 header.bar{position:fixed;inset:0 0 auto 0;z-index:30;background:rgba(19,23,43,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
-.bar .in{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;text-decoration:none}
+.bar .in{max-width:1000px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:nowrap;align-items:center;gap:12px}
+.brand{min-height:44px;display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;text-decoration:none}
 .brand img{width:28px;height:28px;border-radius:8px}
-.ext{font-size:.82rem;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px}.ext:hover{color:var(--text)}
-nav.tabs{display:flex;gap:4px;margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:3px}
-nav.tabs a{padding:7px 14px;border-radius:11px;text-decoration:none;font-weight:600;font-size:.92rem;color:var(--muted);white-space:nowrap}
+.ext{flex:none;width:44px;height:44px;display:grid;place-items:center;font-size:1.1rem;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:12px}.ext:hover{color:var(--text)}.ext[hidden]{display:none}
+@media (min-width:561px){.ext[hidden]{display:grid;visibility:hidden}}
+nav.tabs{display:flex;gap:4px;margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px}
+nav.tabs a{min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 16px;border-radius:11px;text-decoration:none;font-weight:600;font-size:.95rem;color:var(--muted);white-space:nowrap}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
-@media (max-width:560px){.brand{order:1}.ext{order:2;margin-left:auto}nav.tabs{order:3;width:100%;margin-left:0}nav.tabs a{flex:1;text-align:center;padding:7px 6px;font-size:.86rem}}
+@media (max-width:560px){nav.tabs{flex:1;margin-left:0}nav.tabs a{flex:1;padding:0 6px}body:not([data-view=inicio]) .brand span{display:none}}
 
 /* painéis */
-main{padding-top:calc(var(--bar) + env(safe-area-inset-top))}
-@media (min-width:561px){:root{--bar:56px}}
+main{padding-top:var(--bar)}
 .view[hidden]{display:none}
-.frame{display:block;width:100%;border:0;height:calc(100dvh - var(--bar) - env(safe-area-inset-top));background:var(--bg-outer)}
+.frame{display:block;width:100%;border:0;height:calc(100dvh - var(--bar));background:var(--bg-outer)}
 .frame-wrap{position:relative}
 
 /* início */
 .home{max-width:1000px;margin:0 auto;padding:28px 16px 64px}
 .hero{padding:28px 0 12px;max-width:720px}
-.eyebrow{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.eyebrow{display:inline-block;font-size:.875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
 .hero h1{font-size:clamp(2rem,6vw,3.2rem);margin-bottom:16px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p.lead{font-size:1.12rem;color:#C9CEEA;max-width:60ch}
@@ -65,7 +65,7 @@ main{padding-top:calc(var(--bar) + env(safe-area-inset-top))}
 .btn.pri:hover{filter:brightness(1.07)}
 .btn.sec{border-color:var(--line);background:var(--surface);color:var(--text)}
 .btn.sec:hover{border-color:var(--muted)}
-.hint{font-size:.88rem;color:var(--muted)}
+.hint{font-size:.9rem;color:var(--muted)}
 
 section.blk{margin-top:44px}
 section.blk>h2{font-size:1.5rem;margin-bottom:6px}
@@ -78,7 +78,7 @@ section.blk>p.sub{color:var(--muted);margin-bottom:18px;max-width:60ch}
 .trail .num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.92rem;border:2px solid var(--line);color:var(--muted);background:var(--bg)}
 .trail h3{font-size:1.05rem}
 .trail p{font-size:.9rem;color:var(--muted)}
-.trail .st{margin-top:auto;font-size:.78rem;font-weight:600;color:var(--muted)}
+.trail .st{margin-top:auto;font-size:.875rem;font-weight:600;color:var(--muted)}
 .trail li.done{border-color:rgba(95,208,192,.55)}
 .trail li.done .num{background:var(--teal);border-color:var(--teal);color:#06201b}
 .trail li.done .st{color:var(--teal)}
@@ -100,12 +100,12 @@ button.btn.pri{color:var(--accent-ink)}
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.tools{grid-template-columns:1fr}}
 .tool{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
-.tool .tag{font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--lilac)}
+.tool .tag{font-size:.875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--lilac)}
 .tool h3{font-size:1.4rem}
 .tool p{color:#C9CEEA}
 .tool ul{padding-left:18px;color:var(--muted);font-size:.93rem;display:grid;gap:4px}
 .tool .foot{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
-.pill{font-size:.8rem;font-weight:600;border-radius:999px;padding:4px 10px;background:var(--surface2);color:var(--muted)}
+.pill{font-size:.875rem;font-weight:600;border-radius:999px;padding:4px 10px;background:var(--surface2);color:var(--muted)}
 .pill.on{background:rgba(95,208,192,.16);color:var(--teal)}
 
 /* honestidade */
@@ -133,10 +133,10 @@ footer.help b{color:var(--text)}
     <a class="brand" href="#inicio"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Rumo</span></a>
     <nav class="tabs" aria-label="Seções">
       <a href="#inicio" data-v="inicio">Início</a>
-      <a href="#mapa" data-v="mapa">Mapa de autoconhecimento</a>
+      <a href="#mapa" data-v="mapa">Mapa</a>
       <a href="#coach" data-v="coach">Coach</a>
     </nav>
-    <a class="ext" id="ext" href="#" target="_blank" rel="noopener" hidden>Tela cheia ↗</a>
+    <a class="ext" id="ext" href="#" target="_blank" rel="noopener" hidden aria-label="Abrir em tela cheia, em nova aba" title="Abrir em tela cheia">↗</a>
   </div>
 </header>
 
@@ -146,27 +146,20 @@ footer.help b{color:var(--text)}
     <div class="hero">
       <span class="eyebrow">Autoconhecimento e autodesenvolvimento</span>
       <h1>Entender quem você é ajuda a decidir <em>o que fazer a seguir.</em></h1>
-      <p class="lead">Dois instrumentos que trabalham juntos: um <b>mapa</b> de como você pensa, sente e se relaciona, e um <b>coach de bolso</b> que transforma o que você descobre em metas e passos pequenos. Sem pressa, sem milagres, no seu ritmo.</p>
+      <p class="lead">Dois instrumentos que trabalham juntos: o <b>Mapa</b>, que mostra como você pensa, sente e se relaciona, e o <b>Coach</b>, que transforma o que importa em metas e passos pequenos. Sem pressa, sem milagres, no seu ritmo.</p>
       <div class="cta-row">
         <a class="btn pri" id="mainCta" href="#mapa">Começar meu mapa</a>
         <span class="hint" id="mainHint">Leva cerca de 10 minutos. Sem cadastro.</span>
       </div>
     </div>
 
-    <section class="blk" aria-labelledby="h-trilha">
-      <h2 id="h-trilha">Sua trilha</h2>
-      <p class="sub">Quatro marcos, um de cada vez. Cada um que você completa acende aqui, e ninguém além de você vê isso.</p>
-      <ol class="trail" id="trail"></ol>
-      <div id="review"></div>
-    </section>
-
     <section class="blk" aria-labelledby="h-tools">
       <h2 id="h-tools">Os dois instrumentos</h2>
-      <p class="sub">Use o primeiro para se enxergar com mais clareza e o segundo para agir sobre o que importa. Também funcionam separados.</p>
+      <p class="sub">Use o Mapa para se enxergar com mais clareza e o Coach para agir sobre o que importa. Também funcionam separados.</p>
       <div class="tools">
         <article class="tool">
-          <span class="tag">1 · Entender</span>
-          <h3>Mapa de autoconhecimento</h3>
+          <span class="tag">1 · Entender · autoconhecimento</span>
+          <h3>Mapa</h3>
           <p>Perguntas sobre seu jeito de ser, de se relacionar e de lidar com o estresse. Em troca, você recebe um perfil, hipóteses para confirmar ou descartar e uma prática de 5, 15 ou 30 minutos conforme sua energia do dia.</p>
           <ul>
             <li>Traços de personalidade, relações e enfrentamento</li>
@@ -174,13 +167,13 @@ footer.help b{color:var(--text)}
             <li>Plano com até 3 metas e registro dos dias em que você praticou</li>
           </ul>
           <div class="foot">
-            <a class="btn pri" href="#mapa">Abrir o mapa</a>
+            <a class="btn pri" href="#mapa">Abrir o Mapa</a>
             <span class="pill" id="pill-mapa">Não iniciado</span>
           </div>
         </article>
         <article class="tool">
-          <span class="tag">2 · Agir</span>
-          <h3>Pocket Coach</h3>
+          <span class="tag">2 · Agir · metas e rotina</span>
+          <h3>Coach</h3>
           <p>Uma Roda da Vida com 12 áreas para ver onde você está e onde quer chegar. Daí saem metas pequenas, tarefas simples, registro de humor e revisões semanais para ajustar o caminho.</p>
           <ul>
             <li>Roda da Vida com 12 pilares e comparação ao longo do tempo</li>
@@ -188,11 +181,18 @@ footer.help b{color:var(--text)}
             <li>Acompanhamento de humor e temperamento</li>
           </ul>
           <div class="foot">
-            <a class="btn pri" href="#coach">Abrir o coach</a>
+            <a class="btn pri" href="#coach">Abrir o Coach</a>
             <span class="pill" id="pill-coach">Não iniciado</span>
           </div>
         </article>
       </div>
+    </section>
+
+    <section class="blk" aria-labelledby="h-trilha">
+      <h2 id="h-trilha">Sua trilha</h2>
+      <p class="sub">Quatro marcos, um de cada vez. Cada um que você completa acende aqui, e ninguém além de você vê isso.</p>
+      <ol class="trail" id="trail"></ol>
+      <div id="review"></div>
     </section>
 
     <section class="blk" aria-labelledby="h-honesto">
@@ -230,11 +230,11 @@ footer.help b{color:var(--text)}
   </div>
 
   <!-- ================= MAPA ================= -->
-  <div class="view frame-wrap is-mapa" id="v-mapa" data-title="Mapa de autoconhecimento · Rumo" hidden>
+  <div class="view frame-wrap is-mapa" id="v-mapa" data-title="Mapa · Rumo" hidden>
   </div>
 
   <!-- ================= COACH ================= -->
-  <div class="view frame-wrap is-coach" id="v-coach" data-title="Pocket Coach · Rumo" hidden>
+  <div class="view frame-wrap is-coach" id="v-coach" data-title="Coach · Rumo" hidden>
   </div>
 </main>
 
@@ -242,7 +242,7 @@ footer.help b{color:var(--text)}
 (function(){
 'use strict';
 var SRC={mapa:'mapa.html',coach:'coach.html'};
-var LABEL={mapa:'Mapa de autoconhecimento',coach:'Pocket Coach'};
+var LABEL={mapa:'Mapa',coach:'Coach'};
 var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 
@@ -263,12 +263,15 @@ function route(){
       wrap.insertBefore(f,wrap.firstChild);
     }
   }
+  document.body.dataset.view=v;
   document.title=$('#v-'+v).dataset.title;
   var ext=$('#ext');ext.hidden=!SRC[v];if(SRC[v])ext.href=SRC[v];
   if(v==='inicio')refresh();
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
+function setBar(){var h=document.querySelector('header.bar').offsetHeight;if(h)document.documentElement.style.setProperty('--bar',h+'px')}
+window.addEventListener('resize',setBar);window.addEventListener('load',setBar);
 
 /* ---------- progresso: lê (somente leitura) o que cada app guarda no aparelho ---------- */
 function read(key){try{var r=localStorage.getItem(key);return r?JSON.parse(r):null}catch(e){return null}}
@@ -285,7 +288,7 @@ function status(){
           cMetas:real&&c.goals?c.goals.length:0,cTarefas:real&&c.tasks?c.tasks.length:0};
 }
 var STEPS=[
-  {k:'mapaFeito',t:'Conhecer seu mapa',d:'Responder o questionário e ler o perfil como hipótese.',href:'#mapa',cta:'Começar meu mapa',hint:'Leva cerca de 10 minutos. Sem cadastro.'},
+  {k:'mapaFeito',t:'Fazer seu Mapa',d:'Responder o questionário e ler o perfil como hipótese.',href:'#mapa',cta:'Começar meu mapa',hint:'Leva cerca de 10 minutos. Sem cadastro.'},
   {k:'roda',t:'Ver sua Roda da Vida',d:'Dar uma nota a 12 áreas e marcar onde quer chegar.',href:'#coach',cta:'Fazer minha Roda da Vida',hint:'Cerca de 10 minutos. Você pode pular o que não se aplica.'},
   {k:'meta',t:'Escolher uma meta pequena',d:'Uma só, com medida clara e um motivo que seja seu.',href:'#coach',cta:'Definir minha primeira meta',hint:'Metas pequenas e específicas têm mais chance de sair do papel.'},
   {k:'passo',t:'Dar o primeiro passo',d:'Uma tarefa de 5 minutos já conta. Marque quando fizer.',href:'#coach',cta:'Registrar um primeiro passo',hint:'Não precisa ser perfeito. Precisa ser feito.'}
@@ -311,7 +314,7 @@ function refresh(){
   var pend=pendingFromMapa();
   if(pend>0&&(!next||next.k!=='mapaFeito')){
     cta.href='#coach';cta.textContent='Levar as metas do Mapa para o Coach';
-    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando no Início do Coach.':'Há '+pend+' práticas escolhidas no Mapa esperando no Início do Coach.';
+    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando na aba Hoje do Coach.':'Há '+pend+' práticas escolhidas no Mapa esperando na aba Hoje do Coach.';
   }
   $('#review').innerHTML=reviewHtml();
   var pm=$('#pill-mapa'),pc=$('#pill-coach');
@@ -376,7 +379,7 @@ window.addEventListener('storage',function(){if(!$('#v-inicio').hidden)refresh()
 try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}catch(e){}
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 
-refresh();route();
+refresh();route();setBar();
 })();
 </script>
 </body>

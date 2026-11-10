@@ -2,8 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>try{if(top!==self)document.documentElement.classList.add('embed')}catch(e){document.documentElement.classList.add('embed')}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pocket Coach</title>
+<title>Coach · Rumo</title>
 <meta name="theme-color" content="#13172B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,6 +27,8 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+.embed .sbrand{display:none}
+.embed .top:has(.brand){display:none}
 html,body{height:100%;margin:0}
 body{background:var(--bg-outer);color:var(--text);font:400 16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button,input,textarea,select{font:inherit;color:inherit}
@@ -439,7 +442,9 @@ function seed(){
     reviews:[],n:10};
 }
 function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.history){delete s.bf;return s}}}catch(e){}return null}
-const S=load()||seed();
+const blank=()=>({demo:false,cond:{},history:[],desired:{},af:null,onb:false,moods:[],goals:[],tasks:[],reviews:[],rest:[],alertMute:null,n:10});
+const S=load()||blank();
+const EMBED=document.documentElement.classList.contains('embed');
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const ui={stack:[],tab:'home',sub:'roda',selP:null,editDes:false,filter:'hoje',ov:null,sheet:null,mood:null,shown:0};
 const cur=()=>S.history.length?S.history[S.history.length-1]:null;
@@ -548,13 +553,13 @@ function viewHome(){
   const dt=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   let s='';
   if(S.demo)s+='<div class="banner"><span>Você está vendo dados de exemplo. Eles somem quando você conclui sua primeira avaliação.</span><button class="btn sm ghost" data-a="clearDemo">Limpar</button></div>';
-  s+='<div class="span2 row between" style="align-items:flex-start;gap:12px"><div><h2 style="font-size:30px">'+g+'.</h2><p class="muted cap">'+dt+'</p></div><button class="btn sm" style="flex:none;text-align:center;line-height:1.2;padding:8px 12px" data-a="guide">Como usar o<br class="mbr"> Pocket Coach</button></div>';
+  s+='<div class="span2 row between" style="align-items:flex-start;gap:12px"><div><h2 style="font-size:30px">'+g+'.</h2><p class="muted cap">'+dt+'</p></div><button class="btn sm" style="flex:none;text-align:center;line-height:1.2;padding:8px 12px" data-a="guide">Como usar o<br class="mbr"> Coach</button></div>';
   s+=mapaCard();
   if(c){
     const lw=attention(1)[0],d=desired(),avg=mean(P.map(p=>c.scores[p.id]));
     s+='<section class="card col"><div class="row between"><span class="eyebrow">Seu ponto de partida</span><span class="tag">Roda de '+fdate(c.date)+'</span></div><div class="row" style="align-items:center;gap:14px;flex-wrap:wrap"><div style="flex:1 1 150px;min-width:150px">'+radar(c.scores,d,{mini:true})+'</div><div class="col" style="flex:1 1 150px;gap:6px"><span class="muted small">Equilíbrio geral</span><span class="big">'+f1(avg)+'</span><span class="muted small" style="margin-top:6px">'+(hasDes()?'Maior distância até a sua roda desejada':'Pilar com a menor nota')+'</span><b style="font-family:var(--display);font-size:19px">'+esc(lw.n)+' · '+f1(c.scores[lw.id])+'</b></div></div><button class="btn primary block" data-a="coach" data-id="'+lw.id+'">Trabalhar em '+esc(lw.n.toLowerCase())+'</button></section>';
   }else{
-    s+='<section class="card col"><h3 style="font-size:21px">Comece pela Roda da Vida</h3><p class="muted">Avalie 12 áreas da sua vida em cerca de 10 minutos. Depois escolhemos juntos por onde começar.</p><button class="btn primary block" data-a="roda">Iniciar avaliação</button></section>';
+    s+='<section class="card col"><h3 style="font-size:21px">Comece pela Roda da Vida</h3><p class="muted">Avalie 12 áreas da sua vida em cerca de 10 minutos. Depois escolhemos juntos por onde começar.</p><button class="btn primary block" data-a="roda">Iniciar avaliação</button><button class="btn sm ghost" data-a="onbExample">Ver um exemplo primeiro</button></section>';
   }
   const mt=S.moods.filter(m=>m.date===today()),al=moodAlert();
   if(al)s+='<div class="span2">'+alertCard(al,false)+'</div>';
@@ -806,11 +811,12 @@ function ovAf(o){
 }
 function ovOnb(o){
   const ST=[
-   ['O que é o Pocket Coach','<p class="muted">Uma ferramenta de autoconhecimento e planejamento. Ela ajuda você a enxergar como está em 12 áreas da vida, acompanhar o humor, conhecer seu temperamento e transformar o que importa em metas e tarefas pequenas.</p><p class="muted">Não é terapia nem diagnóstico, e não substitui um profissional.</p>'],
+   ['O que é o Coach','<p class="muted">Uma ferramenta de autoconhecimento e planejamento. Ela ajuda você a enxergar como está em 12 áreas da vida, acompanhar o humor, conhecer seu temperamento e transformar o que importa em metas e tarefas pequenas.</p><p class="muted">Não é terapia nem diagnóstico, e não substitui um profissional.</p>'],
    ['Seus dados ficam com você','<p class="muted">Tudo o que você registra fica apenas neste aparelho. Não há conta, servidor nem análise de uso, e quem criou o aplicativo não tem acesso às suas informações.</p><p class="muted">Em Privacidade e dados você pode exportar um backup ou apagar tudo quando quiser.</p>'],
-   ['Comece pela Roda da Vida','<p class="muted">São 12 áreas, com notas de 0 a 10. Leva cerca de 10 minutos e pode ser pausada. Depois você define onde quer chegar e cria até 3 metas, com passos pequenos.</p><p class="muted">Se preferir, explore primeiro com os dados de exemplo.</p>']];
+   ['Comece pela Roda da Vida','<p class="muted">São 12 áreas, com notas de 0 a 10. Leva cerca de 10 minutos e pode ser pausada. Depois você define onde quer chegar e cria até 3 metas, com passos pequenos.</p><p class="muted">Se preferir, explore primeiro com dados de exemplo.</p>']];
+  if(EMBED)o.i=2;
   const s=ST[o.i],last=o.i===2;
-  return '<div class="head"><div class="prog"><div class="small muted" style="margin-bottom:6px">Passo '+(o.i+1)+' de 3</div><div class="bar"><i style="width:'+((o.i+1)/3*100)+'%"></i></div></div><button class="btn sm ghost" data-a="onbSkip">Pular</button></div><div class="body"><div class="eyebrow">Bem-vindo</div><h2 style="font-size:30px">'+s[0]+'</h2>'+s[1]+'</div><div class="foot">'+(o.i>0?'<button class="btn" data-a="onbBack">Voltar</button>':'<span></span>')+(last?'<button class="btn" data-a="onbSkip">Ver exemplo</button><button class="btn primary" data-a="onbRoda">Fazer a Roda</button>':'<button class="btn primary" data-a="onbNext">Continuar</button>')+'</div>';
+  return '<div class="head"><div class="prog">'+(EMBED?'':'<div class="small muted" style="margin-bottom:6px">Passo '+(o.i+1)+' de 3</div><div class="bar"><i style="width:'+((o.i+1)/3*100)+'%"></i></div>')+'</div><button class="btn sm ghost" data-a="onbSkip">Pular</button></div><div class="body"><div class="eyebrow">Bem-vindo</div><h2 style="font-size:30px">'+s[0]+'</h2>'+s[1]+'</div><div class="foot">'+(o.i>0&&!EMBED?'<button class="btn" data-a="onbBack">Voltar</button>':'<span></span>')+(last?'<button class="btn" data-a="onbExample">Ver exemplo</button><button class="btn primary" data-a="onbRoda">Fazer a Roda</button>':'<button class="btn primary" data-a="onbNext">Continuar</button>')+'</div>';
 }
 const sbk='<div class="row"><button class="back" data-a="sheetBack"><span aria-hidden="true">‹</span> Voltar</button></div>';
 function rowSel(on,txt,attrs){
@@ -878,7 +884,7 @@ function goalRodaLine(g,long){
 }
 function ovLimit(){
   const ag=activeGoals(),free=ag.length<MAXACT;
-  return '<div class="head"><button class="x" data-a="close" aria-label="Fechar">×</button><div class="prog"><div class="eyebrow">Foco</div></div></div><div class="body"><h2 style="font-size:28px">'+(free?'Agora há espaço para uma nova meta':'Você já tem '+MAXACT+' metas ativas')+'</h2><p class="muted">O Pocket Coach limita as metas ativas a '+MAXACT+' para favorecer o foco: atenção e energia são limitadas, e muitas metas simultâneas costumam diluir o esforço. '+(free?'':'Para abrir uma nova, conclua ou pause uma das atuais. Pausar guarda a meta e seus passos, e você pode retomá-la depois.')+'</p>'+ag.map(g=>'<div class="card col" style="gap:8px"><div class="row between"><span class="tag">'+esc(PM[g.p].n)+'</span></div><b>'+esc(g.titulo)+'</b><div class="row" style="gap:8px"><button class="btn sm" data-a="doneGoal" data-id="'+g.id+'">Concluir</button><button class="btn sm ghost" data-a="pauseGoal" data-id="'+g.id+'">Pausar</button></div></div>').join('')+'</div><div class="foot"><button class="btn" data-a="close">Voltar</button>'+(free?'<button class="btn primary" data-a="newGoal">Criar nova meta</button>':'')+'</div>';
+  return '<div class="head"><button class="x" data-a="close" aria-label="Fechar">×</button><div class="prog"><div class="eyebrow">Foco</div></div></div><div class="body"><h2 style="font-size:28px">'+(free?'Agora há espaço para uma nova meta':'Você já tem '+MAXACT+' metas ativas')+'</h2><p class="muted">O Coach limita as metas ativas a '+MAXACT+' para favorecer o foco: atenção e energia são limitadas, e muitas metas simultâneas costumam diluir o esforço. '+(free?'':'Para abrir uma nova, conclua ou pause uma das atuais. Pausar guarda a meta e seus passos, e você pode retomá-la depois.')+'</p>'+ag.map(g=>'<div class="card col" style="gap:8px"><div class="row between"><span class="tag">'+esc(PM[g.p].n)+'</span></div><b>'+esc(g.titulo)+'</b><div class="row" style="gap:8px"><button class="btn sm" data-a="doneGoal" data-id="'+g.id+'">Concluir</button><button class="btn sm ghost" data-a="pauseGoal" data-id="'+g.id+'">Pausar</button></div></div>').join('')+'</div><div class="foot"><button class="btn" data-a="close">Voltar</button>'+(free?'<button class="btn primary" data-a="newGoal">Criar nova meta</button>':'')+'</div>';
 }
 function ovCoach(o){
   const p=PM[o.p],d=CH[o.p],B=coachIntro(o.p).map(t=>({w:'c',t:t}));o.nb=B.length;
@@ -927,7 +933,7 @@ function ovGoal(o){
 }
 function shTask(sh){
   const f=sh.f,t=today(),opts=[['Hoje',t],['Amanhã',addD(t,1)],['Em 7 dias',addD(t,7)],['Sem data','']];
-  return '<div class="grip"></div>'+sbk+'<h3 style="font-size:21px">'+(f.id?'Editar tarefa':'Nova tarefa')+'</h3><div class="field"><label for="t-t">O que fazer</label><input type="text" id="t-t" data-f="title" value="'+esc(f.title)+'" placeholder="Ex.: Caminhar 15 minutos"></div><div class="field"><label for="t-g">Meta vinculada</label><select id="t-g" data-f="goal"><option value="">Sem meta</option>'+S.goals.filter(g=>g.status==='ativa').map(g=>'<option value="'+g.id+'"'+(f.goal===g.id?' selected':'')+'>'+esc(g.titulo)+'</option>').join('')+'</select></div><div class="field"><label>Quando</label><div class="chips">'+opts.map(o=>'<button class="chip'+(f.due===o[1]?' on':'')+'" data-a="tdue" data-v="'+o[1]+'">'+o[0]+'</button>').join('')+'</div></div><div class="field"><label>Repetir</label><div class="chips">'+[['none','Uma vez'],['daily','Todo dia'],['days','Dias da semana'],['weekly','Toda semana']].map(r=>'<button class="chip'+(f.rec===r[0]?' on':'')+'" data-a="trec" data-v="'+r[0]+'">'+r[1]+'</button>').join('')+'</div>'+(f.rec==='days'?'<div class="chips" role="group" aria-label="Dias da semana" style="margin-top:8px">'+[1,2,3,4,5,6,0].map(i=>'<button class="chip'+((f.days||[]).includes(i)?' on':'')+'" style="min-width:44px;justify-content:center" data-a="tday" data-v="'+i+'" aria-pressed="'+((f.days||[]).includes(i))+'" aria-label="'+WD[i]+'">'+WD[i]+'</button>').join('')+'</div>':'')+'</div><div class="field"><label for="t-h">Horário (opcional)</label><input type="time" id="t-h" data-f="time" value="'+esc(f.time||'')+'"><p class="small muted" style="margin-top:6px">Lembrete: o Pocket Coach não envia notificações, porque nenhum dado sai do seu aparelho. Para ser avisado(a), exporte para o calendário do celular, que cria o evento com alarme e repetição.</p><button class="btn sm ghost" style="margin-top:6px" data-a="icsTask">Adicionar ao calendário (.ics)</button></div>'+'<div class="row"><button class="btn primary" style="flex:1" data-a="saveTask">Salvar</button>'+(f.id?'<button class="btn danger" data-a="delTask">Excluir</button>':'')+'<button class="btn ghost" data-a="sheetBack">Cancelar</button></div>';
+  return '<div class="grip"></div>'+sbk+'<h3 style="font-size:21px">'+(f.id?'Editar tarefa':'Nova tarefa')+'</h3><div class="field"><label for="t-t">O que fazer</label><input type="text" id="t-t" data-f="title" value="'+esc(f.title)+'" placeholder="Ex.: Caminhar 15 minutos"></div><div class="field"><label for="t-g">Meta vinculada</label><select id="t-g" data-f="goal"><option value="">Sem meta</option>'+S.goals.filter(g=>g.status==='ativa').map(g=>'<option value="'+g.id+'"'+(f.goal===g.id?' selected':'')+'>'+esc(g.titulo)+'</option>').join('')+'</select></div><div class="field"><label>Quando</label><div class="chips">'+opts.map(o=>'<button class="chip'+(f.due===o[1]?' on':'')+'" data-a="tdue" data-v="'+o[1]+'">'+o[0]+'</button>').join('')+'</div></div><div class="field"><label>Repetir</label><div class="chips">'+[['none','Uma vez'],['daily','Todo dia'],['days','Dias da semana'],['weekly','Toda semana']].map(r=>'<button class="chip'+(f.rec===r[0]?' on':'')+'" data-a="trec" data-v="'+r[0]+'">'+r[1]+'</button>').join('')+'</div>'+(f.rec==='days'?'<div class="chips" role="group" aria-label="Dias da semana" style="margin-top:8px">'+[1,2,3,4,5,6,0].map(i=>'<button class="chip'+((f.days||[]).includes(i)?' on':'')+'" style="min-width:44px;justify-content:center" data-a="tday" data-v="'+i+'" aria-pressed="'+((f.days||[]).includes(i))+'" aria-label="'+WD[i]+'">'+WD[i]+'</button>').join('')+'</div>':'')+'</div><div class="field"><label for="t-h">Horário (opcional)</label><input type="time" id="t-h" data-f="time" value="'+esc(f.time||'')+'"><p class="small muted" style="margin-top:6px">Lembrete: o Coach não envia notificações, porque nenhum dado sai do seu aparelho. Para ser avisado(a), exporte para o calendário do celular, que cria o evento com alarme e repetição.</p><button class="btn sm ghost" style="margin-top:6px" data-a="icsTask">Adicionar ao calendário (.ics)</button></div>'+'<div class="row"><button class="btn primary" style="flex:1" data-a="saveTask">Salvar</button>'+(f.id?'<button class="btn danger" data-a="delTask">Excluir</button>':'')+'<button class="btn ghost" data-a="sheetBack">Cancelar</button></div>';
 }
 function spark(pr){
   if(pr.length<2)return '';
@@ -1022,7 +1028,7 @@ function ovGuide(){
   };
   const total=Object.keys(ok).length,n=Object.values(ok).filter(Boolean).length;
   let h='<div class="head"><button class="x" data-a="close" aria-label="Fechar">×</button><div class="prog"><div class="eyebrow">Guia de exploração</div></div></div><div class="body about">';
-  h+='<h2 style="font-size:28px">Como usar o Pocket Coach</h2><p class="muted">Um roteiro para conhecer tudo o que a ferramenta oferece. Siga a ordem ou vá direto ao que lhe interessa; cada botão leva você ao lugar certo.</p>';
+  h+='<h2 style="font-size:28px">Como usar o Coach</h2><p class="muted">Um roteiro para conhecer tudo o que a ferramenta oferece. Siga a ordem ou vá direto ao que lhe interessa; cada botão leva você ao lugar certo.</p>';
   h+=(real?'<div class="card col" style="gap:8px"><div class="row between"><span class="eyebrow">Seu percurso</span><span class="small muted">'+n+' de '+total+'</span></div><div class="bar teal"><i style="width:'+Math.round(n/total*100)+'%"></i></div></div>':'<div class="note">Você está vendo dados de exemplo, então o percurso ainda não é contado. Ele começa quando você fizer sua primeira Roda da Vida.</div>');
   G.forEach(g=>{h+='<div class="eyebrow" style="margin-top:6px">'+g[0]+'</div>'+g[1].map(item).join('')});
   h+='<div class="eyebrow" style="margin-top:6px">Dicas rápidas</div><div class="card"><ul><li><b>Sem pressa.</b> Você pode pausar a Roda e continuar depois.</li><li><b>Volte sempre.</b> Refaça a Roda a cada 1 a 3 meses para ver a evolução, e o perfil a cada 6 a 12 meses.</li><li><b>Passos pequenos.</b> Se a confiança numa meta estiver baixa, reduza o passo em vez de desistir.</li><li><b>No computador:</b> as teclas 1 a 4 trocam de aba e Esc fecha as janelas.</li><li><b>No celular:</b> instale pelo menu do navegador (Instalar app ou Adicionar à Tela de Início) para abrir em tela cheia e usar offline.</li></ul></div>';
@@ -1039,7 +1045,7 @@ function ovAbout(){
    ['O que evitamos','<ul><li>Promessas de transformação rápida e o mito dos “21 dias”.</li><li>SMART como se fosse teoria científica: a sigla é de 1981, do campo da administração (Doran, 1981). Usamos princípios com base empírica na teoria de metas.</li><li>Pensamento positivo isolado: imaginar só o sucesso, sem considerar obstáculos, pode reduzir o esforço (Oettingen, 2012).</li><li>Tipologias e rótulos de temperamento como destino.</li><li>Conselhos prontos: o coach pergunta, reflete e deixa a decisão com você.</li></ul>'],
    ['Limites e cuidados','<ul><li>Não é psicoterapia nem avaliação clínica e não substitui um profissional.</li><li>Dados de humor são sensíveis: neste app ficam apenas no seu aparelho (veja Privacidade e dados). Uma versão com conta exigirá consentimento e proteção conforme a LGPD.</li><li>Em sofrimento intenso, procure um profissional de saúde mental. Se estiver pensando em se machucar, ligue 188 (CVV, 24 horas) ou procure um serviço de urgência.</li></ul>'],
    ['Próximas etapas de validação','<ul><li>Roda da Vida: análise fatorial exploratória e confirmatória, consistência interna por pilar e invariância entre grupos.</li><li>Temperamento: confirmar a autorização de uso do instrumento, validar o formato do app (ordem dos itens e resposta em toque) frente ao formulário em papel e comparar com normas por idade e sexo.</li><li>Eficácia: estudo piloto com lista de espera, medindo autoeficácia, bem-estar e atingimento de metas (por exemplo, Goal Attainment Scaling; Kiresuk & Sherman, 1968).</li></ul>']];
-  return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Fundamentos</div></div></div><div class="body about"><h2 style="font-size:28px">Como o Pocket Coach funciona</h2><p class="muted">Cada etapa do aplicativo tem uma justificativa na literatura científica, e cada limite está declarado.</p>'+S1.map(s=>'<details class="card"'+(s[2]?' open':'')+'><summary>'+s[0]+'</summary><div class="col" style="margin-top:10px">'+s[1]+'</div></details>').join('')+'<details class="card"><summary>Referências</summary><div class="refs" style="margin-top:8px">'+REFS.map(r=>'<p>'+esc(r)+'</p>').join('')+'</div></details></div>';
+  return '<div class="head"><button class="x" data-a="close" aria-label="Voltar">‹</button><div class="prog"><div class="eyebrow">Fundamentos</div></div></div><div class="body about"><h2 style="font-size:28px">Como o Coach funciona</h2><p class="muted">Cada etapa do aplicativo tem uma justificativa na literatura científica, e cada limite está declarado.</p>'+S1.map(s=>'<details class="card"'+(s[2]?' open':'')+'><summary>'+s[0]+'</summary><div class="col" style="margin-top:10px">'+s[1]+'</div></details>').join('')+'<details class="card"><summary>Referências</summary><div class="refs" style="margin-top:8px">'+REFS.map(r=>'<p>'+esc(r)+'</p>').join('')+'</div></details></div>';
 }
 function ovPrivacy(o){
   const nb=S.history.length,nm=S.moods.length,ng=S.goals.length,nt=S.tasks.length;
@@ -1104,7 +1110,7 @@ function wipeAll(){
 function ovHtml(o){return o.type==='roda'?ovRoda(o):o.type==='onb'?ovOnb(o):o.type==='af'?ovAf(o):o.type==='pick'?ovPick():o.type==='coach'?ovCoach(o):o.type==='about'?ovAbout():o.type==='guide'?ovGuide():o.type==='limit'?ovLimit():o.type==='des'?ovDes(o):o.type==='privacy'?ovPrivacy(o):ovGoal(o)}
 
 /* ============ renderização ============ */
-const TITLES={home:'Início',avaliar:'Avaliar',metas:'Metas',plano:'Plano'};
+const TITLES={home:'Hoje',avaliar:'Avaliar',metas:'Metas',plano:'Plano'};
 function render(){
   rollRec();
   const main=$('#main'),sc=main.scrollTop;
@@ -1115,7 +1121,7 @@ function render(){
   main.innerHTML=ui.tab==='home'?viewHome():ui.tab==='avaliar'?viewAvaliar():ui.tab==='metas'?viewMetas():viewPlano();
   main.scrollTop=sc;
   const oc=main.querySelector('[data-a="evoSel"].on');if(oc&&oc.parentElement)oc.parentElement.scrollLeft=Math.max(0,oc.offsetLeft-60);
-  $('#nav').innerHTML='<div class="brand sbrand">'+brand.replace('<div class="brand">','').replace(/<\/div>$/,'')+'</div>'+[['home','Início'],['avaliar','Avaliar'],['metas','Metas'],['plano','Plano']].map((a,i)=>'<button class="'+(ui.tab===a[0]?'on':'')+'" data-a="navtab" data-id="'+a[0]+'" aria-label="'+a[1]+'"'+(ui.tab===a[0]?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+icon[a[0]]+'</svg>'+a[1]+'<span class="kbd" aria-hidden="true">'+(i+1)+'</span></button>').join('');
+  $('#nav').innerHTML='<div class="brand sbrand">'+brand.replace('<div class="brand">','').replace(/<\/div>$/,'')+'</div>'+[['home','Hoje'],['avaliar','Avaliar'],['metas','Metas'],['plano','Plano']].map((a,i)=>'<button class="'+(ui.tab===a[0]?'on':'')+'" data-a="navtab" data-id="'+a[0]+'" aria-label="'+a[1]+'"'+(ui.tab===a[0]?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+icon[a[0]]+'</svg>'+a[1]+'<span class="kbd" aria-hidden="true">'+(i+1)+'</span></button>').join('');
   const L=$('#layer'),ob=L.querySelector('.overlay .body'),osc=ob?ob.scrollTop:0,keep=ui.ovKeep;
   let h='';
   if(ui.ov){const o=ui.ov;h+='<div class="overlay" role="dialog" aria-modal="true">'+ovHtml(o)+'</div>'}
@@ -1201,6 +1207,7 @@ function act(a,el){
   case 'afBack':if(o.pg>=0){o.pg--;render();const bd=$('#layer .overlay .body');if(bd)bd.scrollTop=0}else{ui.ov=null;render()}break;
   case 'onbNext':o.i=Math.min(2,o.i+1);render();break;
   case 'onbBack':o.i=Math.max(0,o.i-1);render();break;
+  case 'onbExample':{const ex=seed();Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,ex,{onb:true});save();ui.ov=null;ui.tab='home';render();break}
   case 'onbSkip':S.onb=true;save();ui.ov=null;render();break;
   case 'onbRoda':S.onb=true;save();act('roda',el);break;
   case 'afFb':ui.afOpen=ui.afOpen||{};ui.afOpen[id]=!ui.afOpen[id];render();break;
