@@ -2,9 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>try{if(top!==self)document.documentElement.classList.add('embed')}catch(e){document.documentElement.classList.add('embed')}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>Sistema Integrativo de Autoconhecimento</title>
+<title>Mapa · Rumo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -36,6 +37,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 24px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
+.embed .brand{display:none}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:-.01em}
@@ -458,7 +460,7 @@ FUN_ORDER.forEach(id=>FLOW.push({t:'lik',id}));
 FLOW.push({t:'res'});FLOW.push({t:'ctx'});
 const NQ=TRI.length+PER_ORDER.length+FUN_ORDER.length;
 const SEC={
- tri:{t:'Como você está agora',p:'Cinco perguntas sobre as últimas duas semanas. Elas medem seu estado atual e não entram no perfil de traços.',n:'Itens de rastreio ilustrativos, baseados nas perguntas curtas PHQ-2 e GAD-2. A versão final usará as escalas validadas e um protocolo definido com a equipe clínica.'},
+ tri:{t:'Como você está agora',p:'Seis perguntas sobre as últimas duas semanas. Elas medem seu estado atual e não entram no perfil de traços.',n:'Itens de rastreio ilustrativos, baseados nas perguntas curtas PHQ-2 e GAD-2. A versão final usará as escalas validadas e um protocolo definido com a equipe clínica.'},
  per:{t:'Como você costuma ser',p:'Frases sobre o seu jeito de pensar, sentir e agir. Responda pelo que é mais comum em você, não pelo que gostaria de ser.',n:'Itens ilustrativos criados para este protótipo; ainda não foram validados.'},
  fun:{t:'Como você funciona e se relaciona',p:'Frases sobre identidade, relações próximas e enfrentamento do estresse.',n:'Itens ilustrativos criados para este protótipo; ainda não foram validados.'}
 };
@@ -537,7 +539,7 @@ function vWelcome(){
    <div><h1>Conheça seu jeito de ser e planeje o próximo passo</h1>
    <p class="muted" style="margin-top:10px">Um mapa em quatro camadas: como você está, quem você é, onde você vive e para onde quer ir. O resultado é um plano pequeno e viável, não um rótulo.</p></div>
    ${rings()}
-   <ol class="steps"><li><b>1. Como você está</b>5 perguntas rápidas</li><li><b>2. Quem você é</b>personalidade e funcionamento</li><li><b>3. Seu contexto</b>tempo, apoio e prioridades</li><li><b>4. Seu plano</b>até 3 metas com práticas curtas</li></ol>
+   <ol class="steps"><li><b>1. Como você está</b>6 perguntas rápidas</li><li><b>2. Quem você é</b>personalidade e funcionamento</li><li><b>3. Seu contexto</b>tempo, apoio e prioridades</li><li><b>4. Seu plano</b>até 3 metas com práticas curtas</li></ol>
    <label class="check"><input type="checkbox" id="consent" ${S.consent?'checked':''}><span>Entendo que este protótipo não faz diagnóstico, usa itens ilustrativos e que minhas respostas, inclusive as de saúde mental, ficam apenas neste navegador.</span></label>
    <div class="row"><button class="btn" data-a="start" id="startBtn" ${S.consent?'':'disabled'}>${has?'Continuar de onde parei':'Começar, cerca de 10 minutos'}</button><button class="btn ghost" data-a="sample">Ver exemplo preenchido</button></div>
    <p class="small" style="margin:0">Protótipo de especificação. Em caso de sofrimento intenso, procure um profissional de saúde ou ligue para o CVV, 188.</p>
