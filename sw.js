@@ -1,8 +1,8 @@
 /* Service worker do Pocket Coach: guarda o app para funcionar offline.
    Ao publicar uma nova versão, troque o número em CACHE. */
-const CACHE = 'pocket-coach-v1';
+const CACHE = 'pocket-coach-v2';
 const ASSETS = [
-  './', './index.html', './manifest.webmanifest',
+  './', './index.html', './mapa.html', './coach.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
   './fonts/fonts.css',
   './fonts/figtree-latin-400-normal.woff2', './fonts/figtree-latin-500-normal.woff2',
