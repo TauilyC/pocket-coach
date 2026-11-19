@@ -1,9 +1,9 @@
-/* Barra do Rumo, compartilhada por index.html, mapa.html e coach.html.
+/* Barra do Rumo, compartilhada por index.html, mapa.html, bussola.html e laboratorio.html.
    Cada página é um documento próprio (sem quadros), então funciona em qualquer hospedagem. */
 (function () {
   'use strict';
   var path = location.pathname;
-  var page = /mapa\.html$/.test(path) ? 'mapa' : /coach\.html$/.test(path) ? 'coach' : /laboratorio\.html$/.test(path) ? 'lab' : 'index';
+  var page = /mapa\.html$/.test(path) ? 'mapa' : /bussola\.html$/.test(path) ? 'bussola' : /laboratorio\.html$/.test(path) ? 'lab' : 'index';
   var root = document.documentElement;
   root.classList.add('rumo');
   root.setAttribute('data-rumo', page);
@@ -46,7 +46,7 @@
     h.innerHTML = '<div class="rb-in">' +
       '<a class="rb-brand" href="./" aria-label="Rumo, página inicial"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Rumo</span></a>' +
       '<div class="rb-tabs" role="navigation" aria-label="Seções do Rumo">' +
-      tab('./', 'index', 'Início') + tab('mapa.html', 'mapa', 'Mapa') + tab('coach.html', 'coach', 'Coach') + tab('laboratorio.html', 'lab', 'Laboratório') +
+      tab('./', 'index', 'Início') + tab('mapa.html', 'mapa', 'Mapa') + tab('bussola.html', 'bussola', 'Bússola') + tab('laboratorio.html', 'lab', 'Laboratório') +
       '</div></div>';
     document.body.insertBefore(h, document.body.firstChild);
   }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rumo · Conhecer-se para crescer</title>
-<meta name="description" content="Um mapa de autoconhecimento e um coach de bolso para transformar o que você descobre em metas e passos pequenos. Seus dados ficam só no seu aparelho.">
+<meta name="description" content="Um mapa de autoconhecimento e uma bússola para transformar o que você descobre em metas e passos pequenos. Seus dados ficam só no seu aparelho.">
 <meta name="theme-color" content="#13172B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
 <script src="rumo-bar.js"></script>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
-/* Rumo: mesma linguagem visual do Pocket Coach: tinta índigo, açafrão para o que é "agora", verde-água para o que é "possível". */
+/* Rumo: mesma linguagem visual da Bússola: tinta índigo, açafrão para o que é "agora", verde-água para o que é "possível". */
 :root{
   --bg:#13172B; --bg-outer:#0B0E1C; --surface:#1B2042; --surface2:#262C58; --line:#2F3664;
   --text:#EEF0FA; --muted:#98A1C8; --accent:#F4B860; --accent-ink:#241803; --teal:#5FD0C0; --lilac:#A99BF2;
@@ -114,7 +114,7 @@ footer.help b{color:var(--text)}
     <div class="hero">
       <span class="eyebrow">Autoconhecimento e autodesenvolvimento</span>
       <h1>Entender quem você é ajuda a decidir <em>o que fazer a seguir.</em></h1>
-      <p class="lead">Dois instrumentos que trabalham juntos: o <b>Mapa</b>, que mostra como você pensa, sente e se relaciona, e o <b>Coach</b>, que transforma o que importa em metas e passos pequenos. Para quem quer ir mais fundo, o <b>Laboratório</b> explica a ciência por trás. Sem pressa, sem milagres, no seu ritmo.</p>
+      <p class="lead">Dois instrumentos que trabalham juntos: o <b>Mapa</b>, que mostra como você pensa, sente e se relaciona, e a <b>Bússola</b>, que transforma o que importa em metas e passos pequenos. Para quem quer ir mais fundo, o <b>Laboratório</b> explica a ciência por trás. Sem pressa, sem milagres, no seu ritmo.</p>
       <div class="cta-row">
         <a class="btn pri" id="mainCta" href="mapa.html">Começar meu mapa</a>
         <span class="hint" id="mainHint">Leva cerca de 10 minutos. Sem cadastro.</span>
@@ -123,7 +123,7 @@ footer.help b{color:var(--text)}
 
     <section class="blk" aria-labelledby="h-tools">
       <h2 id="h-tools">Os instrumentos</h2>
-      <p class="sub">Use o Mapa para se enxergar com mais clareza e o Coach para agir sobre o que importa. O Laboratório é opcional, para estudar a teoria. Cada um funciona separado.</p>
+      <p class="sub">Use o Mapa para se enxergar com mais clareza e a Bússola para agir sobre o que importa. O Laboratório é opcional, para estudar a teoria. Cada um funciona separado.</p>
       <div class="tools">
         <article class="tool">
           <span class="tag">1 · Entender</span>
@@ -141,7 +141,7 @@ footer.help b{color:var(--text)}
         </article>
         <article class="tool">
           <span class="tag">2 · Agir</span>
-          <h3>Coach</h3>
+          <h3>Bússola</h3>
           <p>Uma Roda da Vida com 12 áreas para ver onde você está e onde quer chegar. Daí saem metas pequenas, tarefas simples, registro de humor e revisões semanais para ajustar o caminho.</p>
           <ul>
             <li>Roda da Vida com 12 pilares e comparação ao longo do tempo</li>
@@ -149,7 +149,7 @@ footer.help b{color:var(--text)}
             <li>Acompanhamento de humor e temperamento</li>
           </ul>
           <div class="foot">
-            <a class="btn pri" href="coach.html">Abrir o Coach</a>
+            <a class="btn pri" href="bussola.html">Abrir a Bússola</a>
             <span class="pill" id="pill-coach">Não iniciado</span>
           </div>
         </article>
@@ -237,9 +237,9 @@ function status(){
 }
 var STEPS=[
   {k:'mapaFeito',t:'Fazer seu Mapa',d:'Responder o questionário e ler o perfil como hipótese.',href:'mapa.html',cta:'Começar meu mapa',hint:'Leva cerca de 10 minutos. Sem cadastro.'},
-  {k:'roda',t:'Ver sua Roda da Vida',d:'Dar uma nota a 12 áreas e marcar onde quer chegar.',href:'coach.html',cta:'Fazer minha Roda da Vida',hint:'Cerca de 10 minutos. Você pode pular o que não se aplica.'},
-  {k:'meta',t:'Escolher uma meta pequena',d:'Uma só, com medida clara e um motivo que seja seu.',href:'coach.html',cta:'Definir minha primeira meta',hint:'Metas pequenas e específicas têm mais chance de sair do papel.'},
-  {k:'passo',t:'Dar o primeiro passo',d:'Uma tarefa de 5 minutos já conta. Marque quando fizer.',href:'coach.html',cta:'Registrar um primeiro passo',hint:'Não precisa ser perfeito. Precisa ser feito.'}
+  {k:'roda',t:'Ver sua Roda da Vida',d:'Dar uma nota a 12 áreas e marcar onde quer chegar.',href:'bussola.html',cta:'Fazer minha Roda da Vida',hint:'Cerca de 10 minutos. Você pode pular o que não se aplica.'},
+  {k:'meta',t:'Escolher uma meta pequena',d:'Uma só, com medida clara e um motivo que seja seu.',href:'bussola.html',cta:'Definir minha primeira meta',hint:'Metas pequenas e específicas têm mais chance de sair do papel.'},
+  {k:'passo',t:'Dar o primeiro passo',d:'Uma tarefa de 5 minutos já conta. Marque quando fizer.',href:'bussola.html',cta:'Registrar um primeiro passo',hint:'Não precisa ser perfeito. Precisa ser feito.'}
 ];
 function refresh(){
   var s=status(),next=null;
@@ -256,13 +256,13 @@ function refresh(){
     cta.href=next.href;hint.textContent=next.hint;
     cta.textContent=(next.k==='mapaFeito'&&s.mapaIniciou)?'Continuar meu mapa':next.cta;
   }else{
-    cta.href='coach.html';cta.textContent='Continuar meu acompanhamento';
+    cta.href='bussola.html';cta.textContent='Continuar meu acompanhamento';
     hint.textContent='Tudo em dia. Refaça o mapa e a Roda da Vida em 8 a 12 semanas para ver o que mudou.';
   }
   var pend=pendingFromMapa();
   if(pend>0&&(!next||next.k!=='mapaFeito')){
-    cta.href='coach.html';cta.textContent='Levar as metas do Mapa para o Coach';
-    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando na aba Hoje do Coach.':'Há '+pend+' práticas escolhidas no Mapa esperando na aba Hoje do Coach.';
+    cta.href='bussola.html';cta.textContent='Levar as metas do Mapa para a Bússola';
+    hint.textContent=pend===1?'Há 1 prática escolhida no Mapa esperando na aba Hoje da Bússola.':'Há '+pend+' práticas escolhidas no Mapa esperando na aba Hoje da Bússola.';
   }
   $('#review').innerHTML=reviewHtml();
   var pm=$('#pill-mapa'),pc=$('#pill-coach');
@@ -293,7 +293,7 @@ function reviewHtml(){
     if(snooze&&snooze>iso(now))return '';
     var old=(!L.mapa||(L.roda&&L.roda<L.mapa))?'roda':'mapa';
     return '<div class="review due"><div><b>Que tal rever como você está?</b><p>Faz '+weeks+' semanas desde a sua última avaliação. Refazer agora mostra o que mudou e ajuda a escolher o próximo foco. Se não estiver com cabeça para isso, tudo bem, o convite fica para depois.</p></div><div class="acts">'+
-      (L.mapa?'<a class="btn pri sm" href="mapa.html">Refazer o mapa</a>':'')+(L.roda?'<a class="btn '+(L.mapa?'sec':'pri')+' sm" href="coach.html">Refazer a Roda da Vida</a>':'')+
+      (L.mapa?'<a class="btn pri sm" href="mapa.html">Refazer o mapa</a>':'')+(L.roda?'<a class="btn '+(L.mapa?'sec':'pri')+' sm" href="bussola.html">Refazer a Roda da Vida</a>':'')+
       '<button class="btn sec sm" type="button" data-act="snooze">Lembrar em 2 semanas</button></div></div>';
   }
   return '<div class="review"><div><b>Próxima revisão sugerida: entre '+fmtD(from)+' e '+fmtD(to)+'</b><p>Passaram '+(weeks===1?'1 semana':weeks+' semanas')+' desde a sua última avaliação. Rever a cada 8 a 12 semanas dá tempo para as mudanças aparecerem.</p></div><div class="acts"><button class="btn sec sm" type="button" data-act="ics" data-from="'+iso(from)+'">Adicionar ao calendário</button></div></div>';
@@ -314,7 +314,7 @@ document.addEventListener('click',function(e){
   if(b.dataset.act==='snooze'){var d=new Date();d.setDate(d.getDate()+14);try{localStorage.setItem('rumo.snooze',iso(d))}catch(_){}refresh()}
   if(b.dataset.act==='ics')downloadIcs(b.dataset.from);
 });
-/* metas que o Mapa publicou e o Coach ainda não recebeu */
+/* metas que o Mapa publicou e a Bússola ainda não recebeu */
 function pendingFromMapa(){
   var h=read('rumo.handoff.v1'),done=read('rumo.handoff.done')||[];
   return h&&h.items?h.items.filter(function(i){return i&&done.indexOf(i.rid)<0}).length:0;
@@ -329,7 +329,7 @@ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}
 
 /* links antigos do tipo index.html#mapa continuam levando ao lugar certo */
 if(location.hash==='#mapa')location.replace('mapa.html');
-else if(location.hash==='#coach')location.replace('coach.html');
+else if(location.hash==='#coach')location.replace('bussola.html');
 window.addEventListener('pageshow',function(e){if(e.persisted)refresh()});
 refresh();
 })();
