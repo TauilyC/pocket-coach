@@ -651,6 +651,7 @@ function vResults(){
 function tPerfil(sc,tr){
   const row=(title,sub,keys)=>`<section class="card"><h3 class="sect">${title}</h3><p class="sub">${sub}</p>${keys.map(k=>traitRow(k,sc)).join('')}</section>`;
   return `<section class="card"><h3 class="sect">Personalidade em cinco fatores</h3><p class="sub">Toque em um fator abaixo do gráfico para ler o que ele descreve.</p>${radar(sc)}<div style="margin-top:8px">${['N','E','O','A','C'].map(k=>traitRow(k,sc)).join('')}</div></section>
+   <section class="card"><p class="small" style="margin:0">Quer entender a ciência por trás desses fatores? O <a href="laboratorio.html#teoria">Laboratório</a> explica o Big Five e outros modelos, com casos fictícios e referências.</p></section>
    ${row('Outros traços','Honestidade-Humildade e exigência consigo, que complementam o Big Five.',['H','P'])}
    ${row('Funcionamento','Recursos de identidade e relações. Quanto mais à direita, mais desenvolvido o recurso hoje, e funcionamento é o que mais responde a prática.',['ID','SD','EM','IN'])}
    ${row('Apego e enfrentamento','Como você vive as relações próximas e lida com o estresse. Nenhum estilo é certo ou errado.',['ANX','AVO','CPP','CPE','CPS'])}

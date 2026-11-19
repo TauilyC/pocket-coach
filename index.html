@@ -79,8 +79,7 @@ button.btn{font:inherit;font-weight:700;cursor:pointer;color:var(--text)}
 button.btn.pri{color:var(--accent-ink)}
 
 /* ferramentas */
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:760px){.tools{grid-template-columns:1fr}}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .tool{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
 .tool .tag{font-size:.875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--lilac)}
 .tool h3{font-size:1.4rem}
@@ -115,7 +114,7 @@ footer.help b{color:var(--text)}
     <div class="hero">
       <span class="eyebrow">Autoconhecimento e autodesenvolvimento</span>
       <h1>Entender quem você é ajuda a decidir <em>o que fazer a seguir.</em></h1>
-      <p class="lead">Dois instrumentos que trabalham juntos: o <b>Mapa</b>, que mostra como você pensa, sente e se relaciona, e o <b>Coach</b>, que transforma o que importa em metas e passos pequenos. Sem pressa, sem milagres, no seu ritmo.</p>
+      <p class="lead">Dois instrumentos que trabalham juntos: o <b>Mapa</b>, que mostra como você pensa, sente e se relaciona, e o <b>Coach</b>, que transforma o que importa em metas e passos pequenos. Para quem quer ir mais fundo, o <b>Laboratório</b> explica a ciência por trás. Sem pressa, sem milagres, no seu ritmo.</p>
       <div class="cta-row">
         <a class="btn pri" id="mainCta" href="mapa.html">Começar meu mapa</a>
         <span class="hint" id="mainHint">Leva cerca de 10 minutos. Sem cadastro.</span>
@@ -123,11 +122,11 @@ footer.help b{color:var(--text)}
     </div>
 
     <section class="blk" aria-labelledby="h-tools">
-      <h2 id="h-tools">Os dois instrumentos</h2>
-      <p class="sub">Use o Mapa para se enxergar com mais clareza e o Coach para agir sobre o que importa. Também funcionam separados.</p>
+      <h2 id="h-tools">Os instrumentos</h2>
+      <p class="sub">Use o Mapa para se enxergar com mais clareza e o Coach para agir sobre o que importa. O Laboratório é opcional, para estudar a teoria. Cada um funciona separado.</p>
       <div class="tools">
         <article class="tool">
-          <span class="tag">1 · Entender · autoconhecimento</span>
+          <span class="tag">1 · Entender</span>
           <h3>Mapa</h3>
           <p>Perguntas sobre seu jeito de ser, de se relacionar e de lidar com o estresse. Em troca, você recebe um perfil, hipóteses para confirmar ou descartar e uma prática de 5, 15 ou 30 minutos conforme sua energia do dia.</p>
           <ul>
@@ -141,7 +140,7 @@ footer.help b{color:var(--text)}
           </div>
         </article>
         <article class="tool">
-          <span class="tag">2 · Agir · metas e rotina</span>
+          <span class="tag">2 · Agir</span>
           <h3>Coach</h3>
           <p>Uma Roda da Vida com 12 áreas para ver onde você está e onde quer chegar. Daí saem metas pequenas, tarefas simples, registro de humor e revisões semanais para ajustar o caminho.</p>
           <ul>
@@ -152,6 +151,20 @@ footer.help b{color:var(--text)}
           <div class="foot">
             <a class="btn pri" href="coach.html">Abrir o Coach</a>
             <span class="pill" id="pill-coach">Não iniciado</span>
+          </div>
+        </article>
+        <article class="tool">
+          <span class="tag">3 · Aprofundar</span>
+          <h3>Laboratório</h3>
+          <p>Um espaço de estudo para quem quer entender como a psicologia organiza a personalidade: seis modelos lado a lado, simulador de perfis, casos fictícios para praticar e as referências científicas.</p>
+          <ul>
+            <li>Big Five, AFECTS, DSM-5, AMPD, HiTOP e RDoC comparados</li>
+            <li>Simulador com perfis e casos fictícios</li>
+            <li>Teoria, limites e referências</li>
+          </ul>
+          <div class="foot">
+            <a class="btn pri" href="laboratorio.html">Abrir o Laboratório</a>
+            <span class="pill">Opcional</span>
           </div>
         </article>
       </div>
@@ -181,6 +194,7 @@ footer.help b{color:var(--text)}
           <h3>O que isto não é</h3>
           <ul>
             <li>Não é diagnóstico, terapia nem substitui psicólogo ou médico.</li>
+            <li>O Laboratório é material de estudo, com casos fictícios: não serve para diagnosticar você nem outras pessoas.</li>
             <li>O mapa ainda é um protótipo, com itens ilustrativos que não passaram por validação científica. Leia o resultado como hipótese, não como veredito.</li>
             <li>Não promete resultados em prazo fixo. Quem decide o ritmo é você.</li>
           </ul>

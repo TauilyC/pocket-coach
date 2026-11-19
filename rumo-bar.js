@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var path = location.pathname;
-  var page = /mapa\.html$/.test(path) ? 'mapa' : /coach\.html$/.test(path) ? 'coach' : 'index';
+  var page = /mapa\.html$/.test(path) ? 'mapa' : /coach\.html$/.test(path) ? 'coach' : /laboratorio\.html$/.test(path) ? 'lab' : 'index';
   var root = document.documentElement;
   root.classList.add('rumo');
   root.setAttribute('data-rumo', page);
@@ -25,11 +25,13 @@
     '.rumo-bar .rb-tabs a{min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 16px;border-radius:11px;text-decoration:none;font-weight:600;font-size:.95rem;color:#98A1C8;white-space:nowrap}',
     '.rumo-bar .rb-tabs a[aria-current="page"]{background:#F4B860;color:#241803}',
     '.rumo-bar a:focus-visible{outline:2px solid #F4B860;outline-offset:2px}',
-    '@media (max-width:560px){.rumo-bar .rb-tabs{flex:1;margin-left:0}.rumo-bar .rb-tabs a{flex:1;padding:0 6px}html:not([data-rumo="index"]) .rumo-bar .rb-brand span{display:none}}',
+    '@media (max-width:560px){.rumo-bar .rb-tabs{flex:1;min-width:0;margin-left:0}.rumo-bar .rb-tabs a{flex:1 1 auto;padding:0 8px;font-size:.88rem}.rumo-bar .rb-brand span{display:none}}',
     /* ajustes de cada página para conviver com a barra fixa */
     'html.rumo #app{padding-top:0}',
     'html.rumo[data-rumo="mapa"] .top{top:var(--rumo-bar)}',
-    'html.rumo[data-rumo="mapa"] .tabs{top:calc(var(--rumo-bar) + 50px)}'
+    'html.rumo[data-rumo="mapa"] .tabs{top:calc(var(--rumo-bar) + 50px)}',
+    'html.rumo[data-rumo="lab"] .tabs{top:var(--rumo-bar)}',
+    'html.rumo[data-rumo="lab"] .ctrls{top:calc(var(--rumo-bar) + 58px);max-height:calc(100vh - var(--rumo-bar) - 70px)}'
   ].join('\n');
   var style = document.createElement('style');
   style.textContent = css;
@@ -44,7 +46,7 @@
     h.innerHTML = '<div class="rb-in">' +
       '<a class="rb-brand" href="./" aria-label="Rumo, página inicial"><img src="icons/icon-192.png" alt="" width="28" height="28"><span>Rumo</span></a>' +
       '<div class="rb-tabs" role="navigation" aria-label="Seções do Rumo">' +
-      tab('./', 'index', 'Início') + tab('mapa.html', 'mapa', 'Mapa') + tab('coach.html', 'coach', 'Coach') +
+      tab('./', 'index', 'Início') + tab('mapa.html', 'mapa', 'Mapa') + tab('coach.html', 'coach', 'Coach') + tab('laboratorio.html', 'lab', 'Laboratório') +
       '</div></div>';
     document.body.insertBefore(h, document.body.firstChild);
   }
